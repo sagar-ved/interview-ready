@@ -1,0 +1,87 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – System-Designs</title>
+    <link>http://localhost:1313/system-design/</link>
+    <description>Recent content in System-Designs on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/system-design/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>URL Shortener Design</title>
+      <link>http://localhost:1313/system-design/url-shortener/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/url-shortener/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;System Design: URL Shortener (TinyURL)&lt;/h1&gt;&lt;h2&gt;📌 Question&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-question&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-question&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;How would you design a scalable URL shortening service?&lt;/p&gt;
+&lt;h2&gt;🎯 What is being tested&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-is-being-tested&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-is-being-tested&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Choosing between Base62 and Base10+ hashing.&lt;/li&gt;
+&lt;li&gt;Understanding of read-heavy systems and caching.&lt;/li&gt;
+&lt;li&gt;Conflict resolution in shortened URLs.&lt;/li&gt;
+&lt;li&gt;Database scaling (SQL vs NoSQL).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;🧠 Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A URL shortener converts a long URL into a short, manageable alias. The core components include a generation service, a redirection service, and a storage layer.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Key tradeoffs&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hashing (e.g., MD5)&lt;/strong&gt;: Fast but leads to collisions.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Base62 Encoding&lt;/strong&gt;: Convert a unique ID to a 7-character string.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Start with functional (shorten, redirect) and non-functional (high availability, low latency) requirements. Calculate read/write traffic estimates. Scale by adding a cache (Redis) and partitioning the database (by hash or ID range).&lt;/p&gt;
+&lt;h2&gt;💻 Code Example (Base62 Java)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-example-base62-java&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-example-base62-java&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Base62&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;final&lt;/span&gt; String ALPHABET &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; String &lt;span style=&#34;color:#a6e22e&#34;&gt;encode&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;long&lt;/span&gt; num) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        StringBuilder sb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; StringBuilder();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (num &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; 0) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            sb.&lt;span style=&#34;color:#a6e22e&#34;&gt;append&lt;/span&gt;(ALPHABET.&lt;span style=&#34;color:#a6e22e&#34;&gt;charAt&lt;/span&gt;((&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;) (num &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; 62)));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            num &lt;span style=&#34;color:#f92672&#34;&gt;/=&lt;/span&gt; 62;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; sb.&lt;span style=&#34;color:#a6e22e&#34;&gt;reverse&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;toString&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Not mentioning redirects (HTTP 301 vs 302).&lt;/li&gt;
+&lt;li&gt;Ignoring read/write traffic mismatch (read-heavy).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;🔄 Follow-ups&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-ups&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-ups&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;How to handle analytics (Click tracking)?&lt;/li&gt;
+&lt;li&gt;What is the difference between 301 (Permanent) and 302 (Found) redirects?&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,47 @@
+baseURL = "http://localhost:1313/"
+languageCode = "en-us"
+title = "Tech Interview Wiki"
+
+# Use Hugo Modules
+[module]
+  [[module.imports]]
+    path = "github.com/imfing/hextra"
+
+# Hextra Configuration
+[params]
+  [params.theme]
+    default = 'system' # auto dark/light mode
+  
+  [params.navbar]
+    displayLogo = true
+    displaySearch = true
+  
+  [params.search]
+    enable = true
+  
+  [params.sidebar]
+    defaultMenuCollapsed = false
+    displayLogo = true
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[[menu.main]]
+  name = "Java"
+  pageRef = "/java"
+  weight = 10
+
+[[menu.main]]
+  name = "DSA"
+  pageRef = "/dsa"
+  weight = 20
+
+[[menu.main]]
+  name = "System Design"
+  pageRef = "/system-design"
+  weight = 30
+
+[[menu.main]]
+  name = "Database"
+  pageRef = "/database"
+  weight = 40

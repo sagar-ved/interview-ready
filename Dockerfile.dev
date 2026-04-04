@@ -1,0 +1,13 @@
+# Use Hugo extended version (Debian-based)
+FROM peaceiris/hugo:v0.124.1
+
+# Install Go to support Hugo Modules
+RUN apt-get update && \
+    apt-get install -y golang-go && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
+WORKDIR /src
+
+# Expose the default Hugo port
+EXPOSE 1313

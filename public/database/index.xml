@@ -1,0 +1,77 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Databases</title>
+    <link>http://localhost:1313/database/</link>
+    <description>Recent content in Databases on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/database/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Database Indexing Deep-Dive</title>
+      <link>http://localhost:1313/database/indexing-deep-dive/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/indexing-deep-dive/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;Database Indexing&lt;/h1&gt;&lt;h2&gt;📌 Question&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-question&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-question&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;How do B-Trees and LSM Trees differ? Why are they used for SQL and NoSQL respectively?&lt;/p&gt;
+&lt;h2&gt;🎯 What is being tested&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-is-being-tested&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-is-being-tested&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of disk storage (pages, blocks).&lt;/li&gt;
+&lt;li&gt;Knowledge of read vs write trade-offs.&lt;/li&gt;
+&lt;li&gt;Conflict between memory and disk access time.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;🧠 Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;B-Trees&lt;/strong&gt;: Highly optimized for random reads and point lookups (SQL). They maintain sorted data on disk.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LSM Trees (Log-Structured Merge-Trees)&lt;/strong&gt;: Optimized for high-throughput writes (NoSQL - Cassandra, RocksDB). They use an in-memory table (MemTable) and periodically flush to SSTables on disk.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Focus on the write amplification (B-Tree) vs read amplification (LSM). B-Trees are best for ACID-compliant relational databases where consistency and point lookups are prioritized. LSM Trees are perfect for write-intensive workloads because they turn random writes into sequential writes.&lt;/p&gt;
+&lt;h2&gt;💻 Code Example (SQL Indexing)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-example-sql-indexing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-example-sql-indexing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;-- Composite Indexing: Order matters!
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;CREATE&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;INDEX&lt;/span&gt; idx_user_last_first &lt;span style=&#34;color:#66d9ef&#34;&gt;ON&lt;/span&gt; users(last_name, first_name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;-- Explain plan reveals scan types
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;EXPLAIN&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;SELECT&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;FROM&lt;/span&gt; users &lt;span style=&#34;color:#66d9ef&#34;&gt;WHERE&lt;/span&gt; last_name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Doe&amp;#39;&lt;/span&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking indexes always make queries faster (write penalty).&lt;/li&gt;
+&lt;li&gt;Over-indexing small tables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;🔄 Follow-ups&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-ups&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-ups&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;What is a &amp;ldquo;Covering Index&amp;rdquo;?&lt;/li&gt;
+&lt;li&gt;How do Bloom Filters help with LSM Tree performance?&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

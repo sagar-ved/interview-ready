@@ -1,0 +1,16 @@
+services:
+  wiki:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: interview_wiki
+    platform: linux/arm64/v8
+    volumes:
+      - .:/src
+    ports:
+      - "1313:1313"
+    environment:
+      - HUGO_BIND=0.0.0.0
+      - HUGO_BASEURL=http://localhost:1313
+    command: server --bind 0.0.0.0 --buildDrafts --watch
+    working_dir: /src
