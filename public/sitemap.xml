@@ -2,19 +2,190 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/database/indexing-deep-dive/</loc>
+    <loc>http://localhost:1313/dsa/binary-search-patterns/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/database/</loc>
+    <loc>http://localhost:1313/os/processes-vs-threads/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/url-shortener/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/tcp-vs-udp/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/database/isolation-levels/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/dynamic-programming/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/https-tls/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/os/virtual-memory-paging/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/os/cpu-scheduling/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/graph-algorithms/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/load-balancing/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/database/sharding-partitioning/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/notification-system-hld/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/thread-pool-internals/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/database/cap-theorem-nosql/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/dns/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/java-memory-model/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/os/semaphores-mutexes/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/sliding-window/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/search-autocomplete/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/completablefuture-async/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/database/sql-window-functions/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/linked-list/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/os/io-models/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/osi-model/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/distributed-cache/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/database/replication-read-replicas/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/hashmap-internals/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/os/file-system-io/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/library-management-lld/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/message-queue-kafka/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/trees-bst/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/websockets/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/heaps-priority-queues/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/generics-type-erasure/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/api-security/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/os/system-calls/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/news-feed-twitter/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/java-streams/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/hotel-booking-lld/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/tries/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/deadlocks/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/sorting-algorithms/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/system-design/ride-sharing/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/classloader-reflection/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/prefix-sums-segment-trees/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/design-patterns/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/union-find/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/backtracking/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/solid-principles/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/java-optional/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/java-modern-features/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/dsa/top-k-elements-stream/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/networks/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/dsa/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/java/concurrency/</loc>
+    <loc>http://localhost:1313/database/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/database/indexing-deep-dive/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/database/database-indexing-optimization/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/concurrenthashmap-internals/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/jvm-memory-and-gc-tuning/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/java/concurrency/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/jvm-internals/</loc>
@@ -23,13 +194,19 @@
     <loc>http://localhost:1313/dsa/lru-cache/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/os/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/system-design/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>http://localhost:1313/system-design/distributed-rate-limiter/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/system-design/url-shortener/</loc>
+    <loc>http://localhost:1313/system-design/parking-lot-lld/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/categories/</loc>

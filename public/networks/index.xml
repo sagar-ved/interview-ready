@@ -1,0 +1,1490 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Computer Networks</title>
+    <link>http://localhost:1313/networks/</link>
+    <description>Recent content in Computer Networks on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/networks/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>TCP vs UDP: Internals, Use Cases, and Trade-offs</title>
+      <link>http://localhost:1313/networks/tcp-vs-udp/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/tcp-vs-udp/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain why HTTP/3 switched from TCP to UDP (QUIC). What specific TCP limitations does QUIC address, and when should you choose UDP over TCP in your application design?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;TCP connection lifecycle (3-way handshake, 4-way termination)&lt;/li&gt;
+&lt;li&gt;TCP flow control and congestion control&lt;/li&gt;
+&lt;li&gt;Head-of-line blocking problem&lt;/li&gt;
+&lt;li&gt;QUIC protocol design philosophy&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. TCP vs UDP: Core Comparison&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-tcp-vs-udp-core-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-tcp-vs-udp-core-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feature&lt;/th&gt;
+&lt;th&gt;TCP&lt;/th&gt;
+&lt;th&gt;UDP&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Connection&lt;/td&gt;
+&lt;td&gt;3-way handshake&lt;/td&gt;
+&lt;td&gt;Connectionless&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Delivery&lt;/td&gt;
+&lt;td&gt;Guaranteed&lt;/td&gt;
+&lt;td&gt;Best-effort&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Ordering&lt;/td&gt;
+&lt;td&gt;In-order delivery&lt;/td&gt;
+&lt;td&gt;No ordering&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Flow Control&lt;/td&gt;
+&lt;td&gt;Yes (sliding window)&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Congestion Control&lt;/td&gt;
+&lt;td&gt;Yes (AIMD)&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Overhead&lt;/td&gt;
+&lt;td&gt;~20 bytes/segment&lt;/td&gt;
+&lt;td&gt;~8 bytes/datagram&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Use Cases&lt;/td&gt;
+&lt;td&gt;HTTP, SSH, SMTP&lt;/td&gt;
+&lt;td&gt;DNS, VoIP, Gaming, QUIC&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;2. TCP&amp;rsquo;s 3-Way Handshake&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-tcps-3-way-handshake&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-tcps-3-way-handshake&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Client → Server: SYN (seq=x)
+Server → Client: SYN-ACK (seq=y, ack=x&amp;#43;1)
+Client → Server: ACK (ack=y&amp;#43;1)
+[Connection Established]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Latency Cost&lt;/strong&gt;: 1.5 RTT before first byte of data (or 1 RTT with TLS resumption). For HTTPS that&amp;rsquo;s 3.5 RTT traditionally.&lt;/p&gt;
+&lt;h3&gt;3. TCP&amp;rsquo;s Head-of-Line Blocking&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-tcps-head-of-line-blocking&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-tcps-head-of-line-blocking&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;TCP guarantees in-order delivery at the transport layer. In HTTP/2:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Multiplexes multiple streams over one TCP connection (vs HTTP/1.1: one request per connection)&lt;/li&gt;
+&lt;li&gt;BUT if one TCP segment is lost, ALL streams blocked waiting for retransmission&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;This is Head-of-Line Blocking at the TCP level&lt;/strong&gt; — HTTP/2&amp;rsquo;s killer problem&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. QUIC (Quick UDP Internet Connections) — HTTP/3&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-quic-quick-udp-internet-connections--http3&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-quic-quick-udp-internet-connections--http3&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;QUIC is built on UDP and implements its own:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Reliable delivery&lt;/strong&gt; (per-stream ACKs, not per-connection)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stream multiplexing&lt;/strong&gt; without HoL blocking (lost packet only stalls ITS stream)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;0-RTT connection establishment&lt;/strong&gt; (with session resumption)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Connection migration&lt;/strong&gt; (change IP/port without reconnection — important for mobile)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Integrated TLS 1.3&lt;/strong&gt; (encryption baked in, not layered on top)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;5. When to Use UDP in Application Design&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;5-when-to-use-udp-in-application-design&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#5-when-to-use-udp-in-application-design&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Use Case&lt;/th&gt;
+&lt;th&gt;Why UDP&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;DNS lookups&lt;/td&gt;
+&lt;td&gt;Single request-response; retry at app level&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;VoIP / Video calls&lt;/td&gt;
+&lt;td&gt;Real-time; old frames useless; jitter &amp;gt; latency&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Online gaming&lt;/td&gt;
+&lt;td&gt;Fast state updates; latest state &amp;gt; missed state&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Live streaming&lt;/td&gt;
+&lt;td&gt;Can skip dropped frames; no point in rebuffering old data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;TFTP, NTP&lt;/td&gt;
+&lt;td&gt;Simple protocol; app handles reliability&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Multicast&lt;/td&gt;
+&lt;td&gt;TCP doesn&amp;rsquo;t support one-to-many; UDP does&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TCP&lt;/strong&gt;: Reliable, ordered, connection-oriented. Best for HTTP, email, file transfers where every byte matters.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;UDP&lt;/strong&gt;: Fast, stateless, no ordering. Best for real-time where stale data is worthless.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTTP/3 (QUIC)&lt;/strong&gt;: Uses UDP to eliminate TCP&amp;rsquo;s HoL blocking. Each HTTP stream has independent reliability. 0-RTT reduces handshake latency. Encrypted by default.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Design consideration&lt;/strong&gt;: For custom protocols, use TCP for correctness-critical data; UDP for latency-critical with application-level reliability (like QUIC/WebRTC do).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.io.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * UDP: Simple time server (no connection overhead)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;UDPTimeServer&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;startServer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; port) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; (DatagramSocket socket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramSocket(port)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; buf &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;256&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;UDP Time Server started on port &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; port);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                DatagramPacket request &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(buf, buf.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;receive&lt;/span&gt;(request); &lt;span style=&#34;color:#75715e&#34;&gt;// Blocking: wait for incoming datagram&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                String response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; String.&lt;span style=&#34;color:#a6e22e&#34;&gt;valueOf&lt;/span&gt;(System.&lt;span style=&#34;color:#a6e22e&#34;&gt;currentTimeMillis&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; responseBytes &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; response.&lt;span style=&#34;color:#a6e22e&#34;&gt;getBytes&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// Send response back to the client&amp;#39;s address/port from the packet&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                DatagramPacket reply &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    responseBytes, responseBytes.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    request.&lt;span style=&#34;color:#a6e22e&#34;&gt;getAddress&lt;/span&gt;(), request.&lt;span style=&#34;color:#a6e22e&#34;&gt;getPort&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(reply); &lt;span style=&#34;color:#75715e&#34;&gt;// No ACK, no guarantee&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; String &lt;span style=&#34;color:#a6e22e&#34;&gt;queryServer&lt;/span&gt;(String host, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; port) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; (DatagramSocket socket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramSocket()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;setSoTimeout&lt;/span&gt;(2000); &lt;span style=&#34;color:#75715e&#34;&gt;// Timeout: application-level reliability&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; buf &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;TIME&amp;#34;&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;getBytes&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            DatagramPacket request &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(buf, buf.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, InetAddress.&lt;span style=&#34;color:#a6e22e&#34;&gt;getByName&lt;/span&gt;(host), port);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(request);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; responseBuf &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;256&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            DatagramPacket response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; DatagramPacket(responseBuf, responseBuf.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;receive&lt;/span&gt;(response); &lt;span style=&#34;color:#75715e&#34;&gt;// Timeout if no response (app-level retry)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; String(response.&lt;span style=&#34;color:#a6e22e&#34;&gt;getData&lt;/span&gt;(), 0, response.&lt;span style=&#34;color:#a6e22e&#34;&gt;getLength&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking UDP means &amp;ldquo;unreliable&amp;rdquo; — QUIC/WebRTC add reliability on top of UDP&lt;/li&gt;
+&lt;li&gt;Forgetting 3-way handshake cost (TLS 1.3 adds 1 more RTT, so HTTP/2=3.5RTT, HTTP/3=1RTT with 0-RTT resumption)&lt;/li&gt;
+&lt;li&gt;Using TCP for real-time games — even with low latency TCP, HoL blocking creates &amp;ldquo;jitter spikes&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Not implementing timeout + retry for UDP clients — they&amp;rsquo;ll hang forever waiting&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Nagle&amp;rsquo;s Algorithm in TCP?&lt;/strong&gt; (Buffers small packets until ACK received or buffer full — reduces network overhead but adds latency for interactive apps; disable with &lt;code&gt;TCP_NODELAY&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Explain TCP congestion control (AIMD).&lt;/strong&gt; (Slow Start: double window each RTT until threshold. Additive Increase: +1 MSS per RTT. Multiplicative Decrease: halve window on packet loss.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is SCTP and how does it improve on both TCP and UDP?&lt;/strong&gt; (Stream Control Transmission Protocol: reliable, ordered, multi-stream, multi-homing — used in telecom the 5G core.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>HTTP, HTTPS, and TLS Deep Dive</title>
+      <link>http://localhost:1313/networks/https-tls/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/https-tls/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Walk me through what happens when a browser navigates to &lt;a href=&#34;https://www.amazon.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://www.amazon.com&lt;/a&gt; — from DNS resolution to TLS handshake to rendering the first byte. Focus on latency at each step.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;DNS resolution and caching hierarchy&lt;/li&gt;
+&lt;li&gt;TCP handshake and TLS negotiation&lt;/li&gt;
+&lt;li&gt;HTTP/1.1 vs HTTP/2 vs HTTP/3 differences&lt;/li&gt;
+&lt;li&gt;Performance optimization: CDN, preconnect, HSTS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Full Journey: URL to First Byte&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-full-journey-url-to-first-byte&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-full-journey-url-to-first-byte&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;1. Browser Cache → (instant)
+2. DNS Lookup → (1-100ms depending on cache level)
+3. TCP Connect → (1 RTT = network latency)
+4. TLS Handshake → (1-2 RTTs for TLS 1.2; 1 RTT TLS 1.3)
+5. HTTP Request → (1 RTT &amp;#43; server processing)
+6. HTTP Response → (size / bandwidth)&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;h3&gt;2. DNS Resolution Hierarchy&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-dns-resolution-hierarchy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-dns-resolution-hierarchy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Browser DNS cache → (instant)
+OS DNS cache (nscd) → (instant)
+Router cache → (sub-ms, LAN)
+ISP Recursive Resolver → (1-5ms)
+Root DNS servers → (30-50ms)
+TLD servers (.com) → (20-40ms)
+Amazon&amp;#39;s Authoritative DNS → (10-20ms)&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;Result held in browser cache for TTL seconds (Amazon sets low TTL ~60s for fast CDN failover).&lt;/p&gt;
+&lt;h3&gt;3. TLS 1.2 vs TLS 1.3 Handshake&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-tls-12-vs-tls-13-handshake&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-tls-12-vs-tls-13-handshake&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;TLS 1.2&lt;/strong&gt;: 2 RTTs before data&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Client → Server: ClientHello (supported ciphers, TLS version)
+Server → Client: ServerHello &amp;#43; Certificate &amp;#43; ServerKeyExchange &amp;#43; ServerHelloDone
+Client → Server: ClientKeyExchange &amp;#43; ChangeCipherSpec &amp;#43; Finished
+Server → Client: ChangeCipherSpec &amp;#43; Finished (encrypted)
+[DATA STARTS — after 2 RTTs]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;TLS 1.3&lt;/strong&gt;: 1 RTT (or 0-RTT for resumption)&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Client → Server: ClientHello &amp;#43; KeyShare (Diffie-Hellman params)
+Server → Client: ServerHello &amp;#43; KeyShare &amp;#43; EncryptedExtensions &amp;#43; Certificate &amp;#43; Finished
+[Client sends data immediately alongside its Finished]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;h3&gt;4. HTTP Versions Compared&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-http-versions-compared&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-http-versions-compared&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feature&lt;/th&gt;
+&lt;th&gt;HTTP/1.1&lt;/th&gt;
+&lt;th&gt;HTTP/2&lt;/th&gt;
+&lt;th&gt;HTTP/3&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Transport&lt;/td&gt;
+&lt;td&gt;TCP&lt;/td&gt;
+&lt;td&gt;TCP&lt;/td&gt;
+&lt;td&gt;UDP (QUIC)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Multiplexing&lt;/td&gt;
+&lt;td&gt;No (6 connections)&lt;/td&gt;
+&lt;td&gt;Yes (1 connection)&lt;/td&gt;
+&lt;td&gt;Yes (per-stream)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HoL Blocking&lt;/td&gt;
+&lt;td&gt;Yes&lt;/td&gt;
+&lt;td&gt;Yes (TCP level)&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Header Compression&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;td&gt;HPACK&lt;/td&gt;
+&lt;td&gt;QPACK&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Server Push&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;td&gt;Yes&lt;/td&gt;
+&lt;td&gt;Yes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0-RTT&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;td&gt;Yes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;5. Performance Optimizations&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;5-performance-optimizations&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#5-performance-optimizations&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CDN&lt;/strong&gt;: Serve static assets from edge nodes within 10ms of the user&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HSTS (HTTP Strict Transport Security)&lt;/strong&gt;: Browser caches &amp;ldquo;always HTTPS&amp;rdquo; → avoids HTTP redirect on repeat visits&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DNS Prefetch&lt;/strong&gt;: &lt;code&gt;&amp;lt;link rel=&amp;quot;dns-prefetch&amp;quot; href=&amp;quot;//cdn.amazon.com&amp;quot;&amp;gt;&lt;/code&gt; — resolves DNS before needed&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Preconnect&lt;/strong&gt;: &lt;code&gt;&amp;lt;link rel=&amp;quot;preconnect&amp;quot; href=&amp;quot;//checkout.amazon.com&amp;quot;&amp;gt;&lt;/code&gt; — full TCP+TLS warmup before needed&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Keep-Alive&lt;/strong&gt;: Reuse TCP connections across HTTP requests (default in HTTP/1.1+)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Walk through each step mentioning:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;DNS: check caches first; full resolution is 50-150ms from scratch.&lt;/li&gt;
+&lt;li&gt;TCP: 3-way handshake; 1 RTT cost.&lt;/li&gt;
+&lt;li&gt;TLS 1.3: 1 RTT; TLS 1.2 = 2 RTTs.&lt;/li&gt;
+&lt;li&gt;Total &amp;ldquo;cold start&amp;rdquo; cost: &amp;gt;300ms before first byte.&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Warm&amp;rdquo; (cached DNS, existing connection): &amp;lt;20ms.&lt;/li&gt;
+&lt;li&gt;CDN reduces RTT by 80% by getting data from 10ms away instead of 100ms.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (HTTPS Client)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-https-client&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-https-client&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.http.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.time.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Modern Java HTTP/2 client — connection reuse built in
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;HttpsDemo&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;final&lt;/span&gt; HttpClient CLIENT &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; HttpClient.&lt;span style=&#34;color:#a6e22e&#34;&gt;newBuilder&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#a6e22e&#34;&gt;version&lt;/span&gt;(HttpClient.&lt;span style=&#34;color:#a6e22e&#34;&gt;Version&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;HTTP_2&lt;/span&gt;)          &lt;span style=&#34;color:#75715e&#34;&gt;// Prefer HTTP/2&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#a6e22e&#34;&gt;connectTimeout&lt;/span&gt;(Duration.&lt;span style=&#34;color:#a6e22e&#34;&gt;ofSeconds&lt;/span&gt;(5))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#a6e22e&#34;&gt;followRedirects&lt;/span&gt;(HttpClient.&lt;span style=&#34;color:#a6e22e&#34;&gt;Redirect&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;NORMAL&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// Follow 301/302&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        .&lt;span style=&#34;color:#a6e22e&#34;&gt;build&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; String &lt;span style=&#34;color:#a6e22e&#34;&gt;fetch&lt;/span&gt;(String url) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        HttpRequest request &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; HttpRequest.&lt;span style=&#34;color:#a6e22e&#34;&gt;newBuilder&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .&lt;span style=&#34;color:#a6e22e&#34;&gt;uri&lt;/span&gt;(URI.&lt;span style=&#34;color:#a6e22e&#34;&gt;create&lt;/span&gt;(url))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .&lt;span style=&#34;color:#a6e22e&#34;&gt;header&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Accept-Encoding&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;gzip, br&amp;#34;&lt;/span&gt;) &lt;span style=&#34;color:#75715e&#34;&gt;// Compression&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .&lt;span style=&#34;color:#a6e22e&#34;&gt;timeout&lt;/span&gt;(Duration.&lt;span style=&#34;color:#a6e22e&#34;&gt;ofSeconds&lt;/span&gt;(10))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .&lt;span style=&#34;color:#a6e22e&#34;&gt;GET&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .&lt;span style=&#34;color:#a6e22e&#34;&gt;build&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        HttpResponse&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; response &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; CLIENT.&lt;span style=&#34;color:#a6e22e&#34;&gt;send&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            request, HttpResponse.&lt;span style=&#34;color:#a6e22e&#34;&gt;BodyHandlers&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;ofString&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        );
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Status: %d | Protocol: %s%n&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            response.&lt;span style=&#34;color:#a6e22e&#34;&gt;statusCode&lt;/span&gt;(), response.&lt;span style=&#34;color:#a6e22e&#34;&gt;version&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; response.&lt;span style=&#34;color:#a6e22e&#34;&gt;body&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// For concurrent requests — shares one connection pool&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;fetchAll&lt;/span&gt;(List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; urls) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;var&lt;/span&gt; futures &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; urls.&lt;span style=&#34;color:#a6e22e&#34;&gt;stream&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .&lt;span style=&#34;color:#a6e22e&#34;&gt;map&lt;/span&gt;(url &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; CLIENT.&lt;span style=&#34;color:#a6e22e&#34;&gt;sendAsync&lt;/span&gt;(
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                HttpRequest.&lt;span style=&#34;color:#a6e22e&#34;&gt;newBuilder&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;uri&lt;/span&gt;(URI.&lt;span style=&#34;color:#a6e22e&#34;&gt;create&lt;/span&gt;(url)).&lt;span style=&#34;color:#a6e22e&#34;&gt;GET&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;build&lt;/span&gt;(),
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                HttpResponse.&lt;span style=&#34;color:#a6e22e&#34;&gt;BodyHandlers&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;ofString&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            .&lt;span style=&#34;color:#a6e22e&#34;&gt;toList&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        futures.&lt;span style=&#34;color:#a6e22e&#34;&gt;forEach&lt;/span&gt;(f &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; f.&lt;span style=&#34;color:#a6e22e&#34;&gt;thenAccept&lt;/span&gt;(r &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Got %d bytes from %s%n&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                r.&lt;span style=&#34;color:#a6e22e&#34;&gt;body&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;(), r.&lt;span style=&#34;color:#a6e22e&#34;&gt;uri&lt;/span&gt;())));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        futures.&lt;span style=&#34;color:#a6e22e&#34;&gt;forEach&lt;/span&gt;(java.&lt;span style=&#34;color:#a6e22e&#34;&gt;util&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;concurrent&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;CompletableFuture&lt;/span&gt;::join);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Forgetting TLS handshake cost when estimating cold-start latency&lt;/li&gt;
+&lt;li&gt;Not knowing that HTTP/2 over TCP still suffers from HoL blocking (only HTTP/3/QUIC fixes it)&lt;/li&gt;
+&lt;li&gt;Thinking HTTPS is significantly slower — with TLS 1.3 + session resumption, overhead is &amp;lt;5ms&lt;/li&gt;
+&lt;li&gt;Missing that &lt;code&gt;301 Moved Permanently&lt;/code&gt; is cached by browsers but &lt;code&gt;302 Found&lt;/code&gt; is not&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Perfect Forward Secrecy (PFS) and how does TLS 1.3 enforce it?&lt;/strong&gt; (PFS: compromising the server&amp;rsquo;s private key doesn&amp;rsquo;t expose past sessions. TLS 1.3 mandates ECDHE — ephemeral Diffie-Hellman — no static RSA key exchange.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Explain the difference between symmetric and asymmetric encryption in TLS.&lt;/strong&gt; (Asymmetric used for key exchange; symmetric for the actual data stream. RSA/ECDSA for auth; AES-GCM for session encryption.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is certificate pinning?&lt;/strong&gt; (Client hardcodes expected certificate or public key; rejects connections if the certificate changes — protects against CA compromises.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Load Balancing and API Gateway</title>
+      <link>http://localhost:1313/networks/load-balancing/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/load-balancing/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design the load balancing layer for a microservices platform. Compare load balancing algorithms, explain sticky sessions, and describe the role of an API gateway.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Load balancing algorithms and their trade-offs&lt;/li&gt;
+&lt;li&gt;Layer 4 vs Layer 7 load balancing&lt;/li&gt;
+&lt;li&gt;API Gateway responsibilities&lt;/li&gt;
+&lt;li&gt;Health checks, circuit breakers, and connection draining&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Load Balancing Algorithms&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-load-balancing-algorithms&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-load-balancing-algorithms&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Algorithm&lt;/th&gt;
+&lt;th&gt;How&lt;/th&gt;
+&lt;th&gt;Pros&lt;/th&gt;
+&lt;th&gt;Cons&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Round Robin&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Cycle through servers&lt;/td&gt;
+&lt;td&gt;Simple, even if equal capacity&lt;/td&gt;
+&lt;td&gt;Ignores server load&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Weighted RR&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Proportion to capacity&lt;/td&gt;
+&lt;td&gt;Handles heterogeneous servers&lt;/td&gt;
+&lt;td&gt;Static weight; doesn&amp;rsquo;t adapt&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Least Connections&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Send to server with fewest active&lt;/td&gt;
+&lt;td&gt;Adaptive to slow requests&lt;/td&gt;
+&lt;td&gt;Requires connection tracking&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Least Response Time&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Send to fastest + fewest conn&lt;/td&gt;
+&lt;td&gt;Best user experience&lt;/td&gt;
+&lt;td&gt;Complex; TTFB latency measurement&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Random&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Pick any server randomly&lt;/td&gt;
+&lt;td&gt;Simple; statistically even&lt;/td&gt;
+&lt;td&gt;Not predictable&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;IP Hash&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;hash(client_IP) % N&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;&amp;ldquo;Sticky&amp;rdquo; routing by IP&lt;/td&gt;
+&lt;td&gt;Skewed if many requests from few IPs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Consistent Hashing&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Uses ring; keys stick to servers&lt;/td&gt;
+&lt;td&gt;Minimal redistribution on scale&lt;/td&gt;
+&lt;td&gt;More complex&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;2. Layer 4 vs Layer 7 Load Balancing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-layer-4-vs-layer-7-load-balancing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-layer-4-vs-layer-7-load-balancing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Layer 4 (Transport — TCP/UDP)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Routes based on IP + Port; does NOT inspect packet content&lt;/li&gt;
+&lt;li&gt;Very fast (can be done in hardware); lower CPU overhead&lt;/li&gt;
+&lt;li&gt;Cannot route by URL path, headers, or cookies&lt;/li&gt;
+&lt;li&gt;Examples: AWS NLB, HAProxy TCP mode&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Layer 7 (Application — HTTP/HTTPS)&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Inspects HTTP headers, URL, cookies, body&lt;/li&gt;
+&lt;li&gt;Can route &lt;code&gt;/api/v1&lt;/code&gt; to one cluster, &lt;code&gt;/api/v2&lt;/code&gt; to another&lt;/li&gt;
+&lt;li&gt;Can terminate TLS (offloads crypto from backends)&lt;/li&gt;
+&lt;li&gt;Can do header rewriting, rate limiting, auth validation&lt;/li&gt;
+&lt;li&gt;Examples: Nginx, AWS ALB, Envoy, Traefik&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Sticky Sessions (Session Affinity)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-sticky-sessions-session-affinity&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-sticky-sessions-session-affinity&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Problem: User logs in on Server-A; next request hits Server-B — user is logged out.&lt;/p&gt;
+&lt;p&gt;Solutions:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Cookie-based sticky session&lt;/strong&gt;: LB sets a cookie (&lt;code&gt;SRV=server-A&lt;/code&gt;); routes that user to Server-A.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;IP Hash&lt;/strong&gt;: Client IP hashes to same server.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stateless sessions&lt;/strong&gt;: Store sessions in Redis — any server can serve any user. &lt;strong&gt;(Best practice)&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;4. API Gateway Responsibilities&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-api-gateway-responsibilities&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-api-gateway-responsibilities&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;An API Gateway sits in front of all backend services:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Authentication / Authorization&lt;/strong&gt;: Validate JWT, API keys&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Rate Limiting&lt;/strong&gt;: Per user, per API key&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Request Routing&lt;/strong&gt;: Route to appropriate microservice&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SSL Termination&lt;/strong&gt;: Offload HTTPS from backends&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Request Transformation&lt;/strong&gt;: Add/remove headers, rewrite URL&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Observability&lt;/strong&gt;: Add correlation IDs, request logging&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Circuit Breaking&lt;/strong&gt;: Stop forwarding to unhealthy services&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Use &lt;strong&gt;Layer 7 load balancer&lt;/strong&gt; (Nginx/Envoy) for HTTP microservices — allows path-based routing, header manipulation, TLS termination.&lt;/li&gt;
+&lt;li&gt;Algorithm: &lt;strong&gt;Least Response Time&lt;/strong&gt; for latency-sensitive APIs; &lt;strong&gt;Round Robin&lt;/strong&gt; for uniform stateless services.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sticky sessions&lt;/strong&gt;: Avoid if possible — use Redis for shared session state. If needed: cookie-based sticky is more reliable than IP hash.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;API Gateway&lt;/strong&gt;: Kong, AWS API Gateway, or Envoy — centralize cross-cutting concerns outside services.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture Diagram&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture-diagram&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture-diagram&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Internet Traffic
+       ↓
+ [DNS / Anycast CDN Edge]
+       ↓
+ [Layer 4 NLB - AWS NLB]  ← High throughput, low latency
+       ↓
+ [Layer 7 API Gateway]    ← Auth, Rate Limit, Routing, TLS
+       ↓
+ ┌─────────────────────────┐
+ │    Microservices         │
+ │  [Service A] [Service B] │
+ │  [Service C] [Service D] │
+ └─────────────────────────┘
+       ↓
+ [Service Mesh - Istio / Envoy] ← Sidecar proxy, mTLS, circuit breaking&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Using IP hash for sticky sessions (single client behind NAT = skewed load)&lt;/li&gt;
+&lt;li&gt;Not implementing health checks — LB routes to dead instances&lt;/li&gt;
+&lt;li&gt;Not draining connections before removing a backend instance (in-flight requests killed)&lt;/li&gt;
+&lt;li&gt;Running business logic in the API gateway (it&amp;rsquo;s for cross-cutting concerns only)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is connection draining / deregistration delay?&lt;/strong&gt; (On scale-down, LB stops sending new connections but waits for existing ones to complete — typically 30s. Prevents &amp;ldquo;connection reset&amp;rdquo; errors.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a service mesh and how does it differ from an API gateway?&lt;/strong&gt; (Service mesh (Istio/Linkerd) handles east-west traffic between services via sidecars; API gateway handles north-south traffic from clients.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Nginx implement load balancing?&lt;/strong&gt; (Upstream block with server list; algorithm configured with &lt;code&gt;least_conn&lt;/code&gt;, &lt;code&gt;ip_hash&lt;/code&gt;, etc.; upstream keepalive for connection pooling.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>DNS: Resolution, Types, and CDN</title>
+      <link>http://localhost:1313/networks/dns/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/dns/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is DNS and how does resolution work? Explain different DNS record types. How does a CDN use DNS to route users to the nearest edge server?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;DNS resolution hierarchy (recursive vs authoritative)&lt;/li&gt;
+&lt;li&gt;DNS record types and their purposes&lt;/li&gt;
+&lt;li&gt;Anycast routing via DNS&lt;/li&gt;
+&lt;li&gt;CDN architecture and edge server selection&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. DNS Resolution Flow&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-dns-resolution-flow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-dns-resolution-flow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Browser → OS Cache → DNS Stub Resolver → ISP Recursive Resolver
+    ↓ cache miss at each level
+ISP Resolver → Root DNS (.) → TLD DNS (.com) → Authoritative DNS (amazon.com)
+    ↓ returns A record (IP address)
+Back to browser — connects to IP&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;TTL&lt;/strong&gt;: Each response has a TTL (Time To Live). After TTL expires, resolver re-queries.&lt;/p&gt;
+&lt;h3&gt;2. DNS Record Types&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-dns-record-types&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-dns-record-types&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Record&lt;/th&gt;
+&lt;th&gt;Purpose&lt;/th&gt;
+&lt;th&gt;Example&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;A&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;IPv4 address&lt;/td&gt;
+&lt;td&gt;api.example.com → 192.168.1.1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;AAAA&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;IPv6 address&lt;/td&gt;
+&lt;td&gt;api.example.com → 2001:db8::1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;CNAME&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Alias to another name&lt;/td&gt;
+&lt;td&gt;www → example.com&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;MX&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Mail server&lt;/td&gt;
+&lt;td&gt;example.com → mail.example.com&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;NS&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Name server&lt;/td&gt;
+&lt;td&gt;example.com → ns1.cloudflare.com&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;TXT&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Arbitrary text&lt;/td&gt;
+&lt;td&gt;SPF, DKIM, domain verification&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SRV&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Service location + port&lt;/td&gt;
+&lt;td&gt;_http._tcp.example.com&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;PTR&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Reverse DNS (IP → name)&lt;/td&gt;
+&lt;td&gt;1.1.168.192.in-addr.arpa → host&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;SOA&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Start of Authority&lt;/td&gt;
+&lt;td&gt;Primary NS + admin email&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;3. CDN DNS-based Routing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-cdn-dns-based-routing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-cdn-dns-based-routing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;CDNs use &lt;strong&gt;Anycast&lt;/strong&gt; + &lt;strong&gt;GeoDNS&lt;/strong&gt; to route users to the nearest edge:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;User resolves &lt;code&gt;cdn.example.com&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Authoritative DNS (e.g., Cloudflare) checks the client&amp;rsquo;s IP via &lt;strong&gt;EDNS Client Subnet&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Returns an A record pointing to the &lt;strong&gt;nearest CDN edge PoP&lt;/strong&gt; (Point of Presence)&lt;/li&gt;
+&lt;li&gt;User&amp;rsquo;s traffic goes to the local edge, not the origin server&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Anycast&lt;/strong&gt;: Same IP advertised from multiple locations; BGP routes to the numerically closest.&lt;/p&gt;
+&lt;h3&gt;4. DNS Negative Caching&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-dns-negative-caching&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-dns-negative-caching&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When a domain doesn&amp;rsquo;t exist, NXDOMAIN response is cached for the SOA&amp;rsquo;s negative TTL. This can cause issues if you just provisioned a new domain and the resolver has cached the NXDOMAIN.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;DNS is a hierarchical, distributed system for translating domain names to IP addresses.&lt;/li&gt;
+&lt;li&gt;Recursive resolver does the work; authoritative DNS has the final answer.&lt;/li&gt;
+&lt;li&gt;CDNs use GeoDNS + Anycast: return edge IP geographically closest to the client.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Short TTL&lt;/strong&gt; (30-60s) for CDNs enables fast failover; &lt;strong&gt;long TTL&lt;/strong&gt; (3600s) reduces DNS lookups.&lt;/li&gt;
+&lt;li&gt;Key records: A (IPv4), CNAME (alias), MX (mail), TXT (verification/SPF).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (DNS Lookup)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-dns-lookup&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-dns-lookup&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.util.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Programmatic DNS lookups in Java
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;DnsDemo&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; UnknownHostException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String hostname &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;www.google.com&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Simple hostname → IP resolution (uses OS resolver chain)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        InetAddress address &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InetAddress.&lt;span style=&#34;color:#a6e22e&#34;&gt;getByName&lt;/span&gt;(hostname);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;IP: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; address.&lt;span style=&#34;color:#a6e22e&#34;&gt;getHostAddress&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// All IP addresses (returns multiple for load-balanced services)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        InetAddress&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; allIPs &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InetAddress.&lt;span style=&#34;color:#a6e22e&#34;&gt;getAllByName&lt;/span&gt;(hostname);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;All IPs for &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; hostname &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (InetAddress ip : allIPs) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; ip.&lt;span style=&#34;color:#a6e22e&#34;&gt;getHostAddress&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Reverse DNS lookup (IP → hostname)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        InetAddress ip &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InetAddress.&lt;span style=&#34;color:#a6e22e&#34;&gt;getByName&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;8.8.8.8&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Reverse DNS: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; ip.&lt;span style=&#34;color:#a6e22e&#34;&gt;getHostName&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Custom resolver using DNSJAVA library (for SRV, TXT lookups not in JDK)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Resolver lookup = new SimpleResolver(&amp;#34;8.8.8.8&amp;#34;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Lookup l = new Lookup(&amp;#34;_http._tcp.example.com&amp;#34;, Type.SRV);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Record[] records = l.run();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Service discovery using DNS-SD (DNS Service Discovery)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Used in Kubernetes (CoreDNS), Consul, Envoy
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ServiceDiscovery&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// In Kubernetes: my-service.my-namespace.svc.cluster.local → ClusterIP&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// CoreDNS resolves this within the cluster&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; String &lt;span style=&#34;color:#a6e22e&#34;&gt;buildServiceUrl&lt;/span&gt;(String service, String namespace) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; String.&lt;span style=&#34;color:#a6e22e&#34;&gt;format&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;http://%s.%s.svc.cluster.local&amp;#34;&lt;/span&gt;, service, namespace);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Result: http://payment-service.prod.svc.cluster.local&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Not knowing that CNAME cannot coexist with other records at a domain root — use ALIAS/ANAME records (Cloudflare) or A records directly&lt;/li&gt;
+&lt;li&gt;Confusing TTL for resolvers vs browsers (browser DNS caches are separate and shorter-lived)&lt;/li&gt;
+&lt;li&gt;Setting very long TTLs preventing fast failover during outages&lt;/li&gt;
+&lt;li&gt;Not implementing DNS-SF (&lt;code&gt;rndc flush&lt;/code&gt; equivalent) for test environments — old resolver caches NXDOMAIN&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is DNSSEC and why isn&amp;rsquo;t it universally deployed?&lt;/strong&gt; (Signs DNS responses cryptographically; prevents DNS cache poisoning. Not universal due to complexity and lack of client validation support historically.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Kubernetes DNS work?&lt;/strong&gt; (CoreDNS resolves service names within cluster using DNS rules; Pods query CoreDNS at a known IP; services registered automatically.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is DNS over HTTPS (DoH) and why is it controversial?&lt;/strong&gt; (Encrypts DNS queries in HTTPS traffic; prevents ISP snooping but bypasses network-level DNS filtering; criticized for centralizing DNS to few resolvers.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OSI Model and TCP/IP Stack</title>
+      <link>http://localhost:1313/networks/osi-model/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/osi-model/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Walk me through the OSI layers. At which layer does a TCP SYN happen? What does a load balancer modify, and what does a CDN cache? Explain how data is encapsulated as it travels from application to wire.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;OSI model layer responsibilities&lt;/li&gt;
+&lt;li&gt;Encapsulation: headers added at each layer&lt;/li&gt;
+&lt;li&gt;What operates at which layer (L4 vs L7 LB, NAT, firewalls)&lt;/li&gt;
+&lt;li&gt;Practical &amp;ldquo;at which layer&amp;rdquo; questions&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. OSI Layers (Mnemonic: &amp;ldquo;Please Do Not Throw Sausage Pizza Away&amp;rdquo;)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-osi-layers-mnemonic-please-do-not-throw-sausage-pizza-away&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-osi-layers-mnemonic-please-do-not-throw-sausage-pizza-away&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Layer&lt;/th&gt;
+&lt;th&gt;Name&lt;/th&gt;
+&lt;th&gt;Protocol Examples&lt;/th&gt;
+&lt;th&gt;What it does&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;7&lt;/td&gt;
+&lt;td&gt;Application&lt;/td&gt;
+&lt;td&gt;HTTP, SMTP, DNS, FTP&lt;/td&gt;
+&lt;td&gt;User-facing data; application protocols&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;6&lt;/td&gt;
+&lt;td&gt;Presentation&lt;/td&gt;
+&lt;td&gt;TLS/SSL, gzip, JPEG&lt;/td&gt;
+&lt;td&gt;Encoding, encryption, compression&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;5&lt;/td&gt;
+&lt;td&gt;Session&lt;/td&gt;
+&lt;td&gt;NetBIOS, RPC&lt;/td&gt;
+&lt;td&gt;Session management (rarely mentioned today)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;4&lt;/td&gt;
+&lt;td&gt;Transport&lt;/td&gt;
+&lt;td&gt;TCP, UDP, SCTP&lt;/td&gt;
+&lt;td&gt;End-to-end delivery; ports; flow control&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;td&gt;Network&lt;/td&gt;
+&lt;td&gt;IP, ICMP, OSPF, BGP&lt;/td&gt;
+&lt;td&gt;Logical addressing; routing (IP headers)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;Data Link&lt;/td&gt;
+&lt;td&gt;Ethernet, Wi-Fi, ARP&lt;/td&gt;
+&lt;td&gt;MAC addressing; frame delivery on local network&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;Physical&lt;/td&gt;
+&lt;td&gt;Fiber, coax, RJ45, wireless&lt;/td&gt;
+&lt;td&gt;Bits on the wire&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;2. Encapsulation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-encapsulation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-encapsulation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Each layer adds its header (and trailer) around the data:&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[HTTP Data]                                    ← Layer 7
+[TLS Header | HTTP Data | TLS Trailer]         ← Layer 6
+[TCP Header | TLS&amp;#43;HTTP Data]                   ← Layer 4 (segment)
+[IP Header | TCP Segment]                      ← Layer 3 (packet)
+[Ethernet Header | IP Packet | Ethernet FCS]   ← Layer 2 (frame)
+[Bits on wire]                                 ← Layer 1&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;At the receiver, each layer strips its header and passes data up.&lt;/p&gt;
+&lt;h3&gt;3. What Operates at Each Layer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-what-operates-at-each-layer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-what-operates-at-each-layer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Device/System&lt;/th&gt;
+&lt;th&gt;Layer&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;L4 Load Balancer (AWS NLB)&lt;/td&gt;
+&lt;td&gt;4 (Transport) — routes on TCP/UDP port&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;L7 Load Balancer (Nginx/ALB)&lt;/td&gt;
+&lt;td&gt;7 (Application) — reads HTTP headers, URL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Router&lt;/td&gt;
+&lt;td&gt;3 (Network) — IP routing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Switch&lt;/td&gt;
+&lt;td&gt;2 (Data Link) — MAC table lookup&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Repeater/Hub&lt;/td&gt;
+&lt;td&gt;1 (Physical)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Firewall (network)&lt;/td&gt;
+&lt;td&gt;3-4 (IP/Port based)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;WAF (Web App Firewall)&lt;/td&gt;
+&lt;td&gt;7 (HTTP content)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CDN&lt;/td&gt;
+&lt;td&gt;7 (HTTP caching)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NAT gateway&lt;/td&gt;
+&lt;td&gt;3-4 (modifies IP + port)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;4. TCP SYN is Layer 4&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-tcp-syn-is-layer-4&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-tcp-syn-is-layer-4&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;TCP SYN is a &lt;strong&gt;Transport Layer (Layer 4)&lt;/strong&gt; concept. The SYN flag is in the TCP header.&lt;/p&gt;
+&lt;p&gt;At Layer 3 (IP), the packet just knows source/dest IP. At Layer 4, TCP adds port, sequence numbers, flags (SYN, ACK, FIN, RST).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;TCP SYN: Layer 4 (Transport). The SYN flag is a TCP header field.&lt;/li&gt;
+&lt;li&gt;L4 LB: Reads IP + port → routes to backend server; modifies destination IP.&lt;/li&gt;
+&lt;li&gt;L7 LB: Reads HTTP headers/URL → routes by content; can modify headers.&lt;/li&gt;
+&lt;li&gt;CDN: Layer 7 — caches HTTP responses at edge.&lt;/li&gt;
+&lt;li&gt;Encapsulation: data is wrapped with headers at each layer going down; unwrapped going up at receiver.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (Reading Network Stack Info)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-reading-network-stack-info&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-reading-network-stack-info&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.net.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.util.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;NetworkStackDemo&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Get all network interfaces (Layer 2 — MAC addresses)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Enumeration&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;NetworkInterface&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; interfaces &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; NetworkInterface.&lt;span style=&#34;color:#a6e22e&#34;&gt;getNetworkInterfaces&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (interfaces.&lt;span style=&#34;color:#a6e22e&#34;&gt;hasMoreElements&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            NetworkInterface ni &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; interfaces.&lt;span style=&#34;color:#a6e22e&#34;&gt;nextElement&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; mac &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; ni.&lt;span style=&#34;color:#a6e22e&#34;&gt;getHardwareAddress&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (mac &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Interface: %-15s MAC: %s%n&amp;#34;&lt;/span&gt;,
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    ni.&lt;span style=&#34;color:#a6e22e&#34;&gt;getName&lt;/span&gt;(), formatMAC(mac));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Layer 3 — IP addresses&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ni.&lt;span style=&#34;color:#a6e22e&#34;&gt;getInetAddresses&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;asIterator&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;forEachRemaining&lt;/span&gt;(ip &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;printf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;  IP: %s%n&amp;#34;&lt;/span&gt;, ip.&lt;span style=&#34;color:#a6e22e&#34;&gt;getHostAddress&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            });
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// DNS Resolution (Layer 7 → Layer 3)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        InetAddress host &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InetAddress.&lt;span style=&#34;color:#a6e22e&#34;&gt;getByName&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;google.com&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;\ngoogle.com resolves to: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; host.&lt;span style=&#34;color:#a6e22e&#34;&gt;getHostAddress&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// TCP connection (Layer 4 + Layer 3 + Layer 2 all used automatically)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; (Socket socket &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Socket(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;google.com&amp;#34;&lt;/span&gt;, 80)) { &lt;span style=&#34;color:#75715e&#34;&gt;// TCP SYN happens here&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Connected from local port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getLocalPort&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Connected to remote port: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; socket.&lt;span style=&#34;color:#a6e22e&#34;&gt;getPort&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; String &lt;span style=&#34;color:#a6e22e&#34;&gt;formatMAC&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;byte&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; mac) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        StringBuilder sb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; StringBuilder();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; mac.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            sb.&lt;span style=&#34;color:#a6e22e&#34;&gt;append&lt;/span&gt;(String.&lt;span style=&#34;color:#a6e22e&#34;&gt;format&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;%02X%s&amp;#34;&lt;/span&gt;, mac&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; mac.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1 &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;:&amp;#34;&lt;/span&gt; : &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; sb.&lt;span style=&#34;color:#a6e22e&#34;&gt;toString&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking TLS is Layer 7 (it&amp;rsquo;s Layer 6 — Presentation, though TCP/IP model merges 5+6+7)&lt;/li&gt;
+&lt;li&gt;Confusing Layer 2 switching (MAC) with Layer 3 routing (IP)&lt;/li&gt;
+&lt;li&gt;Saying &amp;ldquo;CDN operates at Layer 4&amp;rdquo; — CDNs cache and route at Layer 7 (HTTP)&lt;/li&gt;
+&lt;li&gt;Forgetting that NAT operates at Layers 3 AND 4 (modifies both IP and port)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is ARP and at which layer does it operate?&lt;/strong&gt; (Address Resolution Protocol: maps IP → MAC; operates between Layer 2 and 3 — sometimes called Layer 2.5.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does VLAN work?&lt;/strong&gt; (Virtual LAN: Ethernet frames tagged with VLAN ID (Layer 2); separates broadcast domains on the same physical switch.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the difference between TCP/IP model and OSI model?&lt;/strong&gt; (TCP/IP has 4 layers: Application, Transport, Internet, Network Access. OSI has 7 for more granular conceptual clarity.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>WebSockets and Real-Time Communication</title>
+      <link>http://localhost:1313/networks/websockets/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/websockets/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does WebSocket differ from HTTP long-polling and SSE? Build the network layer of a real-time collaborative document (like Google Docs).&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;WebSocket handshake and upgrade mechanism&lt;/li&gt;
+&lt;li&gt;Comparison of real-time techniques&lt;/li&gt;
+&lt;li&gt;Broadcast architectures using message queues&lt;/li&gt;
+&lt;li&gt;Horizontal scaling of WebSocket servers&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Long-Polling vs SSE vs WebSocket&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-long-polling-vs-sse-vs-websocket&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-long-polling-vs-sse-vs-websocket&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Technique&lt;/th&gt;
+&lt;th&gt;Protocol&lt;/th&gt;
+&lt;th&gt;Direction&lt;/th&gt;
+&lt;th&gt;Use Case&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Long-Polling&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;HTTP&lt;/td&gt;
+&lt;td&gt;Server → Client (simulated)&lt;/td&gt;
+&lt;td&gt;Simple notifications&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Server-Sent Events (SSE)&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;HTTP/2&lt;/td&gt;
+&lt;td&gt;Server → Client only&lt;/td&gt;
+&lt;td&gt;Stock tickers, notifications&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;WebSocket&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;WS (over TCP)&lt;/td&gt;
+&lt;td&gt;Full-duplex (both ways)&lt;/td&gt;
+&lt;td&gt;Chat, collaboration, gaming&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;Long-Polling&lt;/strong&gt;: Client sends HTTP request; server holds it open until there&amp;rsquo;s data. Then client immediately sends a new request. High overhead (new HTTP connection each time).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;SSE&lt;/strong&gt;: HTTP connection kept open; server pushes events as &lt;code&gt;data: ...\n\n&lt;/code&gt; frames. Built-in reconnection. HTTP/2 efficient. Client can&amp;rsquo;t send to server (use separate HTTP requests).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;WebSocket&lt;/strong&gt;: Starts as HTTP, upgrades to WS protocol. Full-duplex binary or text frames. No HTTP overhead per message. Must handle reconnection manually.&lt;/p&gt;
+&lt;h3&gt;2. WebSocket Handshake&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-websocket-handshake&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-websocket-handshake&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Client → Server: HTTP GET /chat
+  Headers: Upgrade: websocket
+           Connection: Upgrade
+           Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+           Sec-WebSocket-Version: 13
+
+Server → Client: HTTP 101 Switching Protocols
+  Headers: Upgrade: websocket
+           Connection: Upgrade
+           Sec-WebSocket-Accept: (SHA1 of key &amp;#43; GUID, base64)
+[WS frames flow now]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;h3&gt;3. Scaling WebSockets&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-scaling-websockets&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-scaling-websockets&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;HTTP is stateless; any server handles any request. WebSocket connections are &lt;strong&gt;stateful&lt;/strong&gt; — the client is connected to ONE specific server.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Challenge&lt;/strong&gt;: If user A is on Server 1 and user B is on Server 2, how does A&amp;rsquo;s message reach B?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Solution&lt;/strong&gt;: Pub/Sub via Redis or Kafka:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Server 1 receives message from A → publishes to Redis channel &lt;code&gt;doc:123&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Server 2 (where B is connected) subscribes to &lt;code&gt;doc:123&lt;/code&gt; → receives and forwards to B&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Use WebSocket for Google Docs — full-duplex: user sends keystrokes, server sends merged document state.&lt;/li&gt;
+&lt;li&gt;For horizontal scaling: each server publishes incoming changes to Kafka/Redis pub-sub; all servers subscribe to relevant doc channels and broadcast to their connected users.&lt;/li&gt;
+&lt;li&gt;Handle reconnection client-side with exponential backoff.&lt;/li&gt;
+&lt;li&gt;Use Operational Transformation (OT) or CRDT for conflict resolution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (Spring WebSocket)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-spring-websocket&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-spring-websocket&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; org.springframework.web.socket.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; org.springframework.web.socket.handler.TextWebSocketHandler;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.util.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.util.concurrent.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Real-time document collaboration WebSocket handler
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@org.springframework.stereotype.Component&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;DocCollaborationHandler&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;extends&lt;/span&gt; TextWebSocketHandler {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// Map: docId → Set of WebSocketSessions (users viewing this doc)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;final&lt;/span&gt; Map&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String, Set&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;WebSocketSession&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; docSessions &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ConcurrentHashMap&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;afterConnectionEstablished&lt;/span&gt;(WebSocketSession session) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String docId &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; extractDocId(session);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        docSessions.&lt;span style=&#34;color:#a6e22e&#34;&gt;computeIfAbsent&lt;/span&gt;(docId, k &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; ConcurrentHashMap.&lt;span style=&#34;color:#a6e22e&#34;&gt;newKeySet&lt;/span&gt;())
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                   .&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(session);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;User connected to doc: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; docId &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34; | Session: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; session.&lt;span style=&#34;color:#a6e22e&#34;&gt;getId&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;protected&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;handleTextMessage&lt;/span&gt;(WebSocketSession session, TextMessage message) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String docId &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; extractDocId(session);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// In production: apply Operational Transformation / CRDT here&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Broadcast change to ALL sessions for this doc (including sender for confirmation)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String payload &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; message.&lt;span style=&#34;color:#a6e22e&#34;&gt;getPayload&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Set&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;WebSocketSession&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; sessions &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; docSessions.&lt;span style=&#34;color:#a6e22e&#34;&gt;getOrDefault&lt;/span&gt;(docId, Set.&lt;span style=&#34;color:#a6e22e&#34;&gt;of&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (WebSocketSession s : sessions) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (s.&lt;span style=&#34;color:#a6e22e&#34;&gt;isOpen&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                s.&lt;span style=&#34;color:#a6e22e&#34;&gt;sendMessage&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; TextMessage(payload));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// For horizontal scaling: also publish to Redis pub-sub:&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#75715e&#34;&gt;// redisPublisher.publish(&amp;#34;doc:&amp;#34; + docId, payload);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;afterConnectionClosed&lt;/span&gt;(WebSocketSession session, CloseStatus status) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String docId &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; extractDocId(session);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Set&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;WebSocketSession&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; sessions &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; docSessions.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(docId);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (sessions &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) sessions.&lt;span style=&#34;color:#a6e22e&#34;&gt;remove&lt;/span&gt;(session);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Session disconnected: &amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; session.&lt;span style=&#34;color:#a6e22e&#34;&gt;getId&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; String &lt;span style=&#34;color:#a6e22e&#34;&gt;extractDocId&lt;/span&gt;(WebSocketSession session) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Extract from URL: /ws/docs/{docId}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String path &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Objects.&lt;span style=&#34;color:#a6e22e&#34;&gt;requireNonNull&lt;/span&gt;(session.&lt;span style=&#34;color:#a6e22e&#34;&gt;getUri&lt;/span&gt;()).&lt;span style=&#34;color:#a6e22e&#34;&gt;getPath&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; path.&lt;span style=&#34;color:#a6e22e&#34;&gt;substring&lt;/span&gt;(path.&lt;span style=&#34;color:#a6e22e&#34;&gt;lastIndexOf&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// WebSocket Configuration (Spring)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// @Configuration&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// @EnableWebSocket&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// class WebSocketConfig implements WebSocketConfigurer {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//     @Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//         registry.addHandler(new DocCollaborationHandler(), &amp;#34;/ws/docs/**&amp;#34;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//                 .setAllowedOrigins(&amp;#34;*&amp;#34;);  // Production: restrict to known origins&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;//     }&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;//&lt;/span&gt; }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Using WebSocket for simple notification scenarios (SSE is simpler, HTTP/2 native)&lt;/li&gt;
+&lt;li&gt;Not closing dead WebSocket sessions (memory leak — sessions accumulate)&lt;/li&gt;
+&lt;li&gt;Not handling &lt;code&gt;WebSocket 1001 Going Away&lt;/code&gt; (server restart) gracefully client-side&lt;/li&gt;
+&lt;li&gt;Storing WebSocket sessions in a thread-local (sessions are used across event threads)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How does Operational Transformation (OT) solve concurrent edits?&lt;/strong&gt; (Transform pending operations based on already-applied ops; Google Docs used this. CRDTs are the modern alternative — automatic conflict-free merging.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Nginx handle WebSocket proxying?&lt;/strong&gt; (Nginx passes &lt;code&gt;Upgrade&lt;/code&gt; headers forward to the backend; keeps the connection open; does not terminate the WS handshake itself in pass-through mode.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is WebRTC and how does it differ from WebSocket?&lt;/strong&gt; (WebRTC: peer-to-peer, browser-to-browser media streaming; uses STUN/TURN for NAT traversal; no server relay needed for media. WebSocket is server-mediated.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Network Security: REST API Security and Common Attacks</title>
+      <link>http://localhost:1313/networks/api-security/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/api-security/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Your APIs are being targeted. Walk me through the most common web attack vectors, how to defend against them, and how to design a secure REST API from the ground up.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;OWASP Top 10 awareness&lt;/li&gt;
+&lt;li&gt;Authentication vs authorization patterns&lt;/li&gt;
+&lt;li&gt;SQL injection and XSS prevention&lt;/li&gt;
+&lt;li&gt;JWT security and OAuth 2.0 flows&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. OWASP Top 10 (2023) Highlights&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-owasp-top-10-2023-highlights&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-owasp-top-10-2023-highlights&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Attack&lt;/th&gt;
+&lt;th&gt;Defense&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;SQL Injection&lt;/td&gt;
+&lt;td&gt;Parameterized queries, ORM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Broken Authentication&lt;/td&gt;
+&lt;td&gt;MFA, secure token storage, proper session management&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Sensitive Data Exposure&lt;/td&gt;
+&lt;td&gt;Encrypt at rest/transit, mask in logs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XML External Entity (XXE)&lt;/td&gt;
+&lt;td&gt;Disable external entity processing&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Broken Access Control&lt;/td&gt;
+&lt;td&gt;RBAC, resource-level permissions&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Security Misconfiguration&lt;/td&gt;
+&lt;td&gt;Security headers, disable debug mode&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;XSS (Cross-Site Scripting)&lt;/td&gt;
+&lt;td&gt;Output encoding, Content-Security-Policy&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CSRF&lt;/td&gt;
+&lt;td&gt;SameSite cookies, CSRF tokens&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Using Vulnerable Dependencies&lt;/td&gt;
+&lt;td&gt;Keep dependencies updated, SBOM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Insufficient Logging&lt;/td&gt;
+&lt;td&gt;Centralized logging + alerting&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;2. JWT Security&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-jwt-security&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-jwt-security&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Common JWT mistakes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Algorithm confusion: &lt;code&gt;alg: none&lt;/code&gt; — verify the algorithm field&lt;/li&gt;
+&lt;li&gt;Weak secrets: brute-forceable HMAC-SHA256 secrets&lt;/li&gt;
+&lt;li&gt;No expiry: tokens valid forever&lt;/li&gt;
+&lt;li&gt;Storing in localStorage — XSS can steal them (use httpOnly cookies instead)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. SQL Injection&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-sql-injection&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-sql-injection&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;SELECT * FROM users WHERE username = &#39;&lt;/code&gt; + input + &lt;code&gt;&#39;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Malicious input: &lt;code&gt;&#39; OR 1=1 --&lt;/code&gt; → Returns ALL users.&lt;/p&gt;
+&lt;p&gt;Defense: Always use parameterized queries or ORM.&lt;/p&gt;
+&lt;h3&gt;4. Secure API Design Principles&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-secure-api-design-principles&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-secure-api-design-principles&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Authentication&lt;/strong&gt;: JWT/OAuth 2.0; validate on every request; short expiry (15 min)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Authorization&lt;/strong&gt;: Check resource ownership, not just role&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Input Validation&lt;/strong&gt;: Server-side always; whitelist &amp;gt; blacklist&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTTPS Only&lt;/strong&gt;: Enforce with HSTS header&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Rate Limiting&lt;/strong&gt;: Prevent brute force and DDoS&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Audit Logging&lt;/strong&gt;: Who did what, when, from where&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (Spring Security)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-spring-security&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-spring-security&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; org.springframework.security.config.annotation.web.builders.HttpSecurity;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.sql.*;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; * Secure API patterns in Java
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;SecurityDemo&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ❌ SQL Injection Vulnerability&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;unsafeQuery&lt;/span&gt;(Connection conn, String username) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; SQLException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String sql &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT * FROM users WHERE username = &amp;#39;&amp;#34;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; username &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#39;&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// DANGEROUS&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Statement stmt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; conn.&lt;span style=&#34;color:#a6e22e&#34;&gt;createStatement&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        stmt.&lt;span style=&#34;color:#a6e22e&#34;&gt;executeQuery&lt;/span&gt;(sql); &lt;span style=&#34;color:#75715e&#34;&gt;// username = &amp;#34;admin&amp;#39;--&amp;#34; bypasses password check&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ✅ Safe: Parameterized Query&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;safeQuery&lt;/span&gt;(Connection conn, String username) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; SQLException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String sql &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;SELECT * FROM users WHERE username = ?&amp;#34;&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// Placeholder&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;try&lt;/span&gt; (PreparedStatement stmt &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; conn.&lt;span style=&#34;color:#a6e22e&#34;&gt;prepareStatement&lt;/span&gt;(sql)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            stmt.&lt;span style=&#34;color:#a6e22e&#34;&gt;setString&lt;/span&gt;(1, username); &lt;span style=&#34;color:#75715e&#34;&gt;// Input treated as data, not SQL&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            stmt.&lt;span style=&#34;color:#a6e22e&#34;&gt;executeQuery&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ✅ JWT Validation with JJWT&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    public Claims validateJWT(String token, String secret) {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;        try {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            return Jwts.parserBuilder()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .build()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .parseClaimsJws(token) // Validates signature + expiry
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .getBody();
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;        } catch (ExpiredJwtException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            throw new UnauthorizedException(&amp;#34;Token expired&amp;#34;);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;        } catch (JwtException e) {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            throw new UnauthorizedException(&amp;#34;Invalid token&amp;#34;);
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ✅ Security headers (Spring Security config)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    @Bean
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;        http
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            .headers(headers -&amp;gt; headers
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .contentSecurityPolicy(&amp;#34;default-src &amp;#39;self&amp;#39;&amp;#34;)     // Prevent XSS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .frameOptions().deny()                            // Prevent clickjacking
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .httpStrictTransportSecurity()                    // Force HTTPS
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                    .includeSubDomains(true)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                    .maxAgeInSeconds(31536000)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            )
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            .sessionManagement(session -&amp;gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT: no sessions
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            )
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            .csrf(csrf -&amp;gt; csrf.disable()) // Disabled when using JWT (no cookies)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            .authorizeHttpRequests(auth -&amp;gt; auth
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .requestMatchers(&amp;#34;/api/public/**&amp;#34;).permitAll()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .requestMatchers(&amp;#34;/api/admin/**&amp;#34;).hasRole(&amp;#34;ADMIN&amp;#34;)
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;                .anyRequest().authenticated()
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;            );
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;        return http.build();
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;    */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Resource-level authorization check&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;OrderController&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Order &lt;span style=&#34;color:#a6e22e&#34;&gt;getOrder&lt;/span&gt;(String orderId, String authenticatedUserId) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Order order &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; orderRepository.&lt;span style=&#34;color:#a6e22e&#34;&gt;findById&lt;/span&gt;(orderId);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// ❌ Wrong: only checking authentication (IDOR — Insecure Direct Object Reference)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// return order;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// ✅ Right: check ownership too&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;order.&lt;span style=&#34;color:#a6e22e&#34;&gt;getCustomerId&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;equals&lt;/span&gt;(authenticatedUserId)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; AccessDeniedException(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;You don&amp;#39;t own this order&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; order;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Checking role but not resource ownership (IDOR vulnerability)&lt;/li&gt;
+&lt;li&gt;Storing JWT in localStorage (XSS can steal it — use httpOnly cookies instead)&lt;/li&gt;
+&lt;li&gt;Logging sensitive data (passwords, tokens, PII) — mask in logs&lt;/li&gt;
+&lt;li&gt;Using &lt;code&gt;alg: HS256&lt;/code&gt; with weak secrets — use RS256 (asymmetric) in production&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is OAuth 2.0 and how does it differ from OpenID Connect?&lt;/strong&gt; (OAuth 2.0: authorization delegation — let Google/GitHub access check who you are. OIDC: adds identity layer on top of OAuth — provides ID token with user info.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is CORS and how do you configure it properly?&lt;/strong&gt; (Cross-Origin Resource Sharing: browser blocks cross-origin requests unless server permits via &lt;code&gt;Access-Control-Allow-Origin&lt;/code&gt; headers. Never use &lt;code&gt;*&lt;/code&gt; for APIs with credentials.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a timing attack and how does it affect password comparison?&lt;/strong&gt; (Fixed-time string comparison must be used — &lt;code&gt;MessageDigest.isEqual(hash1, hash2)&lt;/code&gt; in Java — not &lt;code&gt;equals()&lt;/code&gt; which short-circuits on first mismatch leaking timing information.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -45,3 +45,13 @@ title = "Tech Interview Wiki"
   name = "Database"
   pageRef = "/database"
   weight = 40
+
+[[menu.main]]
+  name = "OS"
+  pageRef = "/os"
+  weight = 50
+
+[[menu.main]]
+  name = "Networks"
+  pageRef = "/networks"
+  weight = 60
