@@ -1,0 +1,1702 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Springs</title>
+    <link>http://localhost:1313/spring/</link>
+    <description>Recent content in Springs on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/spring/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>Spring: Bean Lifecycle</title>
+      <link>http://localhost:1313/spring/bean-lifecycle/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/bean-lifecycle/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the Spring Bean Lifecycle. Where exactly do &lt;code&gt;BeanPostProcessor&lt;/code&gt; and &lt;code&gt;InitializingBean&lt;/code&gt; fit in?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Deep understanding of the &lt;code&gt;ApplicationContext&lt;/code&gt; container.&lt;/li&gt;
+&lt;li&gt;Hooks for custom logic (proxies, initialization).&lt;/li&gt;
+&lt;li&gt;Awareness of the sequence of interface vs annotation-driven callbacks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Core Sequence:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-core-sequence&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-core-sequence&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Instantiation&lt;/strong&gt;: The bean object is created (Constructor).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Populate Properties&lt;/strong&gt;: Dependency Injection happens (@Autowired, setters).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Awareness Interfaces&lt;/strong&gt;: &lt;code&gt;BeanNameAware&lt;/code&gt;, &lt;code&gt;BeanFactoryAware&lt;/code&gt;, etc.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BeanPostProcessor (Before Initialization)&lt;/strong&gt;: &lt;code&gt;postProcessBeforeInitialization&lt;/code&gt; is called.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Initialization&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@PostConstruct&lt;/code&gt; (JSR-250 annotation).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;afterPropertiesSet()&lt;/code&gt; (InitializingBean interface).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;init-method&lt;/code&gt; (XML or @Bean(initMethod)).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BeanPostProcessor (After Initialization)&lt;/strong&gt;: &lt;code&gt;postProcessAfterInitialization&lt;/code&gt;. &lt;strong&gt;Crucial&lt;/strong&gt;: This is where &lt;strong&gt;Spring AOP Proxies&lt;/strong&gt; are typically created.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Readiness&lt;/strong&gt;: Bean is ready for use.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Destruction&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@PreDestroy&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;destroy()&lt;/code&gt; (DisposableBean).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;destroy-method&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The Spring bean lifecycle is a multi-stage process managed by the &lt;code&gt;BeanFactory&lt;/code&gt;. Beyond simple construction and dependency injection, Spring provides powerful hooks like &lt;code&gt;BeanPostProcessor&lt;/code&gt;, which allow us to wrap beans in proxies (the foundation of AOP and Transactions) or perform custom validation. For senior developers, the key is knowing that &lt;code&gt;@PostConstruct&lt;/code&gt; runs before &lt;code&gt;afterPropertiesSet&lt;/code&gt;, and that the &lt;code&gt;postProcessAfterInitialization&lt;/code&gt; step is where the bean might transition from a raw object to a decorated proxy.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Pipeline:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-pipeline&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-pipeline&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;CONSTRUCT -&amp;gt; DI -&amp;gt; AWARE -&amp;gt; BPP(Before) -&amp;gt; @PostConstruct -&amp;gt; afterPropertiesSet -&amp;gt; BPP(After/Proxy) -&amp;gt; READY&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can you change a bean&amp;rsquo;s type in a BPP?&lt;/strong&gt; (Yes, &lt;code&gt;postProcessAfterInitialization&lt;/code&gt; allows you to return a totally different object/proxy.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;BeanFactory&lt;/code&gt; and &lt;code&gt;ApplicationContext&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;ApplicationContext&lt;/code&gt; is a superset that adds Eager initialization, AOP, and i18n support.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What happens if a bean is Prototype scoped?&lt;/strong&gt; (Only the first half [initialization] is managed; the container does NOT call the destruction methods for prototype beans.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Boot: Auto-configuration Internals</title>
+      <link>http://localhost:1313/spring/auto-configuration-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/auto-configuration-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does Spring Boot&amp;rsquo;s Auto-configuration work? Explain &lt;code&gt;@EnableAutoConfiguration&lt;/code&gt; and &lt;code&gt;spring.factories&lt;/code&gt;.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;Magic&amp;rdquo; behind Spring Boot (Decoupling logic).&lt;/li&gt;
+&lt;li&gt;Conditional bean loading.&lt;/li&gt;
+&lt;li&gt;Knowledge of the &lt;code&gt;META-INF/spring.factories&lt;/code&gt; (or new &lt;code&gt;org.springframework.boot.autoconfigure.AutoConfiguration.imports&lt;/code&gt;) mechanism.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The @SpringBootApplication Trigger:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-springbootapplication-trigger&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-springbootapplication-trigger&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;@SpringBootApplication&lt;/code&gt; is a triad: &lt;code&gt;@Configuration&lt;/code&gt;, &lt;code&gt;@ComponentScan&lt;/code&gt;, and &lt;strong&gt;&lt;code&gt;@EnableAutoConfiguration&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3&gt;2. The Discovery Mechanism:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-discovery-mechanism&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-discovery-mechanism&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;@EnableAutoConfiguration&lt;/code&gt; uses &lt;code&gt;AutoConfigurationImportSelector&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It scans the classpath for a file: &lt;code&gt;META-INF/spring.factories&lt;/code&gt; (Legacy) or &lt;code&gt;META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports&lt;/code&gt; (Spring Boot 3+).&lt;/li&gt;
+&lt;li&gt;This file lists all potential configuration classes (e.g., &lt;code&gt;DataSourceAutoConfiguration&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Filtering (Conditional):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-filtering-conditional&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-filtering-conditional&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Even if 100 configurations are found, they aren&amp;rsquo;t all loaded. Each uses &lt;code&gt;@Conditional&lt;/code&gt; annotations:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@ConditionalOnClass&lt;/code&gt;&lt;/strong&gt;: Only load if &lt;code&gt;DataSource.class&lt;/code&gt; is in the classpath.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@ConditionalOnMissingBean&lt;/code&gt;&lt;/strong&gt;: Only load if the USER didn&amp;rsquo;t already define their own DataSource.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@ConditionalOnProperty&lt;/code&gt;&lt;/strong&gt;: Only load if a specific property is set in &lt;code&gt;application.properties&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring Boot auto-configuration is a &amp;ldquo;predictive&amp;rdquo; bean management system. It doesn&amp;rsquo;t find beans blindly; instead, it looks for specific &amp;ldquo;Starters&amp;rdquo; in the classpath and uses the &lt;code&gt;spring.factories&lt;/code&gt; registry to identify potential configurations. By applying strict &lt;code&gt;@Conditional&lt;/code&gt; logic, Spring Boot ensures that it only initializes components when their dependencies are present and when the developer hasn&amp;rsquo;t already provided a custom override, adhering to the &amp;ldquo;Opinionated but Flexible&amp;rdquo; philosophy.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to exclude an auto-configuration?&lt;/strong&gt; (Use &lt;code&gt;@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &lt;code&gt;spring-boot-starter-parent&lt;/code&gt; role?&lt;/strong&gt; (It provides dependency management, pinning versions of common libraries to ensure compatibility.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;@Configuration&lt;/code&gt; and &lt;code&gt;@Component&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;@Configuration&lt;/code&gt; classes are proxied [CGLIB] to ensure that multiple calls to &lt;code&gt;@Bean&lt;/code&gt; methods return the same singleton instance.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Transaction Propagation</title>
+      <link>http://localhost:1313/spring/transaction-propagation/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/transaction-propagation/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are the different Transaction Propagations in Spring? Which one is the default?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Dealing with nested transactions.&lt;/li&gt;
+&lt;li&gt;Atomicity across multiple service calls.&lt;/li&gt;
+&lt;li&gt;Handling of &lt;code&gt;REQUIRED&lt;/code&gt; vs &lt;code&gt;REQUIRES_NEW&lt;/code&gt; edge cases.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. REQUIRED (Default):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-required-default&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-required-default&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If a transaction exists, join it. Else, create one.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Impact&lt;/strong&gt;: If Service A calls Service B, and B fails, the whole transaction (A + B) rolls back.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. REQUIRES_NEW:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-requires_new&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-requires_new&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Always start a new transaction. Suspend the existing one.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Impact&lt;/strong&gt;: If Service B fails, it rolls back. Service A can still catch the exception and &lt;strong&gt;COMMIT&lt;/strong&gt; its own work. Perfect for &lt;strong&gt;Logging&lt;/strong&gt; or &lt;strong&gt;Audit&lt;/strong&gt; trials.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. MANDATORY:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-mandatory&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-mandatory&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Join existing, or throw an exception if none exists.&lt;/p&gt;
+&lt;h3&gt;4. SUPPORTS:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-supports&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-supports&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Join existing, or run without a transaction if none exists.&lt;/p&gt;
+&lt;h3&gt;5. NOT_SUPPORTED:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;5-not_supported&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#5-not_supported&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Always run without a transaction. Suspend existing one.&lt;/p&gt;
+&lt;h3&gt;6. NEVER:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;6-never&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#6-never&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Throw exception if a transaction exists.&lt;/p&gt;
+&lt;h3&gt;7. NESTED:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;7-nested&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#7-nested&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Creates a &amp;ldquo;Savepoint.&amp;rdquo; If the inner transaction fails, it rolls back to the savepoint, but the outer can still continue. (Requires JDBC support).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Transaction propagation defines how Spring handles the boundaries between overlapping transactional methods. While &lt;code&gt;REQUIRED&lt;/code&gt; is the safe default for most business units, &lt;code&gt;REQUIRES_NEW&lt;/code&gt; is critical when specific sub-tasks—like audit logging—must be persisted regardless of whether the main business transaction succeeds or fails. Understanding these modes is essential for preventing partial data corruption in complex, multi-service workflows.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Why does &lt;code&gt;@Transactional&lt;/code&gt; fail if called from the SAME class?&lt;/strong&gt; (Self-invocation bypasses the Spring AOP Proxy. The proxy only intercepts &amp;ldquo;external&amp;rdquo; calls.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What exceptions cause a rollback by default?&lt;/strong&gt; (Only &lt;code&gt;RuntimeException&lt;/code&gt; and &lt;code&gt;Error&lt;/code&gt;. Checked exceptions do NOT trigger rollback unless you specify &lt;code&gt;rollbackFor = Exception.class&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Dirty Read&amp;rdquo; vs &amp;ldquo;Phantom Read&amp;rdquo; in isolation levels?&lt;/strong&gt; (Isolation is about data visibility; Propagation is about transaction boundaries.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Circular Dependencies</title>
+      <link>http://localhost:1313/spring/circular-dependencies/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/circular-dependencies/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does Spring handle Circular Dependencies between Singleton beans? When does it fail?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Internals of the &amp;ldquo;Three-Level Cache.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Awareness of &amp;ldquo;Setter vs Constructor&amp;rdquo; injection behavior.&lt;/li&gt;
+&lt;li&gt;Prototypical bean limitations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Three-Level Cache:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-three-level-cache&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-three-level-cache&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Spring uses three maps in &lt;code&gt;DefaultSingletonBeanRegistry&lt;/code&gt; to solve circularity:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;singletonObjects (1st Level)&lt;/strong&gt;: Fully initialized beans.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;earlySingletonObjects (2nd Level)&lt;/strong&gt;: Incomplete beans (instantiated but not yet DI-populated).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;singletonFactories (3rd Level)&lt;/strong&gt;: Object factories to create early references (especially useful for AOP).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;2. The Flow (A depends on B, B depends on A):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-flow-a-depends-on-b-b-depends-on-a&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-flow-a-depends-on-b-b-depends-on-a&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Start A&lt;/strong&gt;: Instance created (1st step). Put into 3rd level cache.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Populate A&lt;/strong&gt;: Spring sees it needs B.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Start B&lt;/strong&gt;: Spring looks for B. Needs A.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resupply A&lt;/strong&gt;: Spring finds the &amp;ldquo;Early A&amp;rdquo; in the 3rd level cache, moves it to 2nd level, and gives it to B.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Finish B&lt;/strong&gt;: B is fully created and put in 1st level.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Finish A&lt;/strong&gt;: A now has the completed B reference and finishes too.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. The Failure Point:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-failure-point&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-failure-point&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Constructor Injection&lt;/strong&gt;: If A and B both use constructor injection, Spring cannot even complete the &amp;ldquo;Instantiate&amp;rdquo; step of either. It throws &lt;code&gt;BeanCurrentlyInCreationException&lt;/code&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring&amp;rsquo;s three-level cache allows the container to resolve circular dependencies among singletons by exposing an &amp;ldquo;unpopulated&amp;rdquo; reference of a bean before its full initialization. This works seamlessly for setter or field injection. However, circularity is fundamentally unresolvable for constructor injection because the container cannot instantiate the object without its dependencies already being present, making setter-based injection a necessary fallback for such edge cases.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to fix constructor circularity?&lt;/strong&gt; (Use &lt;code&gt;@Lazy&lt;/code&gt; on one of the parameters, which tells Spring to inject a proxy instead of the real object.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the beans are Prototype scoped?&lt;/strong&gt; (Spring does NOT handle circularity for prototypes because it doesn&amp;rsquo;t cache them. It will throw an exception or cause a StackOverflow.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Why use Constructor injection if Setter injection solves more problems?&lt;/strong&gt; (Constructor injection promotes &amp;ldquo;Immutable objects&amp;rdquo; and ensures the bean is never in an invalid half-created state in our own code.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Security: Filter Chain Internals</title>
+      <link>http://localhost:1313/spring/spring-security-filter-chain/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/spring-security-filter-chain/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does Spring Security work? What is the &lt;code&gt;DelegatingFilterProxy&lt;/code&gt; and the &lt;code&gt;FilterChainProxy&lt;/code&gt;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Bridging Servlet container and Spring context.&lt;/li&gt;
+&lt;li&gt;Understanding the &amp;ldquo;Chain of Responsibility&amp;rdquo; pattern.&lt;/li&gt;
+&lt;li&gt;Authentication vs Authorization logic flow.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. DelegatingFilterProxy (The Bridge):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-delegatingfilterproxy-the-bridge&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-delegatingfilterproxy-the-bridge&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Spring Security is managed by Spring, but incoming requests come from the &lt;strong&gt;Servlet Container (Tomcat)&lt;/strong&gt;. Tomcat doesn&amp;rsquo;t know about Spring beans.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;DelegatingFilterProxy&lt;/code&gt; is a standard Servlet filter that simply forwards all requests to a real Spring Bean named &lt;code&gt;springSecurityFilterChain&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. FilterChainProxy (The Manager):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-filterchainproxy-the-manager&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-filterchainproxy-the-manager&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;This bean contains a list of &lt;code&gt;SecurityFilterChain&lt;/code&gt; objects.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It acts as the entries point into the security logic.&lt;/li&gt;
+&lt;li&gt;It decides which &amp;ldquo;Chain&amp;rdquo; of specific filters (e.g. &lt;code&gt;UsernamePasswordAuthenticationFilter&lt;/code&gt;, &lt;code&gt;FilterSecurityInterceptor&lt;/code&gt;) should handle the request based on the URL.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Core Filter Loop:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-core-filter-loop&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-core-filter-loop&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;SecurityContextPersistenceFilter&lt;/code&gt;: Loads the SecurityContext from Session.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;LogoutFilter&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Authentication Filters&lt;/code&gt;: Check credentials, create &lt;code&gt;Authentication&lt;/code&gt; object, and put it in &lt;code&gt;SecurityContextHolder&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;ExceptionTranslationFilter&lt;/code&gt;: Catch security exceptions (401/403) and decide what to do.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;FilterSecurityInterceptor&lt;/code&gt;: The final guard. Checks if the current authenticated user has the &amp;ldquo;ROLES&amp;rdquo; required for the URL.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring Security operates as a series of specialized Servlet filters that intercept and validate incoming requests before they reach your controllers. By using the &lt;code&gt;DelegatingFilterProxy&lt;/code&gt;, Spring seamlessly integrates its complex security beans into the standard web container. For senior developers, the key is understanding the &lt;code&gt;SecurityContextHolder&lt;/code&gt;—it is a thread-local storage that makes the user&amp;rsquo;s authentication state globally accessible throughout the request lifecycle.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;SecurityContextPersistenceFilter&lt;/code&gt; role?&lt;/strong&gt; (It ensures the user&amp;rsquo;s logged-in status persists across multiple HTTP requests via the HttpSession.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stateless (JWT) vs Stateful?&lt;/strong&gt; (In JWT, we disable session creation and use a filter to populate the SecurityContext on every single request from the token.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to perform Method-Level Security?&lt;/strong&gt; (Use &lt;code&gt;@EnableGlobalMethodSecurity&lt;/code&gt; and &lt;code&gt;@PreAuthorize&lt;/code&gt;. This uses AOP Proxies rather than Servlet Filters.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Bean Scopes</title>
+      <link>http://localhost:1313/spring/bean-scopes-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/bean-scopes-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are the different Bean Scopes in Spring? How does a &amp;ldquo;Singleton&amp;rdquo; bean handle a &amp;ldquo;Prototype&amp;rdquo; dependency?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Object lifecycle and memory management.&lt;/li&gt;
+&lt;li&gt;Multi-threading safety (Singleton is shared!).&lt;/li&gt;
+&lt;li&gt;Solving the &amp;ldquo;Scope-Leake&amp;rdquo; problem (Method Injection).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Scopes:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-scopes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-scopes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Singleton (Default)&lt;/strong&gt;: One instance per container.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Prototype&lt;/strong&gt;: A new instance every time it is requested.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Request&lt;/strong&gt;: One per HTTP request (Web apps).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Session&lt;/strong&gt;: One per HTTP session (Web apps).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Injection Trap:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-injection-trap&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-injection-trap&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If a &lt;strong&gt;Singleton Bean S&lt;/strong&gt; depends on a &lt;strong&gt;Prototype Bean P&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Spring injects P into S &lt;strong&gt;only once&lt;/strong&gt; during initialization.&lt;/li&gt;
+&lt;li&gt;Every time you use S, you are using the &lt;strong&gt;exact same&lt;/strong&gt; P instance. The &amp;ldquo;prototypicality&amp;rdquo; of P is lost!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Solution:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-solution&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-solution&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@Lookup&lt;/code&gt;&lt;/strong&gt;: Annotate a method to return the prototype. Spring overrides the method to call &lt;code&gt;applicationContext.getBean(P.class)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ObjectFactory / Provider&lt;/strong&gt;: Inject &lt;code&gt;ObjectFactory&amp;lt;P&amp;gt;&lt;/code&gt; and call &lt;code&gt;.getObject()&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Proxy Mode&lt;/strong&gt;: Use &lt;code&gt;@Scope(value = &amp;quot;prototype&amp;quot;, proxyMode = ScopedProxyMode.TARGET_CLASS)&lt;/code&gt;. Spring injects a proxy that finds a new instance for every method call.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring&amp;rsquo;s singleton scope is the backbone of its efficiency, but it requires careful design when interacting with non-singleton dependencies. Because a singleton&amp;rsquo;s state is shared across all threads, any prototype or request-scoped beans injected into it will effectively become singletons themselves if not handled correctly. We resolve this using &amp;ldquo;Method Injection&amp;rdquo; or &amp;ldquo;Scoped Proxies,&amp;rdquo; ensuring that our architectural layers remain both thread-safe and truly representative of their intended lifecycles.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Are Singleton beans Thread-Safe?&lt;/strong&gt; (No! They are shared. You must not have &amp;ldquo;mutable shared state&amp;rdquo; in a singleton bean unless it&amp;rsquo;s synchronized.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;prototype&lt;/code&gt; and &lt;code&gt;new MyObject()&lt;/code&gt;?&lt;/strong&gt; (Prototype beans are still managed by Spring—DI, Aware interfaces, and Lifecycle hooks still apply.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;When to use Prototype?&lt;/strong&gt; (For stateful objects that carry data specific to a calculation or task that shouldn&amp;rsquo;t be shared.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Data JPA: N&#43;1 Problem</title>
+      <link>http://localhost:1313/spring/jpa-n-plus-one/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/jpa-n-plus-one/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the N+1 problem in Hibernate/Spring Data? How do you solve it using &lt;code&gt;@EntityGraph&lt;/code&gt; or &lt;code&gt;JOIN FETCH&lt;/code&gt;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Database performance optimization.&lt;/li&gt;
+&lt;li&gt;Lazy loading vs Eager loading traps.&lt;/li&gt;
+&lt;li&gt;Ability to write efficient JPA queries for large datasets.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Imagine you have &lt;code&gt;Owner&lt;/code&gt; and &lt;code&gt;Pet&lt;/code&gt; (One-to-Many).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;You fetch 10 Owners (&lt;code&gt;SELECT * FROM Owners&lt;/code&gt;). (1 Query)&lt;/li&gt;
+&lt;li&gt;You loop over them and call &lt;code&gt;owner.getPets()&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Hibernate fires a new query for EACH owner to get their pets. (&lt;code&gt;SELECT * FROM Pets WHERE owner_id = ?&lt;/code&gt;) (N Queries)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Total&lt;/strong&gt;: 1 + 10 = 11 queries for 10 records. Disaster for performance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Solutions:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-solutions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-solutions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;JPQL &lt;code&gt;JOIN FETCH&lt;/code&gt;&lt;/strong&gt;:
+&lt;code&gt;SELECT o FROM Owner o JOIN FETCH o.pets&lt;/code&gt;
+&lt;ul&gt;
+&lt;li&gt;Forces a SQL Join and brings all data in ONE trip.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@EntityGraph&lt;/strong&gt;:
+Add to the repository method. Tells JPA &amp;ldquo;For this specific call, treat &amp;lsquo;pets&amp;rsquo; as Eager.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Batch Size (&lt;code&gt;@BatchSize&lt;/code&gt;)&lt;/strong&gt;:
+Instead of 1 by 1, Hibernate fetches pets for 10 owners at once. &lt;code&gt;SELECT * FROM Pets WHERE owner_id IN (?, ?, ..., ?)&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The N+1 problem is a silent performance killer in ORM-based applications, occurring when a system makes one initial query followed by secondary queries for every record returned. We mitigate this by using optimized fetch strategies like &lt;code&gt;JOIN FETCH&lt;/code&gt; or JPA Entity Graphs, which consolidate our data requirements into a single database trip. For a senior developer, the goal is to selectively apply these optimizations only where needed, maintaining the benefits of lazy loading while avoiding its overhead.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Lazy vs Eager?&lt;/strong&gt; (Eager fetches everything always [wasteful]; Lazy fetches only on access [risky for N+1].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &lt;code&gt;Cartesian Product&lt;/code&gt; problem?&lt;/strong&gt; (If you JOIN FETCH two different &lt;code&gt;@OneToMany&lt;/code&gt; collections at once, the result set can explode in size—e.g. 5 pets x 5 toys = 25 rows for one owner.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Projection&amp;rdquo;?&lt;/strong&gt; (Using interfaces to fetch only specific columns instead of the entire Entity.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: AOP Proxies (JDK vs. CGLIB)</title>
+      <link>http://localhost:1313/spring/aop-proxies/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/aop-proxies/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does Spring AOP work? Explain the difference between JDK Dynamic Proxies and CGLIB.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of &amp;ldquo;Proxying&amp;rdquo; mechanism.&lt;/li&gt;
+&lt;li&gt;Impact of Interfaces on proxy selection.&lt;/li&gt;
+&lt;li&gt;Performance and limitation of different proxying strategies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The AOP Concept:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-aop-concept&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-aop-concept&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Aspect-Oriented Programming works by &amp;ldquo;wrapping&amp;rdquo; your bean in a &lt;strong&gt;Proxy&lt;/strong&gt;. When you call a method, you&amp;rsquo;re actually calling the proxy, which executes the &amp;ldquo;Advice&amp;rdquo; (e.g. &lt;code&gt;@Before&lt;/code&gt;, &lt;code&gt;@Around&lt;/code&gt;) and then calls your real method.&lt;/p&gt;
+&lt;h3&gt;2. JDK Dynamic Proxy (Interface-based):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-jdk-dynamic-proxy-interface-based&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-jdk-dynamic-proxy-interface-based&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Requirement&lt;/strong&gt;: The bean MUST implement at least one interface.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Use standard Java &lt;code&gt;java.lang.reflect.Proxy&lt;/code&gt;. Creates a proxy that implements the same interfaces.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Limitation&lt;/strong&gt;: Cannot proxy methods not declared in an interface.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. CGLIB Proxy (Class-based):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-cglib-proxy-class-based&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-cglib-proxy-class-based&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Requirement&lt;/strong&gt;: Does NOT need an interface.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Generates a &lt;strong&gt;Subclass&lt;/strong&gt; of your bean at runtime.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Limitation&lt;/strong&gt;: Cannot proxy &lt;code&gt;final&lt;/code&gt; classes or &lt;code&gt;final&lt;/code&gt; methods (since you can&amp;rsquo;t override them).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Default&lt;/strong&gt;: Spring Boot 2+ defaults to CGLIB even if interfaces exist.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring AOP is essentially a dynamic wrapper system. While JDK proxies are the &amp;ldquo;natural&amp;rdquo; Java way, requiring interfaces to function, CGLIB is the &amp;ldquo;power-user&amp;rdquo; way, using bytecode generation to create subclasses on the fly. Knowing the difference is critical because many Spring &amp;ldquo;magic&amp;rdquo; failures—like &lt;code&gt;@Transactional&lt;/code&gt; not working on a private or final method—stem directly from the technical limitations of these underlying proxy frameworks.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;JoinPoint&amp;rdquo;?&lt;/strong&gt; (A point in the execution of the program, such as the execution of a method.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Pointcut&amp;rdquo;?&lt;/strong&gt; (An expression that matches JoinPoints—it defines &lt;em&gt;where&lt;/em&gt; the advice should apply.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can you have an aspect on a private method?&lt;/strong&gt; (No, because the proxy can&amp;rsquo;t override/intercept private method calls.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Boot: Actuator and Monitoring</title>
+      <link>http://localhost:1313/spring/spring-boot-actuator/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/spring-boot-actuator/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Spring Boot Actuator? Which endpoints are critical for production health monitoring?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Observability and Production-Readiness.&lt;/li&gt;
+&lt;li&gt;Security of management endpoints.&lt;/li&gt;
+&lt;li&gt;Integration with Prometheus/Grafana.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. What it does:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-what-it-does&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-what-it-does&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Actuator adds HTTP endpoints to your app to see &amp;ldquo;under the hood&amp;rdquo; of the JVM.&lt;/p&gt;
+&lt;h3&gt;2. Core Endpoints:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-core-endpoints&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-core-endpoints&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;/health&lt;/code&gt;&lt;/strong&gt;: Is the app up? (Checks DB connectivity, disk space).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;/metrics&lt;/code&gt;&lt;/strong&gt;: Raw counter/gauge data (Memory, CPU, HTTP request counts).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;/info&lt;/code&gt;&lt;/strong&gt;: Build version, git commit ID.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;/env&lt;/code&gt;&lt;/strong&gt;: Current environment variables.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;/loggers&lt;/code&gt;&lt;/strong&gt;: Change log levels (DEBUG/INFO) at runtime without restarting! (Extremely powerful for debugging).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;/threaddump&lt;/code&gt;&lt;/strong&gt;: Snapshot of what every thread is doing (detect deadlocks).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Security:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-security&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-security&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;By default, most are disabled/hidden.
+&lt;code&gt;management.endpoints.web.exposure.include=health,info,prometheus&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Critical&lt;/strong&gt;: You MUST secure these endpoints (usually on a separate port or behind admin-only auth) as they leak sensitive system info.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring Boot Actuator turns a black-box application into an observable system. It provides the essential telemetry needed for production stability, from basic health checks for the load balancer to deep-dive thread dumps for debugging performance spikes. For a senior engineer, the priority is not just enabling these tools, but ensuring they are correctly secured and integrated into a central monitoring platform like Prometheus for long-term trend analysis.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Liveness vs Readiness?&lt;/strong&gt; (Liveness: Is the app dead [reboot it]? Readiness: Is it ready to take traffic [waiting for cache to warm up]?)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to add a custom health check?&lt;/strong&gt; (Implement &lt;code&gt;HealthIndicator&lt;/code&gt; interface and define your own logic.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Micrometer?&lt;/strong&gt; (The underlying library Actuator uses to send metrics to Prometheus, Datadog, or NewRelic.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Global Exception Handling</title>
+      <link>http://localhost:1313/spring/global-exception-handling/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/global-exception-handling/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you implement global exception handling in a Spring Boot REST API? Explain &lt;code&gt;@ControllerAdvice&lt;/code&gt;.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Clean Code (DRY - Don&amp;rsquo;t Repeat Yourself).&lt;/li&gt;
+&lt;li&gt;Consistent API Error Responses.&lt;/li&gt;
+&lt;li&gt;Handling different status codes (400, 404, 500) gracefully.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Instead of &lt;code&gt;try-catch&lt;/code&gt; in every controller method, we use a central interceptor.&lt;/p&gt;
+&lt;h3&gt;2. @ControllerAdvice / @RestControllerAdvice:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-controlleradvice--restcontrolleradvice&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-controlleradvice--restcontrolleradvice&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A specialized &lt;code&gt;@Component&lt;/code&gt; that acts as an &amp;ldquo;interceptor&amp;rdquo; for exceptions thrown by any Controller.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@ExceptionHandler&lt;/code&gt;&lt;/strong&gt;: A method inside the advice that handles a specific exception (e.g. &lt;code&gt;UserNotFoundException&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Standard Format&lt;/strong&gt;: Returns a &lt;code&gt;ResponseEntity&lt;/code&gt; with a consistent JSON body (ErrorCode, Message, Timestamp).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. ResponseStatusException:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-responsestatusexception&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-responsestatusexception&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A simpler alternative where you throw a specific exception with a status code directly.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Global exception handling ensures that your API speaks a consistent language even when things go wrong. By centralizing our error logic in a &lt;code&gt;@RestControllerAdvice&lt;/code&gt;, we decouple our business logic from the HTTP layer, preventing code duplication and providing a predictable contract for front-end developers. This approach allows us to map specific domain exceptions—like a missing record—to the appropriate HTTP status codes automatically and securely.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@RestControllerAdvice&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;GlobalExceptionHandler&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@ExceptionHandler&lt;/span&gt;(UserNotFoundException.&lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ResponseEntity&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;ErrorResponse&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;handleNotFound&lt;/span&gt;(UserNotFoundException ex) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ErrorResponse err &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ErrorResponse(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ERR_001&amp;#34;&lt;/span&gt;, ex.&lt;span style=&#34;color:#a6e22e&#34;&gt;getMessage&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ResponseEntity&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;(err, HttpStatus.&lt;span style=&#34;color:#a6e22e&#34;&gt;NOT_FOUND&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@ExceptionHandler&lt;/span&gt;(Exception.&lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ResponseEntity&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;ErrorResponse&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;handleGeneral&lt;/span&gt;(Exception ex) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Log the error stacktrace here&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ErrorResponse err &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ErrorResponse(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ERR_999&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Internal Server Error&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ResponseEntity&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;(err, HttpStatus.&lt;span style=&#34;color:#a6e22e&#34;&gt;INTERNAL_SERVER_ERROR&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can you have multiple Advice classes?&lt;/strong&gt; (Yes, use the &lt;code&gt;order&lt;/code&gt; parameter to decide which one takes precedence.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Handle Validation Errors?&lt;/strong&gt; (Override &lt;code&gt;handleMethodArgumentNotValid&lt;/code&gt; to return a list of field-specific errors [e.g. &amp;ldquo;email is required&amp;rdquo;].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;@ControllerAdvice&lt;/code&gt; and &lt;code&gt;@RestControllerAdvice&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;@RestControllerAdvice&lt;/code&gt; adds &lt;code&gt;@ResponseBody&lt;/code&gt; to all methods automatically.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Profiles and Environment Config</title>
+      <link>http://localhost:1313/spring/profiles-environment/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/profiles-environment/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do Spring Profiles allow for environment-specific configurations? What occurs when no profile is active?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Separation of concerns between environments (Dev, Test, Prod).&lt;/li&gt;
+&lt;li&gt;Bean conditional registration.&lt;/li&gt;
+&lt;li&gt;Knowledge of the &amp;ldquo;Default&amp;rdquo; profile.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Spring Profiles let you isolate parts of your application configuration and make them available only in certain environments.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Properties&lt;/strong&gt;: &lt;code&gt;application-dev.properties&lt;/code&gt;, &lt;code&gt;application-prod.properties&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Beans&lt;/strong&gt;: &lt;code&gt;@Profile(&amp;quot;dev&amp;quot;)&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Activation:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-activation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-activation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Profiles can be activated via:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Properties&lt;/strong&gt;: &lt;code&gt;spring.profiles.active=dev&lt;/code&gt; in &lt;code&gt;application.properties&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Env Variables&lt;/strong&gt;: &lt;code&gt;export SPRING_PROFILES_ACTIVE=prod&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;System Properties&lt;/strong&gt;: &lt;code&gt;-Dspring.profiles.active=test&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Default Profile:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-default-profile&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-default-profile&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If no profile is active, Spring uses the profile named &lt;strong&gt;&lt;code&gt;default&lt;/code&gt;&lt;/strong&gt;. Any bean with NO &lt;code&gt;@Profile&lt;/code&gt; annotation is always active.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring Profiles provide a robust way to switch entire application states without changing the code. By tagging specific beans or configuration files with profile names, we can ensure that a production database connection is never accidentally used during local development. For a senior developer, the key is using profiles to manage varying external dependencies while maintaining a single, consistent build artifact for all environments.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Code Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@Configuration&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@Profile&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;prod&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ProdConfig&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Bean&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; DataSource &lt;span style=&#34;color:#a6e22e&#34;&gt;dataSource&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// High-performance connection pool&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can you activate multiple profiles?&lt;/strong&gt; (Yes, e.g., &lt;code&gt;dev,swagger,h2&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;@ActiveProfiles&lt;/code&gt;?&lt;/strong&gt; (Used in integration tests to force a specific environment profile for the test context.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;YAML&lt;/code&gt; and &lt;code&gt;.properties&lt;/code&gt; for profiles?&lt;/strong&gt; (YAML allows storing multiple profiles in a single file using the &lt;code&gt;---&lt;/code&gt; separator, making it cleaner for large configs.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring WebFlux: Reactive Programming</title>
+      <link>http://localhost:1313/spring/webflux-reactive/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/webflux-reactive/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Spring WebFlux? How does its &amp;ldquo;Non-blocking&amp;rdquo; nature differ from standard Spring MVC?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Reactive streams (Mono/Flux).&lt;/li&gt;
+&lt;li&gt;Event-loop architecture (Netty).&lt;/li&gt;
+&lt;li&gt;Dealing with high-concurrency without thread-starvation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Spring MVC (Blocking/Servlet):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-spring-mvc-blockingservlet&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-spring-mvc-blockingservlet&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Model&lt;/strong&gt;: Thread-per-request.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Limit&lt;/strong&gt;: If you have 200 threads, and all are waiting for a slow DB call, the 201st user is blocked. Your CPU is idle but your threads are exhausted.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. WebFlux (Non-blocking):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-webflux-non-blocking&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-webflux-non-blocking&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Model&lt;/strong&gt;: Event-loop (like Node.js).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Magic&lt;/strong&gt;: A small number of threads (one per CPU core) handle all requests. When a request hits a DB call, the thread &lt;strong&gt;registers a callback&lt;/strong&gt; and immediately goes to help someone else.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Backpressure&lt;/strong&gt;: Prevents the producer from overwhelming the consumer by allowing the consumer to signal how much data it can handle.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;WebFlux shifting the execution model from &amp;ldquo;waiting for data&amp;rdquo; to &amp;ldquo;reacting to data.&amp;rdquo; In a high-concurrency environment with slow I/O, WebFlux can handle thousands of concurrent users with just a few threads, providing massive scalability where standard MVC would crumble under thread overhead. However, it requires a fully reactive stack—including reactive database drivers—as even one blocking call in a reactive thread will sabotage the entire event loop.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;MVC&lt;/strong&gt;: &lt;code&gt;User -&amp;gt; Thread -&amp;gt; [Wait 50ms] -&amp;gt; Result&lt;/code&gt; (Thread is busy doing nothing).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;WebFlux&lt;/strong&gt;: &lt;code&gt;User -&amp;gt; EventLoop -&amp;gt; [Register DB Callback] -&amp;gt; [Work on next user]&lt;/code&gt; (Thread never waits).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Mono vs Flux?&lt;/strong&gt; (Mono is for 0-1 items; Flux is for 0-N items.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can you use JPA with WebFlux?&lt;/strong&gt; (Technically yes, but it blocks threads, which ruins the benefit. Use &lt;strong&gt;R2DBC&lt;/strong&gt; instead.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;When NOT to use WebFlux?&lt;/strong&gt; (If your system is mostly CPU-bound or if your entire team is not comfortable with the steeper learning curve of reactive functional programming.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Validation (@Valid vs. @Validated)</title>
+      <link>http://localhost:1313/spring/spring-validation/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/spring-validation/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you perform data validation in Spring? Compare &lt;code&gt;@Valid&lt;/code&gt; (Standard) and &lt;code&gt;@Validated&lt;/code&gt; (Spring-Specific).&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;JSR-303/380 Bean Validation knowledge.&lt;/li&gt;
+&lt;li&gt;Validation &amp;ldquo;Groups&amp;rdquo; for different scenarios.&lt;/li&gt;
+&lt;li&gt;Method-level vs. Controller-level validation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. @Valid (Standard Java):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-valid-standard-java&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-valid-standard-java&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Part of Jakarta/JSR-303.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Case&lt;/strong&gt;: Used on Controller arguments to trigger validation of an incoming JSON body.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Limitation&lt;/strong&gt;: Does not support &amp;ldquo;Groups.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. @Validated (Spring-Specific):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-validated-spring-specific&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-validated-spring-specific&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Use Case 1 (Groups)&lt;/strong&gt;: If you want to require an &lt;code&gt;ID&lt;/code&gt; for an &lt;code&gt;UPDATE&lt;/code&gt; but NOT for a &lt;code&gt;CREATE&lt;/code&gt;, you can define &amp;ldquo;Validation Groups&amp;rdquo; and tell Spring to only run specific checks.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Case 2 (AOP)&lt;/strong&gt;: Put on a &lt;strong&gt;Service class&lt;/strong&gt; to enable method-level validation of its parameters.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Handling Errors:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-handling-errors&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-handling-errors&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If validation fails, Spring throws &lt;code&gt;MethodArgumentNotValidException&lt;/code&gt;. Use a &lt;code&gt;@ControllerAdvice&lt;/code&gt; to catch it and return a clean formatted list of error messages.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring&amp;rsquo;s validation system bridges standard Java Bean Validation with its own AOP-driven features. While &lt;code&gt;@Valid&lt;/code&gt; is sufficient for standard request body checks, &lt;code&gt;@Validated&lt;/code&gt; provides the advanced capabilities needed for class-level method checks and conditional group-level validation. For high-scale production systems, centralizing these checks prevents corrupted data from ever reaching our domain logic, keeping our architecture clean and secure.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Group Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-group-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-group-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Controller&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;save&lt;/span&gt;(&lt;span style=&#34;color:#a6e22e&#34;&gt;@Validated&lt;/span&gt;(CreateGroup.&lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;) UserDto user) { ... }&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to create a Custom Validator?&lt;/strong&gt; (Create an annotation and implement the &lt;code&gt;ConstraintValidator&lt;/code&gt; interface.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does it work on primitive types?&lt;/strong&gt; (In Spring 3.x with Method Validation, yes. You can put &lt;code&gt;@Min(18)&lt;/code&gt; directly on a service method parameter &lt;code&gt;int age&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;BindingResult&lt;/code&gt; and &lt;code&gt;ExceptionHandling&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;BindingResult&lt;/code&gt; allows you to handle errors manually inside the controller method; &lt;code&gt;ExceptionAdvice&lt;/code&gt; handles them globally.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Data JPA: L1 and L2 Caching</title>
+      <link>http://localhost:1313/spring/hibernate-caching-layers/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/hibernate-caching-layers/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does Hibernate&amp;rsquo;s L1 and L2 caching work? How does Spring Data JPA interact with them?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Efficiency of ORM data retrieval.&lt;/li&gt;
+&lt;li&gt;Scope of caching (Session vs Process).&lt;/li&gt;
+&lt;li&gt;Awareness of stale data risks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. First-Level Cache (L1):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-first-level-cache-l1&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-first-level-cache-l1&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Scope&lt;/strong&gt;: Current Hibernate &lt;strong&gt;Session&lt;/strong&gt; (The &lt;code&gt;@Transactional&lt;/code&gt; boundary).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Behavior&lt;/strong&gt;: Mandatary. If you fetch User 1 twice in the same transaction, Hibernate only calls the DB once.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Clearing&lt;/strong&gt;: Happens automatically when the session closes (transaction ends).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Second-Level Cache (L2):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-second-level-cache-l2&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-second-level-cache-l2&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Scope&lt;/strong&gt;: &lt;strong&gt;Application/Process Level&lt;/strong&gt;. (Shared across all transactions).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Behavior&lt;/strong&gt;: Optional. Usually implemented via Redis, Ehcache, or Hazelcast.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Advantage&lt;/strong&gt;: If Transaction A fetches User 1, and Transaction B fetches User 1 later, it&amp;rsquo;s served from L2 cache without hitting the DB.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Query Cache:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-query-cache&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-query-cache&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A variation of L2 that stores the RESULTS of specific queries (e.g., &lt;code&gt;Find all active users&lt;/code&gt;). If those tables are modified, the cache is automatically invalidated.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Hibernate&amp;rsquo;s multi-level cache is a performance double-edged sword. L1 cache ensures intra-transaction consistency but is short-lived. L2 cache provides massive performance boosts by keeping frequently accessed data in RAM across the entire application, significantly reducing the bottleneck of database I/O. For a senior engineer, the challenge is correctly configuring the cache eviction policy—ensuring that the performance gains don&amp;rsquo;t result in users seeing outdated or &amp;ldquo;stale&amp;rdquo; data during critical operations.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Summary:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-summary&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-summary&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[Transaction 1] -&amp;gt; [L1 Cache] -&amp;gt; [L2 Cache (Ehcache/Redis)] -&amp;gt; [Database]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Cache Eviction&amp;rdquo;?&lt;/strong&gt; (The process of removing items from the cache when they change in the DB.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What happens during a &lt;code&gt;SELECT&lt;/code&gt; vs an &lt;code&gt;Update&lt;/code&gt;?&lt;/strong&gt; (A write usually invalidates both L1 and relevant L2 entries.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to enable L2 in Spring?&lt;/strong&gt; (Add provider dependency and set &lt;code&gt;hibernate.cache.use_second_level_cache=true&lt;/code&gt;.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Boot: Custom Starters</title>
+      <link>http://localhost:1313/spring/custom-spring-boot-starters/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/custom-spring-boot-starters/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you build a Custom Spring Boot Starter? When is it better than a simple Shared Library?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Large-scale engineering patterns (Platform Engineering).&lt;/li&gt;
+&lt;li&gt;Scaling &amp;ldquo;Shared Logic&amp;rdquo; across 100s of microservices.&lt;/li&gt;
+&lt;li&gt;Mastery of auto-configuration.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Starter Concept:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-starter-concept&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-starter-concept&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A Starter is more than a library; it&amp;rsquo;s a &lt;strong&gt;&amp;ldquo;Feature Package&amp;rdquo;&lt;/strong&gt; that configures itself.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Library&lt;/strong&gt;: You add the Jar, then you must manually add &lt;code&gt;@Bean&lt;/code&gt; or &lt;code&gt;@ComponentScan&lt;/code&gt; to use it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Starter&lt;/strong&gt;: You add the Jar, and its features are &lt;strong&gt;automatically ready&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Components:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-components&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-components&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Library Module&lt;/strong&gt;: The actual logic (e.g., a &amp;ldquo;Security Audit&amp;rdquo; service).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Auto-configuration Module&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;A &lt;code&gt;@Configuration&lt;/code&gt; class.&lt;/li&gt;
+&lt;li&gt;Using &lt;code&gt;@Conditional&lt;/code&gt; to only activate if needed.&lt;/li&gt;
+&lt;li&gt;A &lt;code&gt;spring.factories&lt;/code&gt; file to register it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Use Case:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-use-case&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-use-case&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Imagine you are at Netflix. You want every team to use the SAME logging format and the SAME security filter. You build a &lt;code&gt;netflix-logging-starter&lt;/code&gt;, and teams just include it in their &lt;code&gt;pom.xml&lt;/code&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Custom starters are the ultimate tool for organizational DRY (Don&amp;rsquo;t Repeat Yourself). While a shared library merely provides code, a starter provides an automated ecosystem—configuring beans, security, and monitoring based on the application&amp;rsquo;s environment. This &amp;ldquo;plug-and-play&amp;rdquo; capability ensures that common standards are enforced across hundreds of services with minimal manual intervention, dramatically reducing the time to market for new microservices.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;spring-configuration-metadata.json&lt;/code&gt;?&lt;/strong&gt; (Helps IDEs provide autocomplete for YOUR starter properties in &lt;code&gt;application.properties&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Why separate logic and auto-configure?&lt;/strong&gt; (Separation of concerns. You might want to use the logic in a non-Spring app one day.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &amp;ldquo;Naming Convention&amp;rdquo;?&lt;/strong&gt; (Spring&amp;rsquo;s own are &lt;code&gt;spring-boot-starter-NAME&lt;/code&gt;; custom ones should be &lt;code&gt;NAME-spring-boot-starter&lt;/code&gt;.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Scheduler (@Scheduled)</title>
+      <link>http://localhost:1313/spring/spring-scheduling/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/spring-scheduling/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does &lt;code&gt;@Scheduled&lt;/code&gt; work in Spring? What occurs if a task takes longer than the interval?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Threading and Task Management basics.&lt;/li&gt;
+&lt;li&gt;FixedDelay vs FixedRate.&lt;/li&gt;
+&lt;li&gt;Preventing task overlap.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Enable Scheduling:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-enable-scheduling&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-enable-scheduling&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Annotate a config class with &lt;code&gt;@EnableScheduling&lt;/code&gt;. By default, it uses a &lt;strong&gt;single-threaded&lt;/strong&gt; scheduler.&lt;/p&gt;
+&lt;h3&gt;2. The Modes:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-modes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-modes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;fixedRate = 5000&lt;/code&gt;&lt;/strong&gt;: Run every 5s regardless of when the last one finished.
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Risk&lt;/strong&gt;: If task takes 10s, you&amp;rsquo;ll have multiple instances running at once (if multi-threaded) or tasks &amp;ldquo;queuing up.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;fixedDelay = 5000&lt;/code&gt;&lt;/strong&gt;: Wait 5s AFTER the previous task finishes. (No overlap possible).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;cron&lt;/code&gt;&lt;/strong&gt;: Unix-style CRON expression for specific times.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Overlap Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-overlap-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-overlap-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;By default, one &lt;code&gt;@Scheduled&lt;/code&gt; task won&amp;rsquo;t run multiple times in parallel even with &lt;code&gt;fixedRate&lt;/code&gt; because the default pool size is 1. If you increase the pool size, you might have overlap.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring&amp;rsquo;s scheduling provides a convenient abstraction over Java&amp;rsquo;s &lt;code&gt;ScheduledExecutorService&lt;/code&gt;. While &lt;code&gt;fixedRate&lt;/code&gt; is ideal for tasks where total frequency is the priority, &lt;code&gt;fixedDelay&lt;/code&gt; is the safer choice for complex business jobs where we must prevent the same task from overlapping with itself. For critical background operations, we must configure a dedicated &lt;code&gt;TaskScheduler&lt;/code&gt; bean to ensure our threads are never starved by other competing asynchronous processes.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Code Tip:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-tip&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-tip&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@Bean&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; TaskScheduler &lt;span style=&#34;color:#a6e22e&#34;&gt;taskScheduler&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ThreadPoolTaskScheduler scheduler &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ThreadPoolTaskScheduler();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    scheduler.&lt;span style=&#34;color:#a6e22e&#34;&gt;setPoolSize&lt;/span&gt;(5); &lt;span style=&#34;color:#75715e&#34;&gt;// Don&amp;#39;t starve the tasks!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; scheduler;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to run a task on one instance only in a Horizontal Cluster?&lt;/strong&gt; (Standard &lt;code&gt;@Scheduled&lt;/code&gt; runs on ALL instances. To avoid this, use a distributed scheduler like &lt;strong&gt;ShedLock&lt;/strong&gt; or &lt;strong&gt;Quartz&lt;/strong&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the task throws an exception?&lt;/strong&gt; (The scheduler catches it, logs it, and continues to the next scheduled interval.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Async + Scheduled?&lt;/strong&gt; (Yes, you can combine them to push the execution to a separate pool immediately.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: RestTemplate vs. WebClient vs. Feign</title>
+      <link>http://localhost:1313/spring/rest-clients-comparison/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/rest-clients-comparison/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Which HTTP Client should you choose? Compare RestTemplate, WebClient, and OpenFeign.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Modern API client evolution.&lt;/li&gt;
+&lt;li&gt;Synchronous vs Asynchronous logic.&lt;/li&gt;
+&lt;li&gt;Understanding of &amp;ldquo;Declarative&amp;rdquo; clients.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. RestTemplate (Legacy/Deprecated):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-resttemplate-legacydeprecated&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-resttemplate-legacydeprecated&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Model&lt;/strong&gt;: Synchronous and Blocking.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Style&lt;/strong&gt;: Programmatic (building long URLs manually).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Status&lt;/strong&gt;: Maintenance mode. Still used in millions of legacy apps.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. WebClient (The Modern Standard):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-webclient-the-modern-standard&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-webclient-the-modern-standard&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Model&lt;/strong&gt;: Reactive and Non-blocking. (Part of WebFlux).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Style&lt;/strong&gt;: Fluent API.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pro&lt;/strong&gt;: Can do both Synchronous (&lt;code&gt;.block()&lt;/code&gt;) and Asynchronous calls perfectly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. OpenFeign (The Declarative one):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-openfeign-the-declarative-one&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-openfeign-the-declarative-one&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Style&lt;/strong&gt;: Just write an &lt;strong&gt;Interface&lt;/strong&gt;! Spring generates the code.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pro&lt;/strong&gt;: Extremely clean. Great for Microservices.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Most standard versions are Blocking (like RestTemplate).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For new, high-scale applications, &lt;code&gt;WebClient&lt;/code&gt; is the versatile choice, providing the flexibility to handle both modern reactive flows and traditional synchronous calls with a superior, non-blocking architecture. &lt;code&gt;OpenFeign&lt;/code&gt; remains a favorite for internal microservice communication due to its clear, interface-driven style, though it often sacrifices the raw scalability of a truly reactive client. &lt;code&gt;RestTemplate&lt;/code&gt;, while familiar, should be phased out in favor of the more performant and feature-rich alternatives.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Cheat-sheet:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-cheat-sheet&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-cheat-sheet&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;WebFlux App?&lt;/strong&gt; -&amp;gt; Always &lt;code&gt;WebClient&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Many internal services?&lt;/strong&gt; -&amp;gt; &lt;code&gt;OpenFeign&lt;/code&gt; (Clean code).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Legacy maintenance?&lt;/strong&gt; -&amp;gt; &lt;code&gt;RestTemplate&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can &lt;code&gt;WebClient&lt;/code&gt; call an MVC (blocking) service?&lt;/strong&gt; (Yes, it&amp;rsquo;s just HTTP. The caller&amp;rsquo;s non-blocking nature doesn&amp;rsquo;t care if the receiver is slow.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Retry Policy&amp;rdquo; in WebClient?&lt;/strong&gt; (Built-in &lt;code&gt;.retry(3)&lt;/code&gt; or sophisticated retry patterns with exponential backoff using &lt;code&gt;Retry&lt;/code&gt; utility.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Load Balancing?&lt;/strong&gt; (Spring Cloud allows all these clients to integrate with &lt;strong&gt;LoadBalancer&lt;/strong&gt; to find service IPs automatically via Eureka.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Boot: Testing Slices (@DataJpaTest)</title>
+      <link>http://localhost:1313/spring/spring-test-slices/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/spring-test-slices/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are &amp;ldquo;Test Slices&amp;rdquo; in Spring Boot? Why use &lt;code&gt;@WebMvcTest&lt;/code&gt; instead of &lt;code&gt;@SpringBootTest&lt;/code&gt;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Testing efficiency (Unit vs Integration).&lt;/li&gt;
+&lt;li&gt;Minimizing context load time.&lt;/li&gt;
+&lt;li&gt;Mocking boundaries.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. @SpringBootTest (The Heavyweight):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-springboottest-the-heavyweight&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-springboottest-the-heavyweight&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Loads the &lt;strong&gt;Full Application Context&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cost&lt;/strong&gt;: Very slow (takes 10-20s start time).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Case&lt;/strong&gt;: End-to-end integration tests.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Test Slices (The Lightweight):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-test-slices-the-lightweight&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-test-slices-the-lightweight&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Spring Boot lets you load ONLY the beans needed for a specific layer.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@WebMvcTest&lt;/code&gt;&lt;/strong&gt;: Only loads Controllers, JSON components, and Security. You must &lt;strong&gt;&lt;code&gt;@MockBean&lt;/code&gt;&lt;/strong&gt; your services.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@DataJpaTest&lt;/code&gt;&lt;/strong&gt;: Only loads Repositories and sets up an in-memory database (H2).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@JsonTest&lt;/code&gt;&lt;/strong&gt;: Only for testing serialization logic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Test slices are the key to maintainable and fast test suites. By using specialized annotations like &lt;code&gt;@WebMvcTest&lt;/code&gt;, we can isolate the web layer or the data layer in a fraction of the time it takes to boot the entire application. This &amp;ldquo;targeted&amp;rdquo; loading allows for rapid feedback cycles while ensuring that each component—from controller routing to database persistence—is rigorously validated within its natural Spring environment.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Code Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@WebMvcTest&lt;/span&gt;(UserController.&lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MyTest&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Autowired&lt;/span&gt; MockMvc mvc;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@MockBean&lt;/span&gt; UserService service; &lt;span style=&#34;color:#75715e&#34;&gt;// Must mock dependencies!&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Test&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;test&lt;/span&gt;() { mvc.&lt;span style=&#34;color:#a6e22e&#34;&gt;perform&lt;/span&gt;(get(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;/&amp;#34;&lt;/span&gt;)).&lt;span style=&#34;color:#a6e22e&#34;&gt;andExpect&lt;/span&gt;(status().&lt;span style=&#34;color:#a6e22e&#34;&gt;isOk&lt;/span&gt;()); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;TestPropertySource&lt;/code&gt;?&lt;/strong&gt; (Override specific properties just for one test class.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;@Mock&lt;/code&gt; and &lt;code&gt;@MockBean&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;@Mock&lt;/code&gt; is pure Mockito; &lt;code&gt;@MockBean&lt;/code&gt; is Spring&amp;rsquo;s wrapper that actually puts the mock into the ApplicationContext.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;TestEntityManager&lt;/code&gt;?&lt;/strong&gt; (A specialized helper provided in &lt;code&gt;@DataJpaTest&lt;/code&gt; for setting up test data without using the standard Repository methods.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: @ConditionalOnMissingBean</title>
+      <link>http://localhost:1313/spring/spring-conditionals/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/spring-conditionals/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does &lt;code&gt;@ConditionalOnMissingBean&lt;/code&gt; facilitate developer overrides?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Spring Boot&amp;rsquo;s &amp;ldquo;Opinionated&amp;rdquo; design.&lt;/li&gt;
+&lt;li&gt;Creating extensible frameworks.&lt;/li&gt;
+&lt;li&gt;Interaction between User-defined and Auto-configured beans.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Conflict:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-conflict&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-conflict&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A Spring Boot Starter wants to provide a &lt;code&gt;JSONService&lt;/code&gt;. But a developer might want to use their own &lt;code&gt;FastJSONService&lt;/code&gt;.&lt;/p&gt;
+&lt;h3&gt;2. The Solution:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-solution&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-solution&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The Starter annotates its bean with:
+&lt;code&gt;@ConditionalOnMissingBean(JSONService.class)&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If Spring finds a user-defined bean of type &lt;code&gt;JSONService&lt;/code&gt;, it &lt;strong&gt;SKIPS&lt;/strong&gt; the starter&amp;rsquo;s version.&lt;/li&gt;
+&lt;li&gt;This is the foundation of Spring Boot. It provides a default that &amp;ldquo;steps back&amp;rdquo; the moment you try to take control.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Other Conditionals:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-other-conditionals&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-other-conditionals&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;@ConditionalOnProperty&lt;/code&gt;: Only load if &lt;code&gt;app.feature.enabled=true&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;@ConditionalOnClass&lt;/code&gt;: Only load if &lt;code&gt;Redisson.class&lt;/code&gt; is found in classpath (proving the library is added).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;@ConditionalOnMissingBean&lt;/code&gt; is the mechanism behind Spring Boot&amp;rsquo;s &amp;ldquo;Sensible Defaults.&amp;rdquo; It allows the platform to provide comprehensive out-of-the-box functionality while guaranteeing that any developer-defined component takes immediate precedence. This creates a friction-less experience where the framework &amp;ldquo;gets out of the way&amp;rdquo; as an application&amp;rsquo;s requirements become more customized and mature.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What happens if two beans of the same type are found?&lt;/strong&gt; (Spring throws &lt;code&gt;NoUniqueBeanDefinitionException&lt;/code&gt; unless one is marked &lt;code&gt;@Primary&lt;/code&gt; or they are filtered by conditionals.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;@Conditional&lt;/code&gt; and &lt;code&gt;@Profile&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;@Profile&lt;/code&gt; is just a specialized version of &lt;code&gt;@Conditional&lt;/code&gt; that looks at the active profile string.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can you write a Custom Conditional?&lt;/strong&gt; (Yes, implement the &lt;code&gt;Condition&lt;/code&gt; interface and its &lt;code&gt;matches()&lt;/code&gt; method.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: RestTemplate Error Handling</title>
+      <link>http://localhost:1313/spring/rest-error-handling/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/rest-error-handling/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you handle non-2xx status codes in &lt;code&gt;RestTemplate&lt;/code&gt;? Explain the &lt;code&gt;ResponseErrorHandler&lt;/code&gt;.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Handling external API failures.&lt;/li&gt;
+&lt;li&gt;Decoding error bodies (JSON) into Java objects.&lt;/li&gt;
+&lt;li&gt;Custom logic for specific codes (401, 403, 404).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Default Behavior:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-default-behavior&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-default-behavior&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;By default, &lt;code&gt;RestTemplate&lt;/code&gt; throws a &lt;code&gt;HttpClientErrorException&lt;/code&gt; (for 4xx) or &lt;code&gt;HttpServerErrorException&lt;/code&gt; (for 5xx). The body of the error is buried in the exception.&lt;/p&gt;
+&lt;h3&gt;2. Custom Handler:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-custom-handler&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-custom-handler&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;You can implement &lt;code&gt;ResponseErrorHandler&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;hasError(response)&lt;/code&gt;&lt;/strong&gt;: Decide which codes are considered &amp;ldquo;Errors.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;handleError(response)&lt;/code&gt;&lt;/strong&gt;: Define the logic (e.g. log the body, map it to a custom exception).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Effective communication with external services requires robust error decoding. Instead of relying on generic Spring exceptions, we can implement a custom &lt;code&gt;ResponseErrorHandler&lt;/code&gt; to translate specific HTTP failure codes into meaningful domain-level exceptions. This allows our services to react intelligently—such as triggering retries for 5xx errors or refreshing tokens for 401s—ensuring that our application remains resilient even when external dependencies are unstable.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MyErrorHandler&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;implements&lt;/span&gt; ResponseErrorHandler {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;handleError&lt;/span&gt;(ClientHttpResponse response) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; IOException {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (response.&lt;span style=&#34;color:#a6e22e&#34;&gt;getStatusCode&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; HttpStatus.&lt;span style=&#34;color:#a6e22e&#34;&gt;NOT_FOUND&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;throw&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ExternalResourceNotFoundException();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// ...&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How is this different in WebClient?&lt;/strong&gt; (WebClient uses &lt;code&gt;.onStatus(code -&amp;gt; ..., response -&amp;gt; ...)&lt;/code&gt; or &lt;code&gt;.onErrorResume()&lt;/code&gt; to handle errors reactively.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;RetryTemplate&amp;rdquo;?&lt;/strong&gt; (A legacy Spring Batch feature [now Spring Retry] that wraps RestTemplate calls to provide automated retries with backoff.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logging the raw body?&lt;/strong&gt; (Be careful! You can only read the &lt;code&gt;ClientHttpResponse&lt;/code&gt; stream ONCE. To log and then process, you must use a wrapper or a specific logging interceptor.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Boot: Commandline vs Application Runner</title>
+      <link>http://localhost:1313/spring/runners-startup/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/runners-startup/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between &lt;code&gt;CommandLineRunner&lt;/code&gt; and &lt;code&gt;ApplicationRunner&lt;/code&gt;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Post-startup task execution.&lt;/li&gt;
+&lt;li&gt;Handling of command-line arguments.&lt;/li&gt;
+&lt;li&gt;Knowledge of the &amp;ldquo;Run&amp;rdquo; lifecycle in Spring Boot.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. CommandLineRunner:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-commandlinerunner&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-commandlinerunner&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Style&lt;/strong&gt;: Receives arguments as a simple String array (&lt;code&gt;String... args&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Case&lt;/strong&gt;: Traditional logic where you want to parse raw arguments manually.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. ApplicationRunner:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-applicationrunner&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-applicationrunner&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Style&lt;/strong&gt;: Receives arguments as a specialized &lt;code&gt;ApplicationArguments&lt;/code&gt; object.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Why it&amp;rsquo;s better&lt;/strong&gt;: It provides convenience methods like &lt;code&gt;getOptionValues(&amp;quot;name&amp;quot;)&lt;/code&gt; and &lt;code&gt;getNonOptionArgs()&lt;/code&gt;, reducing the manual parsing work.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Execution:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-execution&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-execution&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Both interfaces are called &lt;strong&gt;immediately after&lt;/strong&gt; the &lt;code&gt;ApplicationContext&lt;/code&gt; is finished starting, but before the JVM terminates or becomes idle.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;CommandLineRunner&lt;/code&gt; and &lt;code&gt;ApplicationRunner&lt;/code&gt; are both intended for running initialization code after the Spring context is fully operational. While &lt;code&gt;CommandLineRunner&lt;/code&gt; provides raw access to the argument array, &lt;code&gt;ApplicationRunner&lt;/code&gt; offers a more powerful abstraction for parsing key-value pairs and flags. For complex production tools, &lt;code&gt;ApplicationRunner&lt;/code&gt; is the preferred choice for its type-safe argument handling and cleaner integration with the Spring Boot ecosystem.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Code Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@Component&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MyRunner&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;implements&lt;/span&gt; ApplicationRunner {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#a6e22e&#34;&gt;@Override&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;run&lt;/span&gt;(ApplicationArguments args) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (args.&lt;span style=&#34;color:#a6e22e&#34;&gt;containsOption&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;import-data&amp;#34;&lt;/span&gt;)) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#75715e&#34;&gt;// Business logic&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to order multiple runners?&lt;/strong&gt; (Use the &lt;code&gt;@Order&lt;/code&gt; annotation; smaller numbers run first.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if a runner throws an exception?&lt;/strong&gt; (The application will fail to start and the JVM will exit if it was still in the startup phase.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference from &lt;code&gt;@PostConstruct&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;@PostConstruct&lt;/code&gt; runs during the bean initialization phase, likely before the rest of the context is ready. Runners run after everything is ready.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Async Methods (@Async)</title>
+      <link>http://localhost:1313/spring/async-methods/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/async-methods/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does &lt;code&gt;@Async&lt;/code&gt; work in Spring? Why is it important to define a custom &lt;code&gt;TaskExecutor&lt;/code&gt;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thread-pool management in Java.&lt;/li&gt;
+&lt;li&gt;Asynchronous non-blocking calls.&lt;/li&gt;
+&lt;li&gt;Avoiding the &amp;ldquo;Default/Simple&amp;rdquo; task executor bottleneck.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Proxy Mechanism:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-proxy-mechanism&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-proxy-mechanism&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Like &lt;code&gt;@Transactional&lt;/code&gt;, &lt;code&gt;@Async&lt;/code&gt; works by proxying.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;When call &lt;code&gt;service.asyncMethod()&lt;/code&gt;, the proxy intercepts the call and submits it to a &lt;code&gt;TaskExecutor&lt;/code&gt; pool.&lt;/li&gt;
+&lt;li&gt;It returns a &lt;code&gt;CompletableFuture&lt;/code&gt; or &lt;code&gt;void&lt;/code&gt; immediately.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Danger (Default Executor):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-danger-default-executor&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-danger-default-executor&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;By default, if you don&amp;rsquo;t define your own executor, Spring uses a &lt;code&gt;SimpleAsyncTaskExecutor&lt;/code&gt; (which spawns a TOTAL NEW THREAD for every call!) or a very limited default pool.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Production Risk&lt;/strong&gt;: You can easily run out of system memory if you trigger 10,000 async tasks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Custom Pool:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-custom-pool&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-custom-pool&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We must define a &lt;code&gt;ThreadPoolTaskExecutor&lt;/code&gt; to set &lt;strong&gt;Core Pool Size&lt;/strong&gt;, &lt;strong&gt;Max Pool Size&lt;/strong&gt;, and a &lt;strong&gt;Queue Capacity&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spring&amp;rsquo;s &lt;code&gt;@Async&lt;/code&gt; allows for effortless parallelization by delegating method execution to a background pool. However, relying on the framework&amp;rsquo;s default executor is a high-risk practice for production systems, as it lacks the necessary boundaries for thread and memory management. We mitigate this by defining an explicit &lt;code&gt;ThreadPoolTaskExecutor&lt;/code&gt;, ensuring that our asynchronous tasks are governed by strict capacity limits that prevent cascading failures under heavy load.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Config Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-config-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-config-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@Bean&lt;/span&gt;(name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;myPool&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Executor &lt;span style=&#34;color:#a6e22e&#34;&gt;taskExecutor&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    ThreadPoolTaskExecutor executor &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ThreadPoolTaskExecutor();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor.&lt;span style=&#34;color:#a6e22e&#34;&gt;setCorePoolSize&lt;/span&gt;(10);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor.&lt;span style=&#34;color:#a6e22e&#34;&gt;setMaxPoolSize&lt;/span&gt;(50);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor.&lt;span style=&#34;color:#a6e22e&#34;&gt;setQueueCapacity&lt;/span&gt;(500);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    executor.&lt;span style=&#34;color:#a6e22e&#34;&gt;initialize&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; executor;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Self-invocation?&lt;/strong&gt; (Will not work; same AOP proxy issue as &lt;code&gt;@Transactional&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can it return data?&lt;/strong&gt; (Yes, it must return &lt;code&gt;CompletableFuture&amp;lt;T&amp;gt;&lt;/code&gt; or &lt;code&gt;Future&amp;lt;T&amp;gt;&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Exception handling?&lt;/strong&gt; (Since the caller doesn&amp;rsquo;t wait, exceptions won&amp;rsquo;t reach the main thread. We need a custom &lt;code&gt;AsyncUncaughtExceptionHandler&lt;/code&gt; for methods returning &lt;code&gt;void&lt;/code&gt;.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>JPA: Optimistic vs. Pessimistic Locking</title>
+      <link>http://localhost:1313/spring/jpa-locking/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/jpa-locking/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Optimistic and Pessimistic locking in Spring Data JPA. When would you choose one over the other?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Concurrency control in shared data.&lt;/li&gt;
+&lt;li&gt;Deadlock risks vs performance bottlenecks.&lt;/li&gt;
+&lt;li&gt;Knowledge of the &lt;code&gt;@Version&lt;/code&gt; annotation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Optimistic Locking:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-optimistic-locking&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-optimistic-locking&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Assume NO conflict will occur.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Every row has a &lt;code&gt;@Version&lt;/code&gt; (integer/timestamp).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: When updating, the DB checks &lt;code&gt;UPDATE ... WHERE version = 1&lt;/code&gt;. If someone else changed it, the version is now 2, the update fails, and Spring throws &lt;code&gt;OptimisticLockingFailureException&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pro&lt;/strong&gt;: High Scalability (No DB locks).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Con&lt;/strong&gt;: Retries are needed if conflicts are frequent.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Pessimistic Locking:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-pessimistic-locking&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-pessimistic-locking&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Assume conflict WILL occur.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Use &lt;code&gt;SELECT ... FOR UPDATE&lt;/code&gt;. The DB places a physical lock on the row.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pro&lt;/strong&gt;: Guaranteed consistency (No retries needed).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Con&lt;/strong&gt;: Poor scalability (Other transactions must wait). Risk of &lt;strong&gt;Deadlocks&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Optimistic locking is the go-to strategy for high-throughput internet applications where actual data conflicts are rare. It preserves database performance by allowing concurrent reads and only validating the version at the final commit phase. Conversely, Pessimistic locking is reserved for critical, conflict-heavy sections like stock inventory or financial balance updates, where the cost of a physical database lock is an acceptable trade-off for the absolute guarantee of serialized access.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏢 Use-case Matrix:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-use-case-matrix&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-use-case-matrix&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Case&lt;/th&gt;
+&lt;th&gt;Best Choice&lt;/th&gt;
+&lt;th&gt;Why?&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Social Media Posts&lt;/td&gt;
+&lt;td&gt;Optimistic&lt;/td&gt;
+&lt;td&gt;Low chance of concurrent edits on same post.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Bank Account Transfer&lt;/td&gt;
+&lt;td&gt;Pessimistic&lt;/td&gt;
+&lt;td&gt;High risk of double-counting.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Product Catalog&lt;/td&gt;
+&lt;td&gt;Optimistic&lt;/td&gt;
+&lt;td&gt;Updates are infrequent.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle an Optimistic failure?&lt;/strong&gt; (Catch the exception and either inform the user &amp;ldquo;Another user changed this&amp;rdquo; or perform an automated retry.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the DB doesn&amp;rsquo;t support &lt;code&gt;FOR UPDATE&lt;/code&gt;?&lt;/strong&gt; (The JPA implementation falls back to emulating the lock or fails.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does @Version work for native queries?&lt;/strong&gt; (No, unless the native query explicitly updates the version column and checks the count.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Resilience and Retries</title>
+      <link>http://localhost:1313/spring/resilience-retries/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/resilience-retries/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you implement Retries and Circuit Breakers in Spring? What is the role of Resilience4j?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Fault-tolerant microservice communication.&lt;/li&gt;
+&lt;li&gt;Preventing cascading failures.&lt;/li&gt;
+&lt;li&gt;Understanding of the &amp;ldquo;Open/Closed/Half-Open&amp;rdquo; circuit states.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Spring Retry (Legacy but still used):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-spring-retry-legacy-but-still-used&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-spring-retry-legacy-but-still-used&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A simple &lt;code&gt;@Retryable&lt;/code&gt; annotation that calls a method again if it fails.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Easy.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: No &amp;ldquo;Circuit&amp;rdquo; logic. If the server is 100% down, &lt;code&gt;Retry&lt;/code&gt; will keep pounding it, wasting resources.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Resilience4j (Modern Standard):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-resilience4j-modern-standard&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-resilience4j-modern-standard&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The successor to Hystrix. It provides:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Circuit Breaker&lt;/strong&gt;: If failures exceed X%, the circuit &amp;ldquo;OPENS&amp;rdquo; and calls fail fast immediately (protecting the remote server and our threads).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Retry&lt;/strong&gt;: With exponential backoff.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Rate Limiter&lt;/strong&gt;: Control how many calls per second.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Bulkhead&lt;/strong&gt;: Limit concurrent calls to a specific service to prevent one slow service from eating all app threads.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In a distributed architecture, partial failures are inevitable. While a simple retry can resolve transient network blips, the combination of Spring and Resilience4j provides the necessary sophistication to protect our entire platform from cascading outages. By using a Circuit Breaker, we can fail fast when a downstream dependency is unhealthy, giving it the necessary &amp;ldquo;breathing room&amp;rdquo; to recover while providing our own users with a graceful fallback response.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Circuit:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-circuit&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-circuit&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CLOSED&lt;/strong&gt;: All good.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;OPEN&lt;/strong&gt;: Failure detected. ALL calls fail instantly.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HALF-OPEN&lt;/strong&gt;: Try a few calls to see if it&amp;rsquo;s healthy again.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Fallback&amp;rdquo; method?&lt;/strong&gt; (A method that runs if the main call fails or if the circuit is open [e.g. return cached data instead of live].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Exponential Backoff?&lt;/strong&gt; (Waiting 1s, then 2s, then 4s&amp;hellip; to avoid the &amp;ldquo;Thundering Herd&amp;rdquo; problem.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference from Hystrix?&lt;/strong&gt; (Hystrix used its own thread pool per command; Resilience4j uses the calling thread and is more functional/declarative.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Hibernate: Soft Deletes (@SQLDelete)</title>
+      <link>http://localhost:1313/spring/hibernate-soft-delete/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/hibernate-soft-delete/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you implement Soft Deletes in Spring Data JPA? What is the challenge with standard &lt;code&gt;Repository.delete()&lt;/code&gt;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Data retention policies.&lt;/li&gt;
+&lt;li&gt;Modifying standard Hibernate behavior.&lt;/li&gt;
+&lt;li&gt;Use of &lt;code&gt;@SQLDelete&lt;/code&gt; and &lt;code&gt;@Where&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We don&amp;rsquo;t actually delete the row. We set a column &lt;code&gt;deleted = true&lt;/code&gt;.&lt;/p&gt;
+&lt;h3&gt;2. The Hibernate Hooks:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-hibernate-hooks&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-hibernate-hooks&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@SQLDelete&lt;/code&gt;&lt;/strong&gt;: Overrides the default &lt;code&gt;DELETE&lt;/code&gt; SQL used by Hibernate.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;UPDATE my_table SET deleted = true WHERE id = ?&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@Where&lt;/code&gt;&lt;/strong&gt;: Automatically appends a filter to EVERY find query.
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;clause = &amp;quot;deleted = false&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;This ensures &lt;code&gt;findAll()&lt;/code&gt; doesn&amp;rsquo;t show &amp;ldquo;deleted&amp;rdquo; items.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Issue with &lt;code&gt;@Where&lt;/code&gt;:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-issue-with-where&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-issue-with-where&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;It is Global. If you actually NEED to find a deleted item for an admin view, standard repository methods won&amp;rsquo;t work because Hibernate is hard-coded to ignore them. You must use native queries or specific &lt;code&gt;Filter&lt;/code&gt; logic.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Soft deletes provide a vital safety net for user data, allowing for accidental recovery and audit history. While implementing them in Spring Data JPA is straightforward using &lt;code&gt;@SQLDelete&lt;/code&gt; and &lt;code&gt;@Where&lt;/code&gt;, a senior engineer must be mindful that standard filters can complicate administrative queries or unique constraints. By choosing between global &lt;code&gt;@Where&lt;/code&gt; filters and more granular criteria-based visibility, we can strike a balance between background transparency and selective data access.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Code Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@Entity&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@SQLDelete&lt;/span&gt;(sql &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;UPDATE user SET deleted = true WHERE id = ?&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;@Where&lt;/span&gt;(clause &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;deleted = false&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;User&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; deleted &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Unique Constraints &amp;amp; Soft Deletes?&lt;/strong&gt; (Problem: You can&amp;rsquo;t create a new user with the same email if the old &amp;ldquo;deleted&amp;rdquo; user still has it. Fix: Include &lt;code&gt;deleted&lt;/code&gt; in the unique index [email, deleted].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What about child entities?&lt;/strong&gt; (You must ensure that deleting a parent also triggers the &lt;code&gt;@SQLDelete&lt;/code&gt; logic of the children [Cascade].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is &lt;code&gt;@Where&lt;/code&gt; deprecated?&lt;/strong&gt; (In Hibernate 6.4+, it was replaced by &lt;code&gt;@FilterDef&lt;/code&gt; / &lt;code&gt;@Filter&lt;/code&gt; or &lt;code&gt;@SoftDelete&lt;/code&gt; in recent versions, which is even cleaner.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Content Negotiation</title>
+      <link>http://localhost:1313/spring/content-negotiation/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/content-negotiation/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Content Negotiation in Spring? How does it decide between JSON and XML?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of the HTTP &lt;code&gt;Accept&lt;/code&gt; header.&lt;/li&gt;
+&lt;li&gt;Message Converter logic.&lt;/li&gt;
+&lt;li&gt;Supporting multiple formats in a single API.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Request:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-request&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-request&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The client sends an &lt;code&gt;Accept&lt;/code&gt; header:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Accept: application/json&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Accept: application/xml&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Negotiation:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-negotiation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-negotiation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Spring looks at this header and tries to find a &lt;strong&gt;HttpMessageConverter&lt;/strong&gt; that can handle it.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Jackson&lt;/strong&gt; handles JSON.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;JAXB&lt;/strong&gt; handles XML.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Spring checks:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Header&lt;/strong&gt;: &lt;code&gt;Accept&lt;/code&gt; (Preferred).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Path Extension&lt;/strong&gt;: &lt;code&gt;.../user.json&lt;/code&gt; (Legacy/Optional).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Parameter&lt;/strong&gt;: &lt;code&gt;.../user?format=json&lt;/code&gt; (Optional).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Content negotiation allows a single controller method to serve diverse client needs without changing the business logic. By interpreting the &lt;code&gt;Accept&lt;/code&gt; header, Spring automatically selects the appropriate message converter to transform our domain objects into the requested format—be it JSON, XML, or even Protobuf. This flexibility is fundamental to building interoperable APIs that gracefully support a wide range of consuming platforms and legacy systems.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to make JSON default?&lt;/strong&gt; (Configure the order of converters in &lt;code&gt;WebMvcConfigurer&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What occurs if no match?&lt;/strong&gt; (Spring returns HTTP 406 &amp;ldquo;Not Acceptable&amp;rdquo;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Adding a custom converter?&lt;/strong&gt; (For example, to return CSV. Implement &lt;code&gt;AbstractHttpMessageConverter&amp;lt;T&amp;gt;&lt;/code&gt; and add it to the list.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Boot: Logging (Logback/MDC)</title>
+      <link>http://localhost:1313/spring/logging-mdc/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/logging-mdc/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you trace a single request across multiple microservices? What is MDC?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Distributed Tracing (TraceID).&lt;/li&gt;
+&lt;li&gt;Log correlation.&lt;/li&gt;
+&lt;li&gt;Understanding of Thread-Local storage for logging contexts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. MDC (Mapped Diagnostic Context):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-mdc-mapped-diagnostic-context&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-mdc-mapped-diagnostic-context&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A map managed by the logging framework (Logback/Log4j2) stored in a &lt;strong&gt;ThreadLocal&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Any value you put in MDC is automatically included in every log line for that thread.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The TraceID Workflow:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-traceid-workflow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-traceid-workflow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Filter&lt;/strong&gt;: Intercept incoming request.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Token&lt;/strong&gt;: Check if &lt;code&gt;X-Trace-ID&lt;/code&gt; exists in headers. If not, generate a new UUID.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MDC&lt;/strong&gt;: Call &lt;code&gt;MDC.put(&amp;quot;traceId&amp;quot;, uuid)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Log&lt;/strong&gt;: Every log line now says &lt;code&gt;[TRACE: abc-123] User logged in&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Propagation&lt;/strong&gt;: When calling another service, add the ID back into the header.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Cleanup:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-cleanup&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-cleanup&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;CRITICAL: You must call &lt;code&gt;MDC.clear()&lt;/code&gt; in a &lt;code&gt;finally&lt;/code&gt; block or filter to avoid the ID &amp;ldquo;leaking&amp;rdquo; to the next unrelated request when the thread is returned to the pool.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In a microservice mesh, isolated logs are almost useless without correlation. MDC provides the thread-bound storage needed to tag every log line with a unique TraceID, allowing us to reconstruct the exact path of a request through the entire stack. While MDC handles the local logging, tools like &lt;strong&gt;Spring Cloud Sleuth&lt;/strong&gt; (now Micrometer Tracing) automate the propagation of these IDs across network boundaries, turning hundreds of log files into a single, cohesive narrative.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;MDC vs ThreadLocal?&lt;/strong&gt; (MDC is built on ThreadLocal but integrated into the Logback pattern layout.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Trace vs Span?&lt;/strong&gt; (Trace is the full journey; Span is a single leg of that journey [e.g. one DB call].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MDC with @Async?&lt;/strong&gt; (ThreadLocal values don&amp;rsquo;t pass to new threads. You need a custom task decorator to &amp;ldquo;copy&amp;rdquo; the MDC context to the new thread.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Data: Specification API</title>
+      <link>http://localhost:1313/spring/jpa-specifications/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/jpa-specifications/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: When should you use the JPA Specification API instead of &lt;code&gt;@Query&lt;/code&gt;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Dynamic query building.&lt;/li&gt;
+&lt;li&gt;Reusable search logic.&lt;/li&gt;
+&lt;li&gt;Type-safety in complex filters.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. @Query (Static):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-query-static&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-query-static&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Great for a few fixed queries.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: If you have a search screen with 10 optional filters (Name, MinAge, MaxAge, City&amp;hellip;), you would need $2^{10}$ different repository methods or one giant ugly method with 10 &lt;code&gt;IF&lt;/code&gt; statements in JPQL.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Specification (Dynamic):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-specification-dynamic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-specification-dynamic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Based on the &lt;strong&gt;Criteria API&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It treats each filter as a separate &amp;ldquo;Predicate&amp;rdquo; object.&lt;/li&gt;
+&lt;li&gt;You can combine them: &lt;code&gt;specName.and(specAge).or(specCity)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pro&lt;/strong&gt;: Totally dynamic. Totally type-safe.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The Specification API is the solution for &amp;ldquo;Complex Search&amp;rdquo; scenarios where user input dictates the query structure at runtime. While standard JPQL is easier for one-off operations, Specifications allow us to build a library of reusable, atomic filter units that can be combined on-the-fly to satisfy unpredictable search criteria. This approach not only keeps our repositories clean but also provides the type-safety needed to avoid runtime SQL errors during heavy refactoring.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Code Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-code-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-code-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; Specification&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;User&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;hasName&lt;/span&gt;(String name) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; (root, query, cb) &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; cb.&lt;span style=&#34;color:#a6e22e&#34;&gt;equal&lt;/span&gt;(root.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;name&amp;#34;&lt;/span&gt;), name);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;// Usage&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;repo.&lt;span style=&#34;color:#a6e22e&#34;&gt;findAll&lt;/span&gt;(hasName(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Bob&amp;#34;&lt;/span&gt;).&lt;span style=&#34;color:#a6e22e&#34;&gt;and&lt;/span&gt;(hasAgeAbove(18)));&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Specification vs QueryDSL?&lt;/strong&gt; (QueryDSL is often preferred for superior syntax, but it requires an extra code-generation step. Specifications are native to Spring Data.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Any performance risk?&lt;/strong&gt; (Complex Criteria queries can be hard for the DB optimizer to parse if not structured carefully, but they are generally as efficient as JPQL.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Query by Example&amp;rdquo;?&lt;/strong&gt; (A simpler alternative where you provide a User object with some fields filled, and Spring searches for matches. Good for simple cases, bad for ranges or OR logic.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring: Application Event Handling</title>
+      <link>http://localhost:1313/spring/application-events/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/application-events/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you implement Event-Driven logic within a single Spring application? Explain &lt;code&gt;@EventListener&lt;/code&gt;.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Decoupling components.&lt;/li&gt;
+&lt;li&gt;Observer pattern in Spring.&lt;/li&gt;
+&lt;li&gt;Transaction-aware events (@TransactionalEventListener).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Instead of &lt;code&gt;OrderService&lt;/code&gt; calling &lt;code&gt;EmailService&lt;/code&gt; directly (Tight coupling), &lt;code&gt;OrderService&lt;/code&gt; publishes an &lt;code&gt;OrderCreatedEvent&lt;/code&gt;.&lt;/p&gt;
+&lt;h3&gt;2. The Components:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-components&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-components&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;ApplicationEventPublisher&lt;/code&gt;&lt;/strong&gt;: Used to send the event.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@EventListener&lt;/code&gt;&lt;/strong&gt;: Put on any method to receive the event.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Power of Transactional Events:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-power-of-transactional-events&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-power-of-transactional-events&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If OrderService fails after publishing, you don&amp;rsquo;t want the email sent!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;@TransactionalEventListener(phase = AFTER_COMMIT)&lt;/code&gt;&lt;/strong&gt;: The event is only sent IF the original transaction successfully saves to the database.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Application events are a critical tool for maintaining a clean, decoupled architecture within a monolith. By shifting from direct method calls to an event-based approach, we ensure that side-effects like notifications or analytics don&amp;rsquo;t clutter our core business logic. Furthermore, by using Transaction-Aware Listeners, we guarantee system consistency, ensuring that external actions are only triggered once our internal state is safely persisted to the database.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Asynchronous Events?&lt;/strong&gt; (Add &lt;code&gt;@Async&lt;/code&gt; to the listener. By default, events are processed synchronously in the same thread.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;ContextRefreshedEvent&lt;/code&gt;?&lt;/strong&gt; (A built-in event fired when the ApplicationContext is fully initialized. Great for custom warm-up logic.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Event Ordering?&lt;/strong&gt; (Use &lt;code&gt;@Order&lt;/code&gt; to decide which listener runs first.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Spring Security: OAuth2 and OIDC</title>
+      <link>http://localhost:1313/spring/oauth2-oidc-security/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/spring/oauth2-oidc-security/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between OAuth2 and OpenID Connect (OIDC)? How does Spring Security handle them?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Difference between Authorization and Identification.&lt;/li&gt;
+&lt;li&gt;Knowledge of JWT and ID Tokens.&lt;/li&gt;
+&lt;li&gt;Modern security delegation patterns.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. OAuth2 (Authorization):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-oauth2-authorization&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-oauth2-authorization&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Goal&lt;/strong&gt;: Give the app permission to access resources on the user&amp;rsquo;s behalf (e.g. &amp;ldquo;Let this app see my Google Calendar&amp;rdquo;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key&lt;/strong&gt;: &lt;strong&gt;Access Token&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. OIDC (Identification):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-oidc-identification&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-oidc-identification&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Goal&lt;/strong&gt;: Prove WHO the user is (Login). It&amp;rsquo;s a layer ON TOP of OAuth2.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Key&lt;/strong&gt;: &lt;strong&gt;ID Token&lt;/strong&gt; (Always a JWT).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Spring Security Integration:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-spring-security-integration&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-spring-security-integration&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;@EnableWebSecurity&lt;/code&gt; + &lt;code&gt;oauth2Login()&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Spring handles the &amp;ldquo;Dance&amp;rdquo;: Redirection to provider (Google/Okta), code exchange, and token validation.&lt;/li&gt;
+&lt;li&gt;It exposes the user as &lt;code&gt;OAuth2User&lt;/code&gt; or &lt;code&gt;OidcUser&lt;/code&gt; in the SecurityContext.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;While OAuth2 handles the permissions for what an application can DO, OIDC defines the standard for identifying WHO a user actually is. Spring Security simplifies this complex negotiation by managing the redirection and token verification logic out-of-the-box. For a modern enterprise architecture, offloading this responsibility to a centralized identity provider via OIDC is the most secure and scalable way to manage user access across multiple platforms.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is the &lt;code&gt;UserInfo&lt;/code&gt; endpoint?&lt;/strong&gt; (A secure URL at the provider where Spring can fetch extra user details [email, name] using the access token.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scopes?&lt;/strong&gt; (Permissions requested [e.g. &lt;code&gt;openid&lt;/code&gt;, &lt;code&gt;profile&lt;/code&gt;, &lt;code&gt;email&lt;/code&gt;].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Token Relay&amp;rdquo;?&lt;/strong&gt; (When one microservice passes its Access Token to another service to maintain the user&amp;rsquo;s authority across the network.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

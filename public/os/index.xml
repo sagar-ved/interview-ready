@@ -1230,5 +1230,1662 @@ Java: bytes received in ByteBuffer&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;he
       </description>
     </item>
     
+    <item>
+      <title>OS: Inter-Process Communication (IPC)</title>
+      <link>http://localhost:1313/os/inter-process-communication/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/inter-process-communication/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do processes communicate in Linux? Compare Pipes, Message Queues, Shared Memory, and Sockets.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Fundamental OS concepts.&lt;/li&gt;
+&lt;li&gt;Performance implications of different IPC mechanisms.&lt;/li&gt;
+&lt;li&gt;Synchronization requirements (Mutex/Semaphores).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Pipes &amp;amp; FIFOs:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-pipes--fifos&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-pipes--fifos&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Unidirectional.&lt;/li&gt;
+&lt;li&gt;Efficient for small, sequential data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Anonymous Pipes&lt;/strong&gt;: Parent/child only.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Named Pipes (FIFOs)&lt;/strong&gt;: Visible in file system, any processes can use.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Message Queues:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-message-queues&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-message-queues&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Asynchronous.&lt;/li&gt;
+&lt;li&gt;Discrete messages rather than a stream of bytes.&lt;/li&gt;
+&lt;li&gt;OS managed; survives process exit until explicitly deleted.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Shared Memory:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-shared-memory&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-shared-memory&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fastest IPC&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Two or more processes map the same physical memory segment into their virtual address spaces.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Caveat&lt;/strong&gt;: No built-in synchronization. You MUST use semaphores or mutexes to prevent race conditions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Sockets:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-sockets&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-sockets&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Bi-directional.&lt;/li&gt;
+&lt;li&gt;Works across different machines (Network sockets) or locally (Unix Domain Sockets).&lt;/li&gt;
+&lt;li&gt;Highest overhead due to network stack, but most flexible.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Shared memory is the fastest because it avoids copying data between user and kernel space. However, it requires careful synchronization. Sockets are the most versatile as they support communication between different systems. For simple producers-consumers on the same machine, Pipes are the most common choice.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Integration&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-integration&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-integration&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In Java, we typically use Sockets for IPC, but for high performance on the same machine, we can use &lt;strong&gt;MappedByteBuffer&lt;/strong&gt; (Memory Mapped Files) which acts as shared memory.&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.io.RandomAccessFile;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.nio.MappedByteBuffer;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; java.nio.channels.FileChannel;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;SharedMemoryProcessA&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;main&lt;/span&gt;(String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; args) &lt;span style=&#34;color:#66d9ef&#34;&gt;throws&lt;/span&gt; Exception {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        RandomAccessFile file &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; RandomAccessFile(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;shared.dat&amp;#34;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;rw&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        MappedByteBuffer buffer &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; file.&lt;span style=&#34;color:#a6e22e&#34;&gt;getChannel&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;map&lt;/span&gt;(FileChannel.&lt;span style=&#34;color:#a6e22e&#34;&gt;MapMode&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;READ_WRITE&lt;/span&gt;, 0, 1024);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        buffer.&lt;span style=&#34;color:#a6e22e&#34;&gt;putInt&lt;/span&gt;(0, 42); &lt;span style=&#34;color:#75715e&#34;&gt;// Write 42 at index 0&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Process A wrote 42 to shared memory.&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Forgetting that Shared Memory requires a synchronization mechanism.&lt;/li&gt;
+&lt;li&gt;Confusing Pipes with Sockets.&lt;/li&gt;
+&lt;li&gt;Thinking IPC only happens on a single machine.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a Semaphore?&lt;/strong&gt; (A signaling mechanism used to control access to shared resources.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Unix Domain Sockets vs TCP Sockets?&lt;/strong&gt; (Unix domain sockets are faster for local communication as they bypass the full TCP/IP overhead.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is D-Bus?&lt;/strong&gt; (A high-level IPC used in Linux desktops/services for message passing.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Virtual Memory and Swapping</title>
+      <link>http://localhost:1313/os/virtual-memory-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/virtual-memory-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Virtual Memory? Explain the role of Swapping and how the OS manages Page Faults.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Memory hierarchy and abstraction.&lt;/li&gt;
+&lt;li&gt;Practical understanding of hardware-software interaction (MMU, TLB).&lt;/li&gt;
+&lt;li&gt;Performance impacts of memory over-subscription.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Virtual Memory:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-virtual-memory&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-virtual-memory&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Virtual memory provides an illusion of a large, contiguous private address space for each process, decoupled from physical RAM.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Security&lt;/strong&gt;: Processes can&amp;rsquo;t access each other&amp;rsquo;s memory.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Abstraction&lt;/strong&gt;: Programmer doesn&amp;rsquo;t care about physical fragmentation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Swapping:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-swapping&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-swapping&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The OS can move inactive pages from RAM to a disk secondary storage (Swap Space) to free up RAM for active processes.&lt;/p&gt;
+&lt;h3&gt;3. Page Fault Cycle:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-page-fault-cycle&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-page-fault-cycle&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Process accesses an address.&lt;/li&gt;
+&lt;li&gt;MMU (Hardware) checks the &lt;strong&gt;Page Table&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;If page is not in RAM (Present Bit is 0), an &lt;strong&gt;Interrupt (Page Fault)&lt;/strong&gt; is triggered.&lt;/li&gt;
+&lt;li&gt;OS trap handler finds the page in swap/file.&lt;/li&gt;
+&lt;li&gt;OS selects a &amp;ldquo;Victim Page&amp;rdquo; to swap out (using algorithms like LRU).&lt;/li&gt;
+&lt;li&gt;OS reads requested page into RAM, updates Page Table, and restarts the process.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Virtual memory allows programs to use more memory than physically available. It maps virtual addresses to physical frames. When a page isn&amp;rsquo;t in memory, a page fault occurs, prompting the OS to retrieve it from disk. Excessive swapping leads to &amp;ldquo;Thrashing,&amp;rdquo; where the system spends more time moving pages than executing tasks.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Note: Direct Buffers&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-note-direct-buffers&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-note-direct-buffers&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In Java, &lt;code&gt;ByteBuffer.allocateDirect(1024)&lt;/code&gt; allocates memory outside the JVM heap. This uses the OS&amp;rsquo;s native memory management and can avoid JVM GC overhead, but is still governed by the OS&amp;rsquo;s virtual memory subsystem.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking Virtual Memory and Physical Memory are the same size.&lt;/li&gt;
+&lt;li&gt;Confusing a Page (Virtual) with a Frame (Physical).&lt;/li&gt;
+&lt;li&gt;Not understanding that SSD/HDD latency is huge compared to actual RAM.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is the TLB?&lt;/strong&gt; (Translation Lookaside Buffer: a cache for the Page Table.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Thrashing?&lt;/strong&gt; (A state where CPU is under-utilized because it&amp;rsquo;s constantly waiting for disk I/O due to swapping.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Segmented vs Paged memory?&lt;/strong&gt; (Paging uses fixed sizes; segmentation uses logical, variable sizes.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: CPU Affinity and Pinning</title>
+      <link>http://localhost:1313/os/cpu-affinity/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/cpu-affinity/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is CPU Affinity (Processor Pinning)? Why and when should you use it, and what are its drawbacks?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Deeper knowledge of OS scheduler behavior.&lt;/li&gt;
+&lt;li&gt;Cache Locality and NUMA awareness.&lt;/li&gt;
+&lt;li&gt;Real-world performance tuning for low-latency systems.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. What is CPU Affinity?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-what-is-cpu-affinity&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-what-is-cpu-affinity&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;By default, the OS scheduler moves processes between different CPU cores to balance load. CPU Affinity allows you to &amp;ldquo;pin&amp;rdquo; a process or thread to a specific set of cores.&lt;/p&gt;
+&lt;h3&gt;2. Benefits:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-benefits&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-benefits&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Cache Locality&lt;/strong&gt;: Moving a process from Core A to Core B requires fetching data from RAM back into L1/L2 caches. Pinning keeps the cache &amp;ldquo;hot.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NUMA (Non-Uniform Memory Access)&lt;/strong&gt;: In multi-socket servers, accessing memory &amp;ldquo;near&amp;rdquo; a CPU is faster than memory &amp;ldquo;far&amp;rdquo; (attached to another CPU). Affinity ensures a process stays on the CPU local to its memory allocation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deterministic Latency&lt;/strong&gt;: Prevents jitter caused by the scheduler&amp;rsquo;s migration overhead.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Drawbacks:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-drawbacks&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-drawbacks&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Imbalance&lt;/strong&gt;: If a pinned CPU is overwhelmed, it can&amp;rsquo;t &amp;ldquo;share&amp;rdquo; the load with idle neighbors.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Under-utilization&lt;/strong&gt;: Other CPUs remain idle while the pinned one is a bottleneck.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;CPU Affinity is used in high-performance computing (HFT, Databases) to maximize cache efficiency and minimize latency jitter. By restricting a thread to a specific core, we eliminate the costly cache misses associated with context switches and process migrations. However, it should be used cautiously as it disables the OS&amp;rsquo;s built-in load balancing.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Technical Note: Java and Affinity&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-technical-note-java-and-affinity&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-technical-note-java-and-affinity&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In standard Java, you can&amp;rsquo;t easily pin threads, but libraries like &lt;strong&gt;OpenHFT&amp;rsquo;s JavaThreadAffinity&lt;/strong&gt; bridge this gap.&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Linux command to pin a process to core 0 and 1&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;taskset -c 0,1 java -jar myapp.jar&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Pinning every single process (defeats load balancing).&lt;/li&gt;
+&lt;li&gt;Not understanding the difference between a Physical Core and a Logical/Hyper-threaded core.&lt;/li&gt;
+&lt;li&gt;Ignoring the impacts of interrupt handling on the pinned core.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Context Switching?&lt;/strong&gt; (The process of saving and restoring the state of a CPU so that multiple processes can share it.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is SMP?&lt;/strong&gt; (Symmetric Multi-Processing.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does the CFS scheduler work?&lt;/strong&gt; (Completely Fair Scheduler used in Linux.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Fork vs. Exec (Copy-on-Write)</title>
+      <link>http://localhost:1313/os/fork-vs-exec/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/fork-vs-exec/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between &lt;code&gt;fork()&lt;/code&gt; and &lt;code&gt;exec()&lt;/code&gt;? Explain how Copy-on-Write (COW) makes forking efficient.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Low-level process creation in Unix.&lt;/li&gt;
+&lt;li&gt;Memory management efficiency.&lt;/li&gt;
+&lt;li&gt;Understanding of child/parent process relationships.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. fork():&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-fork&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-fork&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Creates a &lt;strong&gt;brand new process&lt;/strong&gt; that is an exact duplicate of the parent.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Return value&lt;/strong&gt;: 0 in the child, PID of child in the parent.&lt;/li&gt;
+&lt;li&gt;Both processes continue from the point of the &lt;code&gt;fork()&lt;/code&gt; call.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Copy-on-Write (COW):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-copy-on-write-cow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-copy-on-write-cow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Naively copying a 4GB process during &lt;code&gt;fork()&lt;/code&gt; is too slow.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Instead, both parent and child initially share the &lt;strong&gt;same physical memory pages&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;These pages are marked as &amp;ldquo;Read-Only&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Only when either process attempts to &lt;strong&gt;write&lt;/strong&gt; to a page, a hardware interrupt occurs and the OS creates a separate copy of that page for the writer.&lt;/li&gt;
+&lt;li&gt;This results in near-instant process creation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. exec():&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-exec&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-exec&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Replaces&lt;/strong&gt; the current process image with a new program.&lt;/li&gt;
+&lt;li&gt;It doesn&amp;rsquo;t create a new process; it transforms the caller into the new program (new code, new heap, new stack).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Return value&lt;/strong&gt;: None on success (it never returns to the old code).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;fork()&lt;/code&gt; creates a clone of the current process, while &lt;code&gt;exec()&lt;/code&gt; replaces the current process with a different binary. COW makes &lt;code&gt;fork()&lt;/code&gt; extremely efficient because memory is shared until a modification is needed. In a typical shell command, a shell &lt;code&gt;forks&lt;/code&gt; a child, which then immediately &lt;code&gt;execs&lt;/code&gt; the target program.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Visual / Conceptual Flow&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual--conceptual-flow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual--conceptual-flow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;1. Shell (PID 100) calls fork().
+2. Child (PID 101) created (sharing memory via COW).
+3. Child (PID 101) calls exec(&amp;#34;ls&amp;#34;).
+4. PID 101&amp;#39;s memory is replaced with the &amp;#34;LS&amp;#34; program.&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking &lt;code&gt;fork()&lt;/code&gt; replaces the code.&lt;/li&gt;
+&lt;li&gt;Thinking COW only applies to files (it&amp;rsquo;s for RAM pages).&lt;/li&gt;
+&lt;li&gt;Forgetting that open file descriptors are shared between parent and child.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a Zombie Process?&lt;/strong&gt; (A process that has finished but its parent hasn&amp;rsquo;t yet &amp;ldquo;waited&amp;rdquo; to read its exit status.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;vfork()&lt;/code&gt;?&lt;/strong&gt; (An older, less-safe optimization where the parent is blocked until the child execs or exits — sharing memory directly without COW.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does standard output work across fork?&lt;/strong&gt; (They share the same underlying file offset, so if one writes, the other&amp;rsquo;s pointer moves.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Zombie vs. Orphan Processes</title>
+      <link>http://localhost:1313/os/zombie-orphan/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/zombie-orphan/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between a Zombie and an Orphan process? How do you eliminate each?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Unix process lifecycle.&lt;/li&gt;
+&lt;li&gt;Monitoring system resources (&lt;code&gt;top&lt;/code&gt;, &lt;code&gt;ps&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Signal handling (&lt;code&gt;SIGCHLD&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Zombie Process:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-zombie-process&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-zombie-process&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;A process that has &lt;strong&gt;completed execution&lt;/strong&gt; but still has an entry in the &lt;strong&gt;process table&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reason&lt;/strong&gt;: The parent hasn&amp;rsquo;t called &lt;code&gt;wait()&lt;/code&gt; or &lt;code&gt;waitpid()&lt;/code&gt; to read the exit status of the child.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resource Usage&lt;/strong&gt;: No CPU or RAM, but it consumes a PID. If too many exist, no more processes can be created.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fix&lt;/strong&gt;: The parent must wait for its children. If the parent is &amp;ldquo;broken,&amp;rdquo; you must kill the &lt;strong&gt;parent&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Orphan Process:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-orphan-process&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-orphan-process&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;A process whose &lt;strong&gt;parent has died&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reason&lt;/strong&gt;: The child outlives its parent.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fix&lt;/strong&gt;: The OS automatically &amp;ldquo;re-parents&amp;rdquo; the orphan to &lt;strong&gt;init (PID 1)&lt;/strong&gt;. &lt;code&gt;init&lt;/code&gt; is responsible for waiting on its adopted children.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resource Usage&lt;/strong&gt;: Normal.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A zombie is a dead process waiting for its parent to acknowledge it. An orphan is a line process that lost its parent and was adopted by &lt;code&gt;init&lt;/code&gt;. You &amp;ldquo;kill&amp;rdquo; a zombie by killing its parent (so it gets adopted by &lt;code&gt;init&lt;/code&gt;). Orphans are a normal part of background execution (daemons).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Monitoring (Shell)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-monitoring-shell&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-monitoring-shell&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Find zombie processes (Z status)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ps aux | grep &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Z&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Count zombies&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ps -ef | grep defunct | grep -v grep | wc -l&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Trying to &lt;code&gt;kill -9&lt;/code&gt; a zombie (you can&amp;rsquo;t kill what&amp;rsquo;s already dead).&lt;/li&gt;
+&lt;li&gt;Thinking orphans are a memory leak.&lt;/li&gt;
+&lt;li&gt;Describing a zombie as a &amp;ldquo;background process&amp;rdquo; (that&amp;rsquo;s a daemon).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;waitpid()&lt;/code&gt;?&lt;/strong&gt; (A system call that stops the parent until a specific child finishes.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;defunct&amp;rdquo; process?&lt;/strong&gt; (Another name for a zombie.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the init process?&lt;/strong&gt; (The first process started by the kernel, responsible for cleaning up orphans.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Virtualization vs. Containerization</title>
+      <link>http://localhost:1313/os/virtualization-vs-containers/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/virtualization-vs-containers/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between a Virtual Machine (VM) and a Container? How does Docker achieve isolation?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Cloud infrastructure conceptual basics.&lt;/li&gt;
+&lt;li&gt;Linux Kernels features (Namespaces, Cgroups).&lt;/li&gt;
+&lt;li&gt;Overhead and performance trade-offs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Virtual Machines (VMs):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-virtual-machines-vms&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-virtual-machines-vms&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hardware Virtualization&lt;/strong&gt;: Uses a &lt;strong&gt;Hypervisor&lt;/strong&gt; to carve out virtual hardware.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Guest OS&lt;/strong&gt;: Each VM has its own full OS kernel, drivers, and binaries.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Isolation&lt;/strong&gt;: High (hardware-level separation).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overhead&lt;/strong&gt;: Significant RAM and CPU usage for the guest OS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Containers (e.g., Docker):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-containers-eg-docker&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-containers-eg-docker&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;OS Virtualization&lt;/strong&gt;: Containers share the &lt;strong&gt;Host OS Kernel&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;User Space&lt;/strong&gt;: Containers only package the specific libraries and binaries needed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Isolation&lt;/strong&gt;: Moderate (namespaced kernel resources).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Overhead&lt;/strong&gt;: Near-zero. Processes run at native speed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Docker Internals (The &amp;ldquo;Magic&amp;rdquo;):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-docker-internals-the-magic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-docker-internals-the-magic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Namespaces&lt;/strong&gt;: Isolates what a process can &lt;strong&gt;see&lt;/strong&gt; (PID, Networking, Mount points).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cgroups (Control Groups)&lt;/strong&gt;: Limits what a process can &lt;strong&gt;use&lt;/strong&gt; (CPU, RAM, Disk I/O).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Union File System (AUFS/Overlay2)&lt;/strong&gt;: Layers image files for efficient storage.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;VMs virtualize the entire machine down to the hardware, providing strong isolation but high overhead. Containers virtualize the operating system, sharing the host kernel while using Linux Namespaces and Cgroups to provide process-level isolation. Containers are faster to start and more resource-efficient, making them ideal for microservices.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Layer Comparison:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-layer-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-layer-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Aspect&lt;/th&gt;
+&lt;th&gt;Virtual Machines&lt;/th&gt;
+&lt;th&gt;Containers&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;OS&lt;/td&gt;
+&lt;td&gt;Full Guest OS&lt;/td&gt;
+&lt;td&gt;Shared Host Kernel&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Startup&lt;/td&gt;
+&lt;td&gt;Minutes&lt;/td&gt;
+&lt;td&gt;Seconds&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Storage&lt;/td&gt;
+&lt;td&gt;GigaBytes&lt;/td&gt;
+&lt;td&gt;MegaBytes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Isolation&lt;/td&gt;
+&lt;td&gt;Hardware (Strong)&lt;/td&gt;
+&lt;td&gt;Process-level (Moderate)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking Docker is a &amp;ldquo;lightweight VM&amp;rdquo;. (It&amp;rsquo;s not, it doesn&amp;rsquo;t have a hypervisor).&lt;/li&gt;
+&lt;li&gt;Neglecting the security implications of sharing a kernel (if the kernel is cracked, all containers are exposed).&lt;/li&gt;
+&lt;li&gt;Misunderstanding how Docker images are layered.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Kubernetes (K8s)?&lt;/strong&gt; (An orchestrator for managing large-scale container deployments.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can a Windows container run on Linux?&lt;/strong&gt; (No, unless using a WSL2 compatibility layer.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Distroless&amp;rdquo; image?&lt;/strong&gt; (A container image containing only the application, not even a shell, to reduce attack surface.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Thrashing and Inverted Page Tables</title>
+      <link>http://localhost:1313/os/thrashing-and-page-tables/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/thrashing-and-page-tables/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Thrashing in Operating Systems? Explain the &amp;ldquo;Working Set&amp;rdquo; model and Inverted Page Tables.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Memory management at the breaking point.&lt;/li&gt;
+&lt;li&gt;Understanding of the locality of reference.&lt;/li&gt;
+&lt;li&gt;Modern page table optimizations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Thrashing:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-thrashing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-thrashing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Thrashing occurs when the OS spends more time &lt;strong&gt;swapping pages&lt;/strong&gt; in and out of disk than executing instructions.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Happens when the total &amp;ldquo;Working Set&amp;rdquo; of all processes exceeds physical RAM.&lt;/li&gt;
+&lt;li&gt;CPU utilization drops because all processes are blocked waiting for disk I/O.&lt;/li&gt;
+&lt;li&gt;OS might wrongly believe CPU is idle and start &lt;em&gt;more&lt;/em&gt; processes, making the problem worse!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Working Set Model:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-working-set-model&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-working-set-model&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The set of pages a process has referenced in its most recent $\Delta$ time units.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If $Sum(\text{Working Sets}) &amp;gt; \text{Total RAM}$, Thrashing will occur.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Inverted Page Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-inverted-page-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-inverted-page-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Standard Page Tables store one entry per page of virtual memory (huge!).
+&lt;strong&gt;Inverted Page Table&lt;/strong&gt; stores one entry per &lt;strong&gt;frame of physical memory&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Index = Physical Frame.&lt;/li&gt;
+&lt;li&gt;Entry = &lt;code&gt;(Process ID, Page Number)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PRO&lt;/strong&gt;: Saves massive memory on huge systems.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;CON&lt;/strong&gt;: Search is harder (solved with a Hash Table wrapper).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Thrashing is a performance collapse caused by the OS over-paging. We prevent it by monitoring the working set of each process and using page fault frequency to adjust resource allocation. On systems with huge address spaces (64-bit), inverted page tables are used to keep the overhead of memory accounting minimal.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Resident Set&amp;rdquo;?&lt;/strong&gt; (The actual physical pages currently in RAM for a process.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Demand Paging?&lt;/strong&gt; (Only loading pages into memory when they are actually accessed/faulted.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a Dirty bit?&lt;/strong&gt; (Bit in page table indicating if a page was modified; if so, it must be written to disk before being swapped out.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Context Switching Overhead</title>
+      <link>http://localhost:1313/os/context-switching-internals/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/context-switching-internals/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What exactly happens during a Context Switch? How do you measure its overhead, and how can it be minimized?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Deeper understanding of CPU and OS interaction.&lt;/li&gt;
+&lt;li&gt;Impact on caches (L1/L2).&lt;/li&gt;
+&lt;li&gt;Thread-heavy vs Process-heavy architectures.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Sequence:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-sequence&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-sequence&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Trap&lt;/strong&gt;: CPU is interrupted.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Save State&lt;/strong&gt;: Save current registers, stack pointer, and Program Counter (PC) into the current process&amp;rsquo;s &lt;strong&gt;PCB (Process Control Block)&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scheduler&lt;/strong&gt;: OS picks the next process.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Load State&lt;/strong&gt;: Restore registers, stack, and PC from the new process&amp;rsquo;s PCB.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resume&lt;/strong&gt;: CPU starts execution.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;2. The Invisible Cost (Cache Invalidation):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-invisible-cost-cache-invalidation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-invisible-cost-cache-invalidation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The direct cost of saving/loading registers is tiny (~1-5 microseconds). The BIG cost is that the new process&amp;rsquo;s data isn&amp;rsquo;t in the &lt;strong&gt;L1/L2 caches&lt;/strong&gt; or the &lt;strong&gt;TLB&lt;/strong&gt;. The CPU must wait to fetch data from the slower RAM.&lt;/p&gt;
+&lt;h3&gt;3. Measuring Overhead:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-measuring-overhead&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-measuring-overhead&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Use tools like &lt;code&gt;vmstat&lt;/code&gt; or &lt;code&gt;perf&lt;/code&gt; on Linux.&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;vmstat &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; &lt;span style=&#34;color:#75715e&#34;&gt;# Look for &amp;#39;cs&amp;#39; (context switches) column&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Context switching is the process of delegating CPU time between tasks. While the state-saving logic is fast, the primary performance penalty comes from the &amp;ldquo;warming up&amp;rdquo; of CPU caches for the new task. To minimize this, we can use non-blocking I/O (like Nginx) or user-space thread models (like Go&amp;rsquo;s goroutines) that don&amp;rsquo;t require full OS-level context switches.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Thread vs Process:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-thread-vs-process&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-thread-vs-process&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Thread Context Switch&lt;/strong&gt;: Same address space; Page Table remains the same. Faster.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Process Context Switch&lt;/strong&gt;: Change address space; Page Table (and TLB) must be flushed. Slower.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Voluntary&amp;rdquo; vs &amp;ldquo;Involuntary&amp;rdquo; context switch?&lt;/strong&gt; (Voluntary: waiting on I/O. Involuntary: time slice expired.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How do Goroutines (Go) or Virtual Threads (Java 21) help?&lt;/strong&gt; (They move context switching to &amp;ldquo;user-space,&amp;rdquo; avoiding expensive kernel entries.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &lt;code&gt;sched_yield&lt;/code&gt; syscall?&lt;/strong&gt; (A way for a process to voluntarily give up the CPU.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Hard Links vs. Soft Links</title>
+      <link>http://localhost:1313/os/hard-vs-soft-links/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/hard-vs-soft-links/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between a Hard Link and a Soft Link (Symbolic Link)? Explain their internal representation in the Inode table.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Internal file system organization.&lt;/li&gt;
+&lt;li&gt;Relationship between filenames and Inodes.&lt;/li&gt;
+&lt;li&gt;Handling of file deletion and cross-system linking.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Inodes Recap:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-inodes-recap&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-inodes-recap&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;An Inode stores metadata and addresses of data blocks. It DOES NOT store the filename.&lt;/p&gt;
+&lt;h3&gt;2. Hard Link:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-hard-link&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-hard-link&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Multiple filenames pointing to the &lt;strong&gt;SAME Inode&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Since they point to the same object, they share permissions, timestamps, and data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Constraint&lt;/strong&gt;: Cannot link across different file systems. Cannot link directories.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deletion&lt;/strong&gt;: Increment/decrement the &amp;ldquo;Link Count&amp;rdquo; in the inode. The file is only deleted when count reaches &lt;strong&gt;0&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Soft Link (Symlink):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-soft-link-symlink&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-soft-link-symlink&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;A special file that contains a &lt;strong&gt;string&lt;/strong&gt; of another file&amp;rsquo;s path.&lt;/li&gt;
+&lt;li&gt;It has its own unique Inode.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Can link across file systems and can link directories.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deletion&lt;/strong&gt;: If the original file is deleted, the symlink becomes &amp;ldquo;Dangling&amp;rdquo; (it points to a path that doesn&amp;rsquo;t exist).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A hard link is a second name for the same physical data (inode); deleting one doesn&amp;rsquo;t affect the other until the last one is gone. A soft link is a shortcut containing a path; if the destination moves or is deleted, the link breaks. Hard links are more performant and robust for local files, while soft links are more flexible across the system.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Manual Check (Shell)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-manual-check-shell&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-manual-check-shell&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Create hard link&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ln file.txt hard.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ls -i &lt;span style=&#34;color:#75715e&#34;&gt;# See same inode number&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# Create soft link&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ln -s file.txt soft.txt
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;ls -i &lt;span style=&#34;color:#75715e&#34;&gt;# See different inode number&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can you hard link a directory?&lt;/strong&gt; (Generally no, because it can create circular loops that break filesystem traversal tools.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What happens if you move the original file?&lt;/strong&gt; (Hard link still works; soft link breaks.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Dangling&amp;rdquo; pointer?&lt;/strong&gt; (In this context, a symlink whose target no longer exists.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Disk Scheduling (SCAN vs. C-SCAN)</title>
+      <link>http://localhost:1313/os/disk-scheduling-algorithms/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/disk-scheduling-algorithms/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain Disk Scheduling algorithms: FCFS, SSTF, SCAN, and C-SCAN. Which one avoids &amp;ldquo;Starvation&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Minimizing Disk Seek time (the slow part of HDDs).&lt;/li&gt;
+&lt;li&gt;Handling fairness in I/O requests.&lt;/li&gt;
+&lt;li&gt;Impact of the &amp;ldquo;Elevator&amp;rdquo; approach.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. FCFS (First Come First Served):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-fcfs-first-come-first-served&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-fcfs-first-come-first-served&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Wildly inefficient. The motor has to move back and forth across the entire disk platter.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. SSTF (Shortest Seek Time First):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-sstf-shortest-seek-time-first&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-sstf-shortest-seek-time-first&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Always pick the request closest to the current head position.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: &lt;strong&gt;Starvation&lt;/strong&gt;. If new requests keep arriving near the head, a request far away might wait forever.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. SCAN (The Elevator):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-scan-the-elevator&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-scan-the-elevator&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: The head moves from one end of the disk to the other, servicing all requests in its path, then reverses.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: More fair. Good for throughput.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. C-SCAN (Circular SCAN):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-c-scan-circular-scan&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-c-scan-circular-scan&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: The head moves from one end to the other, then &lt;strong&gt;snaps back to the start&lt;/strong&gt; without servicing requests on the way back.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: More uniform waiting time. A request at the start won&amp;rsquo;t have to wait for the head to go all the way to the end AND all the way back.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Disk scheduling prioritizes reducing mechanical movement. While simple greedy approaches like SSTF offer high throughput, they suffer from starvation issues. SCAN and C-SCAN algorithms (known as elevator algorithms) provide a fair, predictable service cycle that ensures all sectors are eventually reached without wasting energy on excessive directional reversals.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Performance Hierarchy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-performance-hierarchy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-performance-hierarchy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Throughput&lt;/strong&gt;: SSTF &amp;gt; SCAN &amp;gt; FCFS&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fairness&lt;/strong&gt;: FCFS &amp;gt; C-SCAN &amp;gt; SCAN &amp;gt; SSTF&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Are these algorithms relevant for SSDs?&lt;/strong&gt; (No. SSDs have no moving parts and $O(1)$ access time regardless of location. SSD schedulers focus on wear-leveling and write-amplification.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is LOOK / C-LOOK?&lt;/strong&gt; (A variation of SCAN that reverses as soon as there are no more requests in that direction, rather than going to the very edge of the disk.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Disk &amp;ldquo;Seek Latency&amp;rdquo;?&lt;/strong&gt; (The time it takes for the mechanical arm to move to the correct track.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Rotational Latency?&lt;/strong&gt; (The time it takes for the disk to spin until the correct segment is under the head.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Page Table Entry (PTE) Bits</title>
+      <link>http://localhost:1313/os/page-table-entry-bits/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/page-table-entry-bits/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What bits are found in a Page Table Entry (PTE)? Explain the purpose of the Present, Dirty, and Referenced bits.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Low-level memory management hardware details.&lt;/li&gt;
+&lt;li&gt;How the OS tracks page state for paging/caching.&lt;/li&gt;
+&lt;li&gt;Security and protection at the page level.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Frame Number:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-frame-number&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-frame-number&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The address of the actual physical block in RAM.&lt;/p&gt;
+&lt;h3&gt;2. Control Bits:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-control-bits&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-control-bits&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Present (P)&lt;/strong&gt;: 1 if the page is in RAM; 0 if it&amp;rsquo;s in swap (accessing a 0-bit page causes a &lt;strong&gt;Page Fault&lt;/strong&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Read/Write (R/W)&lt;/strong&gt;: 0 signifies Read-Only (used for code or COW pages).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;User/Supervisor (U/S)&lt;/strong&gt;: Prevents user processes from accessing kernel mapping pages.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dirty (D)&lt;/strong&gt;: Set to 1 by the hardware when a page is written to. If the page is &amp;ldquo;Dirty,&amp;rdquo; it must be written to disk before being cleared from RAM.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Accessed/Referenced (A)&lt;/strong&gt;: Set when a page is read or written. Used by page replacement algorithms (like LRU) to find &amp;ldquo;cold&amp;rdquo; pages.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A Page Table Entry is a bit-structure in memory that instructions the CPU&amp;rsquo;s MMU on how to translate an address. Its control bits allow the OS to perform critical tasks: the &amp;ldquo;Present&amp;rdquo; bit triggers swapping, the &amp;ldquo;Dirty&amp;rdquo; bit ensures data isn&amp;rsquo;t lost on reclamation, and the &amp;ldquo;R/W&amp;rdquo; bit protects code from being overwritten.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Structure:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-structure&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-structure&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[ Physical Frame ID | U/S | R/W | P | D | A | ... ]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Page Fault&amp;rdquo;?&lt;/strong&gt; (An interrupt triggered when a CPU accesses a page with the Present bit set to 0.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How is the Dirty bit used in SSDs?&lt;/strong&gt; (Helps decide if a block needs to be wear-leveled or written back.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;NX&amp;rdquo; (No-Execute)?&lt;/strong&gt; (A bit that prevents the CPU from executing code from the data stack/heap — prevents many malware attacks.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Translation Lookaside Buffer (TLB)</title>
+      <link>http://localhost:1313/os/tlb-internals/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/tlb-internals/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the TLB? How does it speed up address translation, and what happens during a Context Switch?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Advanced hardware/OS interactions.&lt;/li&gt;
+&lt;li&gt;Solving the &amp;ldquo;Two RAM accesses for one piece of data&amp;rdquo; problem.&lt;/li&gt;
+&lt;li&gt;Impact of multi-core and multi-process design on hardware caches.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Bottleneck:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-bottleneck&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-bottleneck&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;To read one byte of virtual memory, the CPU must:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Read the &lt;strong&gt;Page Table&lt;/strong&gt; from RAM (to get the physical address).&lt;/li&gt;
+&lt;li&gt;Read the &lt;strong&gt;Actual Data&lt;/strong&gt; from RAM.
+This doubles the memory access time.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;2. The Solution (TLB):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-solution-tlb&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-solution-tlb&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A tiny, extremely fast &lt;strong&gt;hardware cache&lt;/strong&gt; inside the MMU (Memory Management Unit) that stores the most recent &lt;code&gt;(Virtual Page -&amp;gt; Physical Frame)&lt;/code&gt; mappings.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TLB Hit&lt;/strong&gt;: Address translation happens in nanoseconds.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLB Miss&lt;/strong&gt;: The CPU must do a &amp;ldquo;Page Walk&amp;rdquo; in RAM (slow).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Context Switches:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-context-switches&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-context-switches&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When you switch to a new process, its virtual addresses map to different physical locations.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Flushing&lt;/strong&gt;: Traditionally, the TLB is flushed completely on a context switch.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Optimization (ASID)&lt;/strong&gt;: Modern CPUs tag entries with an &amp;ldquo;Address Space ID&amp;rdquo; so multiple processes can share the TLB without a flush.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The TLB is a high-speed cache that eliminates the performance penalty of virtual memory translation. Without it, every memory access would be twice as slow due to page table lookups. Efficient TLB management, including the use of Address Space IDs to avoid constant flushes, is a cornerstone of modern high-performance OS kernels.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Superpage&amp;rdquo; (Huge Pages)?&lt;/strong&gt; (Using pages larger than 4KB [e.g. 2MB] to cover more memory with a single TLB entry, reducing misses.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Tlb Shootdown&amp;rdquo;?&lt;/strong&gt; (In multi-core systems, when one core changes a page mapping, it must tell other cores to invalidate their TLBs — very expensive!)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the typical size of a TLB?&lt;/strong&gt; (Very small, often 64 to 1024 entries.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is TLB part of L1 cache?&lt;/strong&gt; (No, it&amp;rsquo;s separate hardware specifically for address translation.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Segments vs. Pages</title>
+      <link>http://localhost:1313/os/paging-vs-segmentation/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/paging-vs-segmentation/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Segmentation and Paging. Which is better for the programmer, and which is better for the OS?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Conceptual models of memory.&lt;/li&gt;
+&lt;li&gt;Fix vs Variable size allocation.&lt;/li&gt;
+&lt;li&gt;Understanding of &amp;ldquo;Internal&amp;rdquo; vs &amp;ldquo;External&amp;rdquo; fragmentation tradeoffs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Paging (OS-centric):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-paging-os-centric&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-paging-os-centric&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fixed-size&lt;/strong&gt;: Memory is split into equal pages (usually 4KB).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Invisible&lt;/strong&gt;: The programmer doesn&amp;rsquo;t know about it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fragmentation&lt;/strong&gt;: Suffers from &lt;strong&gt;Internal Fragmentation&lt;/strong&gt; (the last few bytes of a page).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Perfectly solves external fragmentation. Simple hardware.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Segmentation (Programmer-centric):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-segmentation-programmer-centric&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-segmentation-programmer-centric&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Variable-size&lt;/strong&gt;: Memory is split according to the logical segments of a program (Code, Stack, Heap, Shared Libs).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Visible&lt;/strong&gt;: The programmer sees different address spaces for different logic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fragmentation&lt;/strong&gt;: Suffers from &lt;strong&gt;External Fragmentation&lt;/strong&gt; (holes between segments).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Natural way to implement protection (e.g., Code = Read-Only, Stack = No-Execute).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Combined Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-combined-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-combined-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Most modern OSes use &lt;strong&gt;Segmentation over Paging&lt;/strong&gt;. You define logical segments (Segments), and each segment is internally divided into fixed-size pages (Paging).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Paging is a hardware-optimized solution that eliminates external fragmentation by using rigid, fixed blocks. Segmentation is a logically-optimized solution that follows the natural structure of a program&amp;rsquo;s sections. Modern systems combine them, using segments for protection and permission logic, while using pages for the actual physical memory management.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Comparison Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-comparison-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-comparison-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feature&lt;/th&gt;
+&lt;th&gt;Paging&lt;/th&gt;
+&lt;th&gt;Segmentation&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Size&lt;/td&gt;
+&lt;td&gt;Fixed&lt;/td&gt;
+&lt;td&gt;Variable&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Fragmentation&lt;/td&gt;
+&lt;td&gt;Internal&lt;/td&gt;
+&lt;td&gt;External&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Programmer View&lt;/td&gt;
+&lt;td&gt;Invisible&lt;/td&gt;
+&lt;td&gt;Logical sections&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Hardware support&lt;/td&gt;
+&lt;td&gt;Easy&lt;/td&gt;
+&lt;td&gt;Complex&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Segment Fault&amp;rdquo;?&lt;/strong&gt; (Accessing a segment that doesn&amp;rsquo;t exist or violates permissions — the origin of &lt;code&gt;Segfault&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can a page be shared between processes?&lt;/strong&gt; (Yes, easily, like shared libraries.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Linear Address Space&amp;rdquo;?&lt;/strong&gt; (The unified view of memory before it&amp;rsquo;s mapped to physical pages.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Page Replacement - LRU vs. Clock</title>
+      <link>http://localhost:1313/os/page-replacement-algorithms/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/page-replacement-algorithms/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is LRU Page Replacement? Explain why the &amp;ldquo;Clock Algorithm&amp;rdquo; is used in modern OSes to approximate LRU.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Memory management efficiency.&lt;/li&gt;
+&lt;li&gt;Hardware-software coordination.&lt;/li&gt;
+&lt;li&gt;Approximating complex algorithms with simpler data structures.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Ideal: LRU (Least Recently Used):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-ideal-lru-least-recently-used&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-ideal-lru-least-recently-used&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Discard the page that hasn&amp;rsquo;t been used for the longest time.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hardware cost&lt;/strong&gt;: Maintaining a truly sorted list of every page access in a busy CPU is &lt;strong&gt;too slow&lt;/strong&gt;. Every instruction would need to update a linked list.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Solution: Clock Algorithm (Second Chance):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-solution-clock-algorithm-second-chance&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-solution-clock-algorithm-second-chance&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Uses a &lt;strong&gt;single &amp;ldquo;Accessed/Referenced&amp;rdquo; bit&lt;/strong&gt; in the Page Table.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Arrange pages in a circular list. A &amp;ldquo;hand&amp;rdquo; points to the current page.&lt;/li&gt;
+&lt;li&gt;If a page is faulted:
+&lt;ul&gt;
+&lt;li&gt;If the bit = 1: Set it to 0 and move the hand to the next (Giving it a &lt;strong&gt;Second Chance&lt;/strong&gt;).&lt;/li&gt;
+&lt;li&gt;If the bit = 0: &lt;strong&gt;Replace this page&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;This effectively lets frequently used pages stay in memory while sweeping out &amp;ldquo;cold&amp;rdquo; pages.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Pure LRU is too expensive for high-speed memory management. Modern OSes use the Clock algorithm, which approximates LRU by using a simple hardware &amp;ldquo;reference bit.&amp;rdquo; This allows the kernel to identify inactive pages with minimal overhead, ensuring that active processes keep their most critical data in RAM while inactive ones are gradually swapped out.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Page A (1) -&amp;gt; Page B (0) -&amp;gt; Page C (1)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Hand on B? B is evicted.&lt;/li&gt;
+&lt;li&gt;Hand on A? A set to (0), hand moves to B.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Belady&amp;rsquo;s Anomaly?&lt;/strong&gt; (In some algorithms like FIFO, adding more RAM can actually result in MORE page faults. LRU does not suffer from this.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LRU vs LFU (Least Frequently Used)?&lt;/strong&gt; (LFU tracks count; poor for temporal locality.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Dirty&amp;rdquo; bit influence?&lt;/strong&gt; (Modern clock algorithms prioritize evicting bit=0 [clean] pages over bit=1 [dirty] pages, because clean pages don&amp;rsquo;t need to be written to disk.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Stepping through a Page Fault</title>
+      <link>http://localhost:1313/os/page-fault-lifecycle/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/page-fault-lifecycle/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What happens step-by-step when a Page Fault occurs?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Hardware-Kernel context switching.&lt;/li&gt;
+&lt;li&gt;Disk I/O interaction with memory.&lt;/li&gt;
+&lt;li&gt;TLB and Page Table updates.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Hardware Detection&lt;/strong&gt;: The CPU (MMU) checks a virtual address in the Page Table and finds the &amp;ldquo;Present&amp;rdquo; bit is 0.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Trap&lt;/strong&gt;: The CPU generates a hardware interrupt and traps to the Kernel.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Save Context&lt;/strong&gt;: The OS saves current process state (registers, PC).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Identify Fault&lt;/strong&gt;: OS checks internal tables (Disk map) to find which page was needed and where it is on disk.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Disk I/O&lt;/strong&gt;: OS issues a read request to the disk. &lt;strong&gt;The process is blocked.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;I/O Completion&lt;/strong&gt;: Disk finishes. OS picks a physical frame to put the data (might involve evicting another page via LRU).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Update Tables&lt;/strong&gt;: OS copies data to RAM, updates the Page Table (Present=1), and invalidates any stale TLB entries.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resume&lt;/strong&gt;: OS restores the process&amp;rsquo;s context and &lt;strong&gt;re-executes&lt;/strong&gt; the exact instruction that failed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A page fault is a precise bridge between virtual abstraction and physical reality. It involves a sophisticated dance between hardware-level traps and kernel-level I/O management. The most critical part is that the faulted instruction is re-run from scratch after the data has been silently swapped into RAM, making virtual memory appear seamless to the application.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Sequence:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-sequence&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-sequence&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;MMU Check -&amp;gt; Trap -&amp;gt; Save -&amp;gt; Disk Seek -&amp;gt; Write to RAM -&amp;gt; Update Table -&amp;gt; Restart Instruction&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Minor&amp;rdquo; vs &amp;ldquo;Major&amp;rdquo; page fault?&lt;/strong&gt; (Minor: Page is in RAM but not in this process&amp;rsquo;s table [e.g. shared lib]; Major: Requires Disk read.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an Invalid Page Fault?&lt;/strong&gt; (Accessing random memory that doesn&amp;rsquo;t belong to you — results in a Segmentation Fault.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does the OS choose which page to evict?&lt;/strong&gt; (Using Page Replacement Algorithms like Clock or LRU.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Multilevel Paging</title>
+      <link>http://localhost:1313/os/multilevel-paging/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/multilevel-paging/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Multilevel Paging? Why is it much better than Single-level paging for large address spaces?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Space efficiency in memory management.&lt;/li&gt;
+&lt;li&gt;Solving the &amp;ldquo;Huge Page Table&amp;rdquo; problem.&lt;/li&gt;
+&lt;li&gt;Impact on TLB misses.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The 32-bit Single-Level Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-32-bit-single-level-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-32-bit-single-level-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A 32-bit address space (4GB) with 4KB pages needs $4\text{GB} / 4\text{KB} = 1\text{ Million}$ page table entries.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Each entry is 4 bytes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Total Table Size&lt;/strong&gt;: 4MB per process.&lt;/li&gt;
+&lt;li&gt;This table must reside in RAM &lt;strong&gt;contiguously&lt;/strong&gt;!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The 64-bit Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-64-bit-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-64-bit-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A 64-bit space requires a Page Table so huge it would fill the entire RAM.&lt;/p&gt;
+&lt;h3&gt;3. The Multilevel Solution:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-multilevel-solution&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-multilevel-solution&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Instead of one giant table, we use a hierarchy (Tree).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Directory&lt;/strong&gt;: Points to smaller page tables.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Page Table&lt;/strong&gt;: Points to actual frames.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefits&lt;/strong&gt;:
+&lt;ol&gt;
+&lt;li&gt;We only allocate memory for parts of the table that are &lt;strong&gt;currently used&lt;/strong&gt; (the tree is sparse).&lt;/li&gt;
+&lt;li&gt;Tables don&amp;rsquo;t need to be physically contiguous.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Multilevel paging is a &amp;ldquo;table of tables&amp;rdquo; approach that allows the OS to support massive virtual address spaces without wasting physical RAM on empty page table entries. By only materializing the parts of the hierarchy that correspond to mapped memory, we keep the overhead of memory accounting minimal and flexible.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Structure:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-structure&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-structure&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[ Outer Table Index (10 bits) | Inner Table Index (10 bits) | Offset (12 bits) ]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Cost of Multilevel Paging?&lt;/strong&gt; (Every extra level adds another RAM access to translate an address — luckily the TLB caches these.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How many levels for 64-bit?&lt;/strong&gt; (Often 4 levels: PML4, PDP, PD, PT.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an &amp;ldquo;Inverted&amp;rdquo; Page Table?&lt;/strong&gt; (An alternative that maps Physical -&amp;gt; Virtual to save space; one table for the whole system.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Thrashing and the Working Set Model</title>
+      <link>http://localhost:1313/os/thrashing-working-set/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/thrashing-working-set/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is &amp;ldquo;Thrashing&amp;rdquo;? How does the OS use the &amp;ldquo;Working Set Model&amp;rdquo; to prevent it?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Memory pressure dynamics.&lt;/li&gt;
+&lt;li&gt;Relationship between CPU utilization and Paging.&lt;/li&gt;
+&lt;li&gt;Predictive memory management.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Thrashing:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-thrashing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-thrashing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;This occurs when the OS is so low on physical RAM that it spends more time &lt;strong&gt;swapping pages in and out&lt;/strong&gt; than actually executing instructions.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Symptom&lt;/strong&gt;: CPU utilization drops to near zero because every process is waiting for Disk I/O (page faults).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Response&lt;/strong&gt;: Inaccurately, old OSes might try to launch MORE processes to increase CPU usage, which makes it worse!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Working Set Model:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-working-set-model&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-working-set-model&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: A process&amp;rsquo;s &amp;ldquo;Working Set&amp;rdquo; is the set of pages it has actively used in the last $T$ time units.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: For a process to run efficiently, its entire working set must be in RAM.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Prevention&lt;/strong&gt;: The OS monitors the total sum of working sets. If &lt;code&gt;Sum(WorkingSets) &amp;gt; Total_RAM&lt;/code&gt;, the OS should &lt;strong&gt;suspend&lt;/strong&gt; (swap out) an entire process to free up space for others to actually work.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Thrashing is a state of perpetual resource contention where Disk I/O for paging prevents any meaningful computation. The OS prevents this catastrophe through the Working Set Model, which ensures that a process is only given CPU time if its most active memory requirements can be fully physically satisfied. By prioritising quality of execution over the total count of running processes, the kernel ensures system stability.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ The &amp;ldquo;Thrashing Curve&amp;rdquo;:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-the-thrashing-curve&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-the-thrashing-curve&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;As degree of multiprogramming increases, CPU utilization increases&amp;hellip;&lt;/li&gt;
+&lt;li&gt;Until reaching a &amp;ldquo;Knee&amp;rdquo; where it suddenly &lt;strong&gt;plummets&lt;/strong&gt; because pages don&amp;rsquo;t fit in RAM.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Page Fault Frequency&amp;rdquo; (PFF) approach?&lt;/strong&gt; (If a process has too many faults, give it more frames; if too few, take some away.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to fix thrashing as a User?&lt;/strong&gt; (Kill heavy processes or buy more RAM.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between Swap and Page?&lt;/strong&gt; (Paging is moving small blocks; Swapping was originally moving the whole process.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Internal vs. External Fragmentation</title>
+      <link>http://localhost:1313/os/memory-fragmentation/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/memory-fragmentation/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Internal and External Fragmentation. How does Paging solve one and cause the other?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Memory allocation inefficiencies.&lt;/li&gt;
+&lt;li&gt;Compromises in fixed-size vs variable-size management.&lt;/li&gt;
+&lt;li&gt;Impact on system utilization.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. External Fragmentation (Variable Sized - Segmentation):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-external-fragmentation-variable-sized---segmentation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-external-fragmentation-variable-sized---segmentation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: There is enough total memory for a process, but it is split into tiny &amp;ldquo;holes&amp;rdquo; (non-contiguous).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Solution&lt;/strong&gt;: &lt;strong&gt;Compaction&lt;/strong&gt; (moving all processes down to merge holes) - very expensive!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Internal Fragmentation (Fixed Sized - Paging):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-internal-fragmentation-fixed-sized---paging&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-internal-fragmentation-fixed-sized---paging&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: You allocate a 4KB page, but the process only needs 3KB. 1KB is &lt;strong&gt;wasted inside&lt;/strong&gt; the allocated block.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Occurrence&lt;/strong&gt;: Always happens on the &lt;strong&gt;last page&lt;/strong&gt; of a process.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Paging Tradeoff:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-paging-tradeoff&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-paging-tradeoff&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Paging &lt;strong&gt;perfectly solves&lt;/strong&gt; external fragmentation (any logical page can map to any physical frame, no matter where it is). In exchange, it introduces minor internal fragmentation.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Memory fragmentation represents the &amp;ldquo;lost space&amp;rdquo; in a system. External fragmentation is a placement problem where data blocks are physically unreachable due to spacing. Internal fragmentation is an allocation problem where we give more space than needed. Paging is the dominant choice because it prioritizes hardware simplicity and eliminates the devastating cost of memory compaction, accepting minor internal waste as a pragmatic trade-off.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;External&lt;/strong&gt;: &lt;code&gt;[Proc A] [Free 10MB] [Proc B] [Free 10MB]&lt;/code&gt; -&amp;gt; Cannot load 20MB Proc.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Internal&lt;/strong&gt;: &lt;code&gt;[Page (used/free)]&lt;/code&gt; -&amp;gt; The gray area inside the box.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can internal fragmentation be large?&lt;/strong&gt; (If page size was huge, say 4MB, it would be a disaster for small processes.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Slack space&amp;rdquo; in file systems?&lt;/strong&gt; (The file system equivalent of internal fragmentation.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Buddy System&amp;rdquo; allocator?&lt;/strong&gt; (A hybrid approach that tries to minimize both types by splitting memory into powers of 2.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Inverted Page Table</title>
+      <link>http://localhost:1313/os/inverted-page-tables/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/inverted-page-tables/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is an Inverted Page Table? How does it save memory compared to standard page tables?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Advanced memory management strategies.&lt;/li&gt;
+&lt;li&gt;Handling huge address spaces (64-bit).&lt;/li&gt;
+&lt;li&gt;Physical vs Virtual mapping approach.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Standard Page Table (Virtual-led):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-standard-page-table-virtual-led&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-standard-page-table-virtual-led&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;One table (or tree) per process. Maps &lt;strong&gt;Virtual -&amp;gt; Physical&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: In a 64-bit system, the table size is astronomical.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Inverted Page Table (Physical-led):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-inverted-page-table-physical-led&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-inverted-page-table-physical-led&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;One table for the ENTIRE system&lt;/strong&gt;. One entry per physical frame in RAM.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Maps &lt;strong&gt;Physical -&amp;gt; (ProcessID, VirtualPage)&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Size&lt;/strong&gt;: Scaled to the size of Physical RAM, not Virtual Address Space.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Catch:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-catch&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-catch&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Search is slow! To translate an address, you&amp;rsquo;d have to search the whole table.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Solution&lt;/strong&gt;: Use a &lt;strong&gt;Hash Table&lt;/strong&gt; for lookup.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hash(ProcessID, VirtualPage) -&amp;gt; Index in IPT&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Standard page tables scale with the theoretical size of memory, while Inverted Page Tables scale with the actual physical RAM installed. This makes them significantly more efficient for 64-bit systems. However, this space efficiency comes at the cost of lookup speed, requiring a robust hashing mechanism to maintain acceptable performance during address translation.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Comparison:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Standard&lt;/strong&gt;: &lt;code&gt;Input: Virtual Addr&lt;/code&gt; -&amp;gt; &lt;code&gt;Output: Physical Addr&lt;/code&gt;. (Many tables)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Inverted&lt;/strong&gt;: &lt;code&gt;Search: (PID, Virtual)&lt;/code&gt; -&amp;gt; &lt;code&gt;Result: Index of Table&lt;/code&gt;. (One table)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Is IPT used in modern PCs?&lt;/strong&gt; (Mostly no. 4-level standard page tables are faster given the high performance of modern MMUs.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What happens if two processes share memory?&lt;/strong&gt; (Inverted tables make this difficult because each entry only has one (PID, VPage) slot.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the search complexity of IPT?&lt;/strong&gt; ($O(1)$ on average with Hash; $O(N)$ worst case.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Deadlock (The 4 Conditions)</title>
+      <link>http://localhost:1313/os/deadlock-conditions/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/deadlock-conditions/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are the 4 necessary conditions for Deadlock? How can you break them?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Theoretical foundations of OS scheduling.&lt;/li&gt;
+&lt;li&gt;Practical conflict resolution (Resource Allocation).&lt;/li&gt;
+&lt;li&gt;Avoiding circular dependencies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The 4 Coffman Conditions:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-4-coffman-conditions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-4-coffman-conditions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Mutual Exclusion&lt;/strong&gt;: At least one resource must be non-sharable (one user at a time).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hold and Wait&lt;/strong&gt;: A process is holding one resource while waiting for another.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No Preemption&lt;/strong&gt;: Resources cannot be taken away; they must be released voluntarily.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Circular Wait&lt;/strong&gt;: A set represented as &lt;code&gt;P1 -&amp;gt; P2 -&amp;gt; P3 -&amp;gt; P1&lt;/code&gt; exists.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;How to Break Deadlock:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;how-to-break-deadlock&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#how-to-break-deadlock&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Break Hold and Wait&lt;/strong&gt;: Force processes to request ALL resources at the start (all-or-nothing).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Break Circular Wait&lt;/strong&gt;: Impose an &lt;strong&gt;ordering&lt;/strong&gt; on resources. Process can only request Resource 5 if it already has 1-4.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Allow Preemption&lt;/strong&gt;: If a process can&amp;rsquo;t get what it needs, it must release what it has.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Deadlock occurs when multiple components enter a state of permanent mutual waiting. By understanding the four prerequisite conditions, engineers can design systems that proactively avoid these states. The most common organizational fix is resource ordering—ensuring every process requests resources in the same sequence, thereby making circular waits mathematically impossible.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Resource Allocation Graph (Visual):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-resource-allocation-graph-visual&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-resource-allocation-graph-visual&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;If there is a &lt;strong&gt;Cycle&lt;/strong&gt; in a graph with single-instance resources, there is a &lt;strong&gt;Deadlock&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is the &amp;ldquo;Dining Philosophers&amp;rdquo; problem?&lt;/strong&gt; (A classic circular wait scenario where everyone has one fork and waits for a second.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the Ostrich Algorithm?&lt;/strong&gt; (Ignoring the problem entirely! Common in consumer OSes where deadlocks are rare and a reboot is acceptable.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Wait-for Graph?&lt;/strong&gt; (A simplified resource graph showing only dependencies between processes.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Spinlocks vs. Mutexes</title>
+      <link>http://localhost:1313/os/spinlocks-vs-mutexes/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/spinlocks-vs-mutexes/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Spinlocks and Mutexes. When is &amp;ldquo;Spinning&amp;rdquo; better than &amp;ldquo;Sleeping&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;CPU core utilization.&lt;/li&gt;
+&lt;li&gt;Context switch overhead.&lt;/li&gt;
+&lt;li&gt;Low-latency synchronization.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Mutex (The Sleeper):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-mutex-the-sleeper&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-mutex-the-sleeper&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Behavior&lt;/strong&gt;: If the lock is held, the thread is &lt;strong&gt;suspended&lt;/strong&gt; (Context Switch).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cost&lt;/strong&gt;: High. Saving registers, updating scheduler tables, and waking up later takes thousands of CPU cycles.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Best Use&lt;/strong&gt;: Long-duration locks (e.g., File I/O).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Spinlock (The Spinner):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-spinlock-the-spinner&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-spinlock-the-spinner&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Behavior&lt;/strong&gt;: If the lock is held, the thread sits in a &lt;strong&gt;&lt;code&gt;while(true)&lt;/code&gt; loop&lt;/strong&gt; (Spinning) repeatedly checking the lock.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cost&lt;/strong&gt;: CPU usage stays at 100% on that core, but there is &lt;strong&gt;zero context switch&lt;/strong&gt; overhead.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Best Use&lt;/strong&gt;: Extremely short locks (e.g., updating a counter in a few cycles).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Rule of Thumb:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-rule-of-thumb&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-rule-of-thumb&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If the expected wait time is &lt;strong&gt;shorter&lt;/strong&gt; than the time it takes to perform two context switches, a &lt;strong&gt;Spinlock&lt;/strong&gt; wins. Otherwise, a &lt;strong&gt;Mutex&lt;/strong&gt; is more efficient for the overall system.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Spinlocks are a low-latency optimization for multi-core processors. While they waste CPU cycles in a tight loop, they avoid the &amp;ldquo;expensive&amp;rdquo; process of suspending and resuming a thread through the OS kernel. We use spinlocks for hyper-fast data updates where the lock is held for mere nanoseconds, and mutexes for traditional task synchronization where threads might need to wait for significant periods.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Performance Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-performance-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-performance-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Aspect&lt;/th&gt;
+&lt;th&gt;Spinlock&lt;/th&gt;
+&lt;th&gt;Mutex&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Core Status&lt;/td&gt;
+&lt;td&gt;Busy (100% CPU)&lt;/td&gt;
+&lt;td&gt;Idle (Asleep)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Multi-core?&lt;/td&gt;
+&lt;td&gt;Mandatory&lt;/td&gt;
+&lt;td&gt;Optional&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Context Switch&lt;/td&gt;
+&lt;td&gt;None&lt;/td&gt;
+&lt;td&gt;Possible&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can a Spinlock be used on a single-core CPU?&lt;/strong&gt; (NO! If the thread spins, it never yields the CPU for the owner to release the lock. You&amp;rsquo;ll deadlock instantly unless the system is preemptive.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Hybrid Lock&amp;rdquo; (Adaptive)?&lt;/strong&gt; (Modern OSes spin for a few cycles [optimism] and then switch to a Mutex if the lock hasn&amp;rsquo;t been released [pessimism/cleanup].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is &lt;code&gt;synchronized&lt;/code&gt; a spinlock?&lt;/strong&gt; (In Java, it starts as biased/thin and can become a full OS-level monitor/mutex.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Semaphores vs. Mutexes</title>
+      <link>http://localhost:1313/os/semaphores-vs-mutexes/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/semaphores-vs-mutexes/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare a Binary Semaphore and a Mutex. Why is a Mutex considered &amp;ldquo;Owned&amp;rdquo; while a Semaphore is not?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Synchronization primitive mechanics.&lt;/li&gt;
+&lt;li&gt;Awareness of &amp;ldquo;Priority Inversion&amp;rdquo; problems.&lt;/li&gt;
+&lt;li&gt;Resource counting logic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Mutex (Mutual Exclusion):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-mutex-mutual-exclusion&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-mutex-mutual-exclusion&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Ownership&lt;/strong&gt;: The thread that &lt;strong&gt;locks&lt;/strong&gt; the mutex is the ONLY thread that can &lt;strong&gt;unlock&lt;/strong&gt; it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: Used to protect a shared resource.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Optimization&lt;/strong&gt;: Modern mutexes support &amp;ldquo;Priority Inheritance&amp;rdquo; (if a high-priority thread is waiting for the mutex, it can boost the owner&amp;rsquo;s priority to finish fast).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Semaphore:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-semaphore&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-semaphore&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Ownership&lt;/strong&gt;: Anyone can &amp;ldquo;signal&amp;rdquo; (V) or &amp;ldquo;wait&amp;rdquo; (P). There is no concept of owner.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Counting Semaphore&lt;/strong&gt;: Can allow &lt;code&gt;N&lt;/code&gt; threads into a region (e.g., &amp;ldquo;Max 5 connections to DB&amp;rdquo;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Binary Semaphore&lt;/strong&gt;: A counter values 0/1.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Core Difference:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-core-difference&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-core-difference&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A mutex is for &lt;strong&gt;Mutual Exclusion&lt;/strong&gt; (locking). A semaphore is for &lt;strong&gt;Signaling&lt;/strong&gt; (one thread telling another &amp;ldquo;the data is ready&amp;rdquo;).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The fundamental difference lies in ownership. A mutex is a &amp;ldquo;key&amp;rdquo; that must be returned by the person who took it, making it ideal for protecting state consistency. A semaphore is a &amp;ldquo;counter&amp;rdquo; or a &amp;ldquo;signal&amp;rdquo; that can be toggled by different threads to coordinate timing and resource pooling. For most general-purpose locking, mutexes are preferred due to their built-in protection against accidental cross-thread releases and priority management features.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Checklist:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-checklist&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-checklist&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mutex&lt;/strong&gt;: &lt;code&gt;Lock(A) -&amp;gt; Work -&amp;gt; Unlock(A)&lt;/code&gt;. Done by the SAME thread.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Semaphore&lt;/strong&gt;: &lt;code&gt;Thread 1: Wait(S) -&amp;gt; Work&lt;/code&gt;. &lt;code&gt;Thread 2: Signal(S)&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Recursive Lock&amp;rdquo;?&lt;/strong&gt; (A mutex that can be locked multiple times by the same thread without deadlocking; found in Java&amp;rsquo;s &lt;code&gt;ReentrantLock&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Priority Inversion?&lt;/strong&gt; (A low-priority thread holds a lock needed by a high-priority thread, effectively stalling the whole system.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;acquire()&lt;/code&gt; and &lt;code&gt;wait()&lt;/code&gt;?&lt;/strong&gt; (Terminology depends on language, but functionally similar to &amp;ldquo;Decrementing the counter.&amp;rdquo;)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Context Switch Internals</title>
+      <link>http://localhost:1313/os/context-switch-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/context-switch-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What exactly happens during a Context Switch? What data is saved, and why is it expensive?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Low-level CPU states.&lt;/li&gt;
+&lt;li&gt;Kernel overhead.&lt;/li&gt;
+&lt;li&gt;Relationship between hardware (Registers) and software (PCB).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Trigger:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-trigger&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-trigger&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A timer interrupt, a syscall (I/O), or a high-priority thread waking up.&lt;/p&gt;
+&lt;h3&gt;2. The Data (What is saved/restored?):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-data-what-is-savedrestored&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-data-what-is-savedrestored&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The PC (Program Counter)&lt;/strong&gt;: Where we stopped.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;General Purpose Registers&lt;/strong&gt;: Current local variables in-flight.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stack Pointer&lt;/strong&gt;: Where our current local variables/calls are in RAM.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Address Space Map&lt;/strong&gt;: Page Table pointers (CR3 register in x86).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Lifecycle:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-lifecycle&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-lifecycle&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Enter Kernel&lt;/strong&gt;: Trap to OS.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Save Current&lt;/strong&gt;: Write current CPU state into the &lt;strong&gt;PCB (Process Control Block)&lt;/strong&gt; in RAM.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pick Next&lt;/strong&gt;: The scheduler decides who&amp;rsquo;s next.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Restore Next&lt;/strong&gt;: Load the new process&amp;rsquo;s state from its PCB into CPU hardware.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Flush TLB&lt;/strong&gt;: (If it&amp;rsquo;s a different process) The translation cache must be cleared.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;4. Why is it expensive?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-why-is-it-expensive&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-why-is-it-expensive&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Raw Work&lt;/strong&gt;: Thousands of clock cycles in the kernel.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Indirect Cost (The BIG one)&lt;/strong&gt;: The CPU &lt;strong&gt;cache (L1/L2)&lt;/strong&gt; and &lt;strong&gt;TLB&lt;/strong&gt; are now &amp;ldquo;cold.&amp;rdquo; The fresh process hits a wall of cache misses, making it extremely slow for the first few thousand instructions.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A context switch is the fundamental illusion of multitasking. While the CPU work is fast, the true cost lies in the &amp;ldquo;cold cache&amp;rdquo; effect—where a newly restored process must re-prime the L1 cache and TLB with its own data. Minimizing these switches through efficient thread pooling and I/O management is a primary goal for high-performance system engineering.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Thread vs Process switch?&lt;/strong&gt; (Process switch is more expensive because it must swap the virtual address space [Page Tables / TLB]. Thread switch shares memory.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Lightweight Process&amp;rdquo;?&lt;/strong&gt; (Another name for a thread in some kernels like Linux.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Switch without Kernel?&lt;/strong&gt; (User-level threads or Coroutines / Go-routines; these are faster but the OS can&amp;rsquo;t manage them for I/O blocking.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Amdahl&#39;s Law (Parallel Limits)</title>
+      <link>http://localhost:1313/os/amdahls-law/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/amdahls-law/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Amdahl&amp;rsquo;s Law? Why can&amp;rsquo;t we speed up a program infinitely by adding more CPU cores?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Theoretical limits of parallelization.&lt;/li&gt;
+&lt;li&gt;Understanding the &amp;ldquo;Sequential Bottleneck.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Pragmatic software scaling expectations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Formula:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-formula&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-formula&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;$Speedup = \frac{1}{(1 - P) + \frac{P}{S}}$&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$P$: Parallelizable fraction of the task.&lt;/li&gt;
+&lt;li&gt;$S$: Speedup of the parallel part (number of cores).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Meaning:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-meaning&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-meaning&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Even if you have 1000 cores, if &lt;strong&gt;10% of your code is sequential&lt;/strong&gt; (must run on one core), your MAXIMUM speedup is &lt;strong&gt;10x&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The &amp;ldquo;Sequential part&amp;rdquo; (loading data, merging results, locking shared state) eventually dominates the total time.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Real-world constraints:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-real-world-constraints&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-real-world-constraints&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Adding more cores also adds &lt;strong&gt;Communication Overhead&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Coordination between 100 threads can eventually take MORE time than the actual computation. This leads to &lt;strong&gt;Negative returns&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Amdahl&amp;rsquo;s Law defines the hard mathematical limit of parallel performance. It teaches us that the sequential bottlenecks in our code—such as disk I/O, initial parsing, or final data aggregation—will always dictate the maximum possible speedup, regardless of hardware scale. Therefore, engineering efforts are often better spent reducing the sequential fraction of a task than simply increasing the processor count.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Summary:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-summary&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-summary&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;If 50% is sequential -&amp;gt; Max 2x speedup.&lt;/li&gt;
+&lt;li&gt;If 5% is sequential -&amp;gt; Max 20x speedup.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Difference between Amdahl and Gustafson?&lt;/strong&gt; (Gustafson&amp;rsquo;s law argues that as we get more cores, we solve &lt;em&gt;larger&lt;/em&gt; problems, not just the same problem faster.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Identify sequential parts?&lt;/strong&gt; (Thread spawning, result merging, mutex locking, I/O writes.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Diminishing Returns?&lt;/strong&gt; (The point where the cost of coordinating cores exceeds the gain from their computation.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: User Mode vs. Kernel Mode</title>
+      <link>http://localhost:1313/os/user-vs-kernel-mode/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/user-vs-kernel-mode/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between User Mode and Kernel Mode? Why can&amp;rsquo;t a process read another process&amp;rsquo;s memory?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Protection Rings (Rings 0-3).&lt;/li&gt;
+&lt;li&gt;Hardware-enforced isolation.&lt;/li&gt;
+&lt;li&gt;Role of the Scheduler and Memory Management.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Kernel Mode (Ring 0):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-kernel-mode-ring-0&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-kernel-mode-ring-0&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Full Control&lt;/strong&gt;: The OS runs here. It can execute any CPU instruction and access ANY memory address.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Power&lt;/strong&gt;: It talks directly to the hardware (Disks, NICs).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. User Mode (Ring 3):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-user-mode-ring-3&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-user-mode-ring-3&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Restricted&lt;/strong&gt;: Regular apps run here. They cannot execute privileged instructions (like &lt;code&gt;reboot&lt;/code&gt; or &lt;code&gt;write-to-disk-directly&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Isolation&lt;/strong&gt;: Every instruction is checked by the &lt;strong&gt;MMU&lt;/strong&gt; (Memory Management Unit). If an app tries to access an address outside its Page Table, the CPU triggers a &lt;strong&gt;General Protection Fault&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Crossing the Boundary (Syscalls):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-crossing-the-boundary-syscalls&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-crossing-the-boundary-syscalls&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Apps shouldn&amp;rsquo;t write to disk, but they need to!&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;They use a &lt;strong&gt;Syscall&lt;/strong&gt; (&lt;code&gt;open()&lt;/code&gt;, &lt;code&gt;read()&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;This causes a &amp;ldquo;Trap&amp;rdquo; to the Kernel.&lt;/li&gt;
+&lt;li&gt;The Kernel checks permissions, performs the work in Ring 0, and returns the result to User Mode.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;User and Kernel modes provide the fundamental security boundary for modern computing. By restricting regular applications to a &amp;ldquo;sandbox&amp;rdquo; (User Mode) where they only see their own virtual memory, the OS prevents accidental and malicious system crashes. All privileged operations are gated through strict system calls, ensuring that the kernel remains the sole trusted arbiter of hardware resources.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[ App (User) ] -&amp;gt; syscall -&amp;gt; [ OS (Kernel) ] -&amp;gt; IO -&amp;gt; [ Hardware ]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Trap&amp;rdquo;?&lt;/strong&gt; (A synchronous interrupt generated by a CPU when it hits an error or a syscall.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Performance cost of mode switching?&lt;/strong&gt; (Very high. It requires flushing state and changing the CPU&amp;rsquo;s context—one reason why &amp;ldquo;Zero-Copy&amp;rdquo; or &amp;ldquo;IO_uring&amp;rdquo; is so fast is because it minimizes these crosses.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Microkernel vs Monolithic?&lt;/strong&gt; (Monolithic [Linux] puts everything in Kernel; Microkernel [L4] keeps only essentials in Kernel, moving drivers to User Mode.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Virtual Memory - Dirty and Reference Bits</title>
+      <link>http://localhost:1313/os/page-table-bits/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/page-table-bits/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are &amp;ldquo;Dirty&amp;rdquo; and &amp;ldquo;Reference&amp;rdquo; bits in a Page Table Entry? How do they help the OS decide which page to evict?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Memory maintenance overhead.&lt;/li&gt;
+&lt;li&gt;Disk I/O reduction.&lt;/li&gt;
+&lt;li&gt;Page Replacement algorithm (LRU approximation).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Reference Bit (R):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-reference-bit-r&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-reference-bit-r&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Set&lt;/strong&gt;: By the hardware whenever the page is &lt;strong&gt;Accessed&lt;/strong&gt; (Read or Write).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reset&lt;/strong&gt;: Periodically by the OS (Clock algorithm).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Usage&lt;/strong&gt;: Tells the OS &amp;ldquo;This page is popular.&amp;rdquo; Don&amp;rsquo;t evict it!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Dirty Bit (M - Modified):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-dirty-bit-m---modified&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-dirty-bit-m---modified&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Set&lt;/strong&gt;: By the hardware whenever the page is &lt;strong&gt;Written&lt;/strong&gt; to.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Usage&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;If &lt;code&gt;Dirty = 0&lt;/code&gt;: Page is identical to the file on disk. We can just discard it. &lt;strong&gt;Fast eviction&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;Dirty = 1&lt;/code&gt;: Page has changed. We MUST write it back to disk before discarding. &lt;strong&gt;Slow eviction&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Eviction Priority:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-eviction-priority&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-eviction-priority&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The OS prefers evicting &lt;code&gt;R=0, D=0&lt;/code&gt; (Not used, not changed), followed by &lt;code&gt;R=0, D=1&lt;/code&gt; (Not used lately, but needs disk write).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dirty and Reference bits are the hardware signals that drive the OS&amp;rsquo;s memory eviction policy. The reference bit acts as a popularity gauge, allowing the kernel to approximate an LRU policy without expensive record keeping. The dirty bit is a cost-saver—it tells the OS whether a page can be instantly discarded or if it requires a slow, blocking disk synchronization before its frame can be reused.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏢 State Matrix:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-state-matrix&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-state-matrix&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;R&lt;/th&gt;
+&lt;th&gt;D&lt;/th&gt;
+&lt;th&gt;Class&lt;/th&gt;
+&lt;th&gt;Priority&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;Not referenced, Clean&lt;/td&gt;
+&lt;td&gt;1 (Best to pick)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;Referenced, Clean&lt;/td&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;0&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;Not referenced, Dirty&lt;/td&gt;
+&lt;td&gt;3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;Referenced, Dirty&lt;/td&gt;
+&lt;td&gt;4 (Worst to pick)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Thrashing&amp;rdquo;?&lt;/strong&gt; (If all pages have R=1, the OS struggles to find any good victim, potentially swapping continuously.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does every CPU have these?&lt;/strong&gt; (Yes, these are standard bits in the x86 and ARM MMU structures.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &amp;ldquo;Clock Algorithm&amp;rdquo;?&lt;/strong&gt; (Using the R-bit to simulate LRU by treating memory pages like a circular clock face.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>OS: Disk Scheduling (SCAN vs. C-SCAN)</title>
+      <link>http://localhost:1313/os/disk-scheduling-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/os/disk-scheduling-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare SCAN (Elevator) and C-SCAN disk scheduling. Why is C-SCAN considered more &amp;ldquo;Fair&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;I/O request management.&lt;/li&gt;
+&lt;li&gt;Fairness vs Throughput.&lt;/li&gt;
+&lt;li&gt;Limiting the &amp;ldquo;Arm Movement&amp;rdquo; of a physical disk.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. SCAN (Elevator):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-scan-elevator&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-scan-elevator&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The disk arm moves from one end to the other, servicing requests on the way. When it hits the end, it reverses direction.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Requests just inside the ends wait much longer than requests in the middle. The &amp;ldquo;ends&amp;rdquo; are visited half as often as the &amp;ldquo;center.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. C-SCAN (Circular SCAN):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-c-scan-circular-scan&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-c-scan-circular-scan&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The arm moves from one end to the other, servicing requests. When it hits the end, it &lt;strong&gt;immediately returns to the start&lt;/strong&gt; without servicing anything on the return trip.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Why it&amp;rsquo;s Fairer&lt;/strong&gt;: It treats the disk tracks as a circle. Every track has an equal waiting time on average.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Why it Matters:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-why-it-matters&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-why-it-matters&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Reducing seek time is the biggest performance boost for traditional HDDs. While SSDs don&amp;rsquo;t have moving arms, these algorithms are still relevant for &amp;ldquo;I/O Merge&amp;rdquo; logic in the OS.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Disk scheduling algorithms aim to minimize the mechanical latency of physical storage. While the SCAN algorithm provides high throughput by sweeping the disk surface, it suffers from a &amp;ldquo;middle-bias&amp;rdquo; where central tracks get serviced more frequently. C-SCAN resolves this by providing a uniform wait time for all requests, ensuring that data at the edges of the platter isn&amp;rsquo;t starved of attention while the arm moves back and forth.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Summary:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-summary&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-summary&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SCAN&lt;/strong&gt;: &lt;code&gt;0 ---&amp;gt; 100 &amp;lt;--- 0&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C-SCAN&lt;/strong&gt;: &lt;code&gt;0 ---&amp;gt; 100 (Jump back) 0 ---&amp;gt; 100&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is FCFS scheduling?&lt;/strong&gt; (First-Come, First-Served—leads to massive arm movement and &amp;ldquo;thrashing&amp;rdquo; of the disk head.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Do SSDs use this?&lt;/strong&gt; (SSDs have no seek time, so they use simpler &amp;ldquo;Deadline&amp;rdquo; or &amp;ldquo;No-op&amp;rdquo; schedulers to focus on parallelizing requests.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Shortest Seek Time First&amp;rdquo;?&lt;/strong&gt; (Pick the closest request; very fast but can cause &amp;ldquo;Starvation&amp;rdquo; of distant requests.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
   </channel>
 </rss>

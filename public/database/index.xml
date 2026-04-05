@@ -1038,6 +1038,1296 @@ User immediately refreshes → reads from a replica that hasn&amp;rsquo;t gotten
     </item>
     
     <item>
+      <title>Databases: B-Tree vs B&#43; Tree Internals</title>
+      <link>http://localhost:1313/database/b-plus-tree-internals/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/b-plus-tree-internals/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Why do relational databases (MySQL, Postgres) use B+ Trees instead of B-Trees or Binary Search Trees for indexing? Explain the physical structure.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of disk I/O optimization.&lt;/li&gt;
+&lt;li&gt;Cache locality and pointer management.&lt;/li&gt;
+&lt;li&gt;Range query performance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Disk Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-disk-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-disk-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Reading from disk (HDD/SSD) is orders of magnitude slower than RAM. Data is read in &lt;strong&gt;Pages&lt;/strong&gt; (blocks), typically 4KB or 8KB. A Tree structure for an index must minimize the number of &amp;ldquo;page reads&amp;rdquo; to find a key.&lt;/p&gt;
+&lt;h3&gt;2. Why NOT BST?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-why-not-bst&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-why-not-bst&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;BST is too deep. For 1 million entries, depth is ~20. That&amp;rsquo;s 20 random disk reads.&lt;/p&gt;
+&lt;h3&gt;3. B-Tree vs B+ Tree:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-b-tree-vs-b-tree&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-b-tree-vs-b-tree&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;B-Tree&lt;/strong&gt;: Data pointers are stored in &lt;strong&gt;both&lt;/strong&gt; internal nodes and leaf nodes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;B+ Tree&lt;/strong&gt;: Data pointers (or the data itself) are &lt;strong&gt;only&lt;/strong&gt; stored in leaf nodes. Internal nodes only store keys for routing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Advantages of B+ Tree:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-advantages-of-b-tree&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-advantages-of-b-tree&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Higher Fan-out&lt;/strong&gt;: Since internal nodes don&amp;rsquo;t store data/pointers to rows, they can store many more keys per page. 1000 keys per page means 1 billion entries in just 3 levels!&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Efficient Range Scans&lt;/strong&gt;: Leaf nodes are linked together in a &lt;strong&gt;Linked List&lt;/strong&gt;. To do a range query &lt;code&gt;(age &amp;gt; 20 AND age &amp;lt; 30)&lt;/code&gt;, you find &amp;lsquo;20&amp;rsquo; in a leaf and just follow the next pointers until you hit &amp;lsquo;30&amp;rsquo;. B-Trees would require multiple vertical traversals.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Better Cache Locality&lt;/strong&gt;: Internal nodes stay cached in memory because they are small and frequently accessed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Databases prioritize minimizing disk I/O. B+ Trees offer a very high fan-out, meaning the tree is extremely shallow (usually 3-4 levels for billions of rows). By storing data only at leaves and linking leaves together, B+ Trees are significantly faster for range queries and full scans compared to B-Trees.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Visual Representation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-representation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-representation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Internal Node: [ Key1 | Key2 | Key3 ] (Only for routing)
+                   /      |      \
+        [Leaf1] &amp;lt;-&amp;gt; [Leaf2] &amp;lt;-&amp;gt; [Leaf3] (Actual data &amp;#43; Next pointers)&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Saying B+ Tree is better because it&amp;rsquo;s &amp;ldquo;faster&amp;rdquo; without explaining disk blocks or fan-out.&lt;/li&gt;
+&lt;li&gt;Forgetting the linked-list nature of leaf nodes.&lt;/li&gt;
+&lt;li&gt;Thinking B+ Tree is used for NoSQL (usually LSM Trees are used for write-heavy NoSQL).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is an LSM Tree?&lt;/strong&gt; (Used in Cassandra/LevelDB; optimized for writes by converting random writes to sequential writes.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a Clustered Index?&lt;/strong&gt; (The B+ Tree where the leaf nodes contain the actual row data, not just pointers.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the height of a B+ tree for 100M rows?&lt;/strong&gt; (Assuming page size 16KB and key size 16B, fan-out is ~1000. Height 3 is enough.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Databases: Columnar vs. Row Storage</title>
+      <link>http://localhost:1313/database/row-vs-columnar/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/row-vs-columnar/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the difference between Row-based (OLTP) and Column-based (OLAP) storage. When should you use each?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Transactional vs Analytical workload understanding.&lt;/li&gt;
+&lt;li&gt;Physical storage layout and I/O efficiency.&lt;/li&gt;
+&lt;li&gt;Data compression techniques.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Row Storage (e.g., MySQL, Postgres):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-row-storage-eg-mysql-postgres&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-row-storage-eg-mysql-postgres&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Data is stored on disk row-by-row: &lt;code&gt;R1(id, name, age), R2(id, name, age)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Strength&lt;/strong&gt;: High-frequency &lt;strong&gt;Writes/Updates&lt;/strong&gt;. One disk seek to read a whole record.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Weakness&lt;/strong&gt;: Aggregations (&lt;code&gt;SELECT AVG(age)&lt;/code&gt;) require reading the whole row even if only one column is needed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Columnar Storage (e.g., ClickHouse, Redshift, Parquet):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-columnar-storage-eg-clickhouse-redshift-parquet&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-columnar-storage-eg-clickhouse-redshift-parquet&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Data is stored column-by-column: &lt;code&gt;(id1, id2), (name1, name2), (age1, age2)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Strength&lt;/strong&gt;: &lt;strong&gt;Analytical Queries&lt;/strong&gt;. To calculate &lt;code&gt;AVG(age)&lt;/code&gt;, we only read the &lt;code&gt;age&lt;/code&gt; column data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compression&lt;/strong&gt;: Since a column has the same data type, we can use efficient compression (Run-length encoding, Delta encoding).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Weakness&lt;/strong&gt;: Writing a single row requires multiple disk seeks (one for each column).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Row-based storage is optimized for OLTP (Online Transactional Processing), where operations involve small, frequent writes of full records. Columnar storage is optimized for OLAP (Online Analytical Processing), where we often aggregate specific columns across millions of rows and need high compression.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Use Case Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-use-case-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-use-case-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feature&lt;/th&gt;
+&lt;th&gt;Row Storage (OLTP)&lt;/th&gt;
+&lt;th&gt;Columnar Storage (OLAP)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Workload&lt;/td&gt;
+&lt;td&gt;CRUD, many small transactions&lt;/td&gt;
+&lt;td&gt;Reporting, Large-scale analysis&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Reads&lt;/td&gt;
+&lt;td&gt;Fetch specific rows&lt;/td&gt;
+&lt;td&gt;Aggregations over columns&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Writes&lt;/td&gt;
+&lt;td&gt;Very Fast&lt;/td&gt;
+&lt;td&gt;Batch writes preferred&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Compression&lt;/td&gt;
+&lt;td&gt;Moderate&lt;/td&gt;
+&lt;td&gt;Very High&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Apache Parquet?&lt;/strong&gt; (A popular columnar storage file format in the Big Data ecosystem.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a star schema?&lt;/strong&gt; (A denormalized DB design common in OLAP.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can Postgres do columnar?&lt;/strong&gt; (Using extensions like &lt;code&gt;citus&lt;/code&gt; or &lt;code&gt;zombodb&lt;/code&gt;, or specific storage layouts.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Star Schema vs. Snowflake Schema</title>
+      <link>http://localhost:1313/database/star-vs-snowflake/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/star-vs-snowflake/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Star Schema and Snowflake Schema in Data Warehousing. When would you use each?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Data modeling for large-scale analytics.&lt;/li&gt;
+&lt;li&gt;Normalization vs Denormalization tradeoff.&lt;/li&gt;
+&lt;li&gt;Performance implications for BI tools.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Star Schema:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-star-schema&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-star-schema&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Fact Table&lt;/strong&gt;: Central table containing metrics (like &lt;code&gt;SalesValue&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dimension Tables&lt;/strong&gt;: Surrounded by the fact table. These are &lt;strong&gt;Denormalized&lt;/strong&gt; (e.g., a single &lt;code&gt;Product&lt;/code&gt; table containing &lt;code&gt;Category&lt;/code&gt; names).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Fewer joins (usually just one), very fast queries for aggregation. Simplest for BI tools to understand.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Snowflake Schema:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-snowflake-schema&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-snowflake-schema&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;An extension of Star where &lt;strong&gt;Dimension tables are Normalized&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Instead of a category name in the &lt;code&gt;Product&lt;/code&gt; table, you have a &lt;code&gt;CategoryID&lt;/code&gt; pointing to a &lt;code&gt;Categories&lt;/code&gt; table.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Reduced data redundancy and smaller storage.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Negative&lt;/strong&gt;: Many more joins, which can slow down query performance in analytical environments.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Star schemas are prioritized for query simplicity and performance in OLAP environments, where the cost of disk space is outweighed by the need for fast aggregations. Snowflake schemas are used when data normalization is critical for data integrity or when dealing with extremely hierarchies.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Schema Visual:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-schema-visual&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-schema-visual&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Star&lt;/strong&gt;: Fact → Store (denormalized)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Snowflake&lt;/strong&gt;: Fact → Store → City → Region → Country (normalized)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Slowly Changing Dimension&amp;rdquo; (SCD)?&lt;/strong&gt; (The way you handle updates to dimension data over time, like a user changing their address.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a Surrogate Key?&lt;/strong&gt; (A system-generated ID used as a PK instead of a natural key like SSN.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between OLTP and OLAP?&lt;/strong&gt; (Transactional vs Analytical workloads.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Database Sharding Patterns</title>
+      <link>http://localhost:1313/database/database-sharding-patterns/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/database-sharding-patterns/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are the different ways to shard a database? Compare Hash Sharding, Range Sharding, and Directory Sharding.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Strategies for horizontal data scaling.&lt;/li&gt;
+&lt;li&gt;Handling &amp;ldquo;Hotspots&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Understanding the operational complexity of re-sharding.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Hash-based Sharding:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-hash-based-sharding&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-hash-based-sharding&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: &lt;code&gt;shard = hash(key) % N&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Uniform data distribution (no hotspots).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Adding/removing a shard is a nightmare (requires massive data moves). &lt;strong&gt;Consistent Hashing&lt;/strong&gt; is a better variant here.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Range-based Sharding:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-range-based-sharding&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-range-based-sharding&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: Shard 1: A-M, Shard 2: N-Z.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Range queries are fast (no need to query all shards).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Leads to hotspots (e.g., if everyone&amp;rsquo;s name starts with &amp;lsquo;S&amp;rsquo;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Directory-based (Lookup) Sharding:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-directory-based-lookup-sharding&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-directory-based-lookup-sharding&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: A central service/map stores which &lt;code&gt;account_id&lt;/code&gt; is on which shard.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Ultimate flexibility. Any key can be anywhere.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: The lookup service is a SPOF and a performance bottleneck.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Hash sharding is the most common for uniform load but makes scaling hard. Range sharding enables efficient searches but causes hotspots. For complex apps, directory-based sharding provides the most control but adds architectural overhead. Most modern &amp;ldquo;NewSQL&amp;rdquo; databases (CockroachDB, TiDB) automate this using range-sharding with automatic splitting.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Re-sharding Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-re-sharding-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-re-sharding-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Naive&lt;/strong&gt;: Stop world, copy, restart (Downtime).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Incremental&lt;/strong&gt;: Dual write to old and new shards, migrate data in background, switch.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Celebrity Problem&amp;rdquo;?&lt;/strong&gt; (When one key has so much data/traffic it overwhelms a shard — e.g., Twitter&amp;rsquo;s top accounts.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Horizontal vs Vertical Partitioning?&lt;/strong&gt; (Horizontal = splitting rows across shards; Vertical = splitting columns across shards.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Explain &amp;ldquo;Resharding&amp;rdquo; logic.&lt;/strong&gt; (Moving data between shards to balance load.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: 4 Normal Forms of Database Design</title>
+      <link>http://localhost:1313/database/normalization-levels/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/normalization-levels/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the 1st through 3rd Normal Forms (and BCNF). Why do we denormalize in production?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Data integrity principles.&lt;/li&gt;
+&lt;li&gt;Identifying and removing redundancies.&lt;/li&gt;
+&lt;li&gt;Practical vs Pure database theory.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. 1NF (Atomic):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-1nf-atomic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-1nf-atomic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Each column contains only &lt;strong&gt;atomic&lt;/strong&gt; (indivisible) values. No lists/arrays in a column.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. 2NF (No Partial Dependency):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-2nf-no-partial-dependency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-2nf-no-partial-dependency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Must be in 1NF.&lt;/li&gt;
+&lt;li&gt;All non-key columns must depend on the &lt;strong&gt;entire&lt;/strong&gt; composite primary key.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. 3NF (No Transitive Dependency):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-3nf-no-transitive-dependency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-3nf-no-transitive-dependency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Must be in 2NF.&lt;/li&gt;
+&lt;li&gt;Non-key columns should not depend on other non-key columns. (&amp;ldquo;Dependencies on the PK, and nothing but the PK&amp;rdquo;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. BCNF (Boyce-Codd):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-bcnf-boyce-codd&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-bcnf-boyce-codd&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Stronger version of 3NF. Handles anomalies when there are multiple overlapping candidate keys.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Why Denormalize?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;why-denormalize&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#why-denormalize&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Normalization reduces data redundancy and improves integrity. However, it requires many &lt;strong&gt;JOINS&lt;/strong&gt; for simple queries.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In production (e.g., Analytics), we denormalize (duplicate data) to &lt;strong&gt;improve Read performance&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Trade-off: Faster reads vs complex/slower updates.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Normalization is about organizing data to minimize redundancy and prevent update anomalies. While 3NF is the gold standard for OLTP systems, we intentionally denormalize (Star schemas) in OLAP/Reporting systems to eliminate costly JOIN operations and speed up wide-scale analytical queries.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Explain Transitive Dependency.&lt;/strong&gt; (A depends on B, and B depends on C; so A depends on C through B.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an Update Anomaly?&lt;/strong&gt; (When you update a value in one place but it remains old elsewhere due to redundancy.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;When to choose 3NF vs BCNF?&lt;/strong&gt; (Usually, 3NF is sufficient for practical production systems.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: NoSQL: Wide-Column Stores (Cassandra Internals)</title>
+      <link>http://localhost:1313/database/wide-column-stores/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/wide-column-stores/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is a Wide-Column Store (like Cassandra)? Explain the physical storage (LSM Trees) and the concept of &amp;ldquo;Eventual Consistency&amp;rdquo;.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Distributed datastore architectures.&lt;/li&gt;
+&lt;li&gt;LSM Tree vs B-Tree tradeoffs.&lt;/li&gt;
+&lt;li&gt;Gossip protocols and replication factors.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Logical View vs Physical View:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-logical-view-vs-physical-view&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-logical-view-vs-physical-view&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Logically, it looks like a sparse table. Physically, data is stored in columns.
+&lt;strong&gt;Partition Key&lt;/strong&gt;: Determines which node the set of columns belongs to.&lt;/p&gt;
+&lt;h3&gt;2. LSM (Log-Structured Merge-Tree):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-lsm-log-structured-merge-tree&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-lsm-log-structured-merge-tree&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Unlike B+ Trees where writes are random updates to disk pages, LSM converts &lt;strong&gt;random writes into sequential writes&lt;/strong&gt;.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Memtable&lt;/strong&gt;: Write to an in-memory sorted buffer.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Commit Log&lt;/strong&gt;: Append-only log for durability.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SSTable&lt;/strong&gt;: When Memtable is full, flush to a sorted file on disk.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compaction&lt;/strong&gt;: Periodically merge SSTables, discarding old values/tombstones.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Eventual Consistency:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-eventual-consistency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-eventual-consistency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Cassandra follows &lt;strong&gt;AP&lt;/strong&gt; (Availability and Partition Tolerance).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Tunable Consistency&lt;/strong&gt;: You can decide how many nodes must ACK a write (ONE, QUORUM, ALL).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Anti-Entropy&lt;/strong&gt;: Uses &lt;strong&gt;Hinted Handoff&lt;/strong&gt; (storing data for a dead node until it wakes up) and &lt;strong&gt;Gossip&lt;/strong&gt; to spread data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Wide-column stores like Cassandra use LSM Trees to provide extreme write performance by turning random updates into sequential log flushes. They achieve horizontal scale through peer-to-peer replication and consistent hashing, trading off strong consistency for high availability across data centers.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ LSM Tree Workflow:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-lsm-tree-workflow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-lsm-tree-workflow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;Write -&amp;gt; [In-memory Sorted Map (Memtable)] -&amp;gt; Flush -&amp;gt; [On-disk Sorted String Table (SSTable)]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Confusing Write-Column with Row-based columnar (like Parquet). Cassandra is a &lt;strong&gt;column-family&lt;/strong&gt; store.&lt;/li&gt;
+&lt;li&gt;Thinking LSM trees are good for range queries (they are slower than B+ trees for reads because they must check multiple levels).&lt;/li&gt;
+&lt;li&gt;Not understanding what a &amp;ldquo;Tombstone&amp;rdquo; is in a log-based delete.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a Bloom Filter in Cassandra?&lt;/strong&gt; (Used to quickly check if a key DOES NOT exist in an SSTable, avoiding a disk read.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Quorum?&lt;/strong&gt; ($N/2 + 1$).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Secondary Index in Cassandra?&lt;/strong&gt; (Very limited; usually better to create another table or use Materialized Views.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: ACID vs. BASE</title>
+      <link>http://localhost:1313/database/acid-vs-base/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/acid-vs-base/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare ACID and BASE properties. Which domains usually favor which, and why?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Foundational database theory.&lt;/li&gt;
+&lt;li&gt;Understanding the trade-offs of the CAP Theorem.&lt;/li&gt;
+&lt;li&gt;Consistency vs Availability choices.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. ACID (Relational - Oracle, Postgres, MySQL):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-acid-relational---oracle-postgres-mysql&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-acid-relational---oracle-postgres-mysql&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Atomicity&lt;/strong&gt;: All or nothing.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consistency&lt;/strong&gt;: DB starts and ends in a valid state.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Isolation&lt;/strong&gt;: Concurrent transactions don&amp;rsquo;t interfere.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Durability&lt;/strong&gt;: Committed data is permanent.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Domain&lt;/strong&gt;: Banking, E-commerce, Inventory (where correctness is non-negotiable).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. BASE (NoSQL - Cassandra, SimpleDB, DynamoDB):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-base-nosql---cassandra-simpledb-dynamodb&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-base-nosql---cassandra-simpledb-dynamodb&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Basically Available&lt;/strong&gt;: System seems to always work.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Soft state&lt;/strong&gt;: State may change over time without input (due to eventual consistency).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Eventual consistency&lt;/strong&gt;: After a period of no updates, all nodes will agree.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Domain&lt;/strong&gt;: Social Media, Logs, Content Delivery (where availability &amp;gt; being 100% up-to-date for every user).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ACID provides a strong guarantee of data integrity at the cost of scalability and latency under high load or network partitions. BASE embrases eventual consistency to provide global scalability and high availability. Choosing between them depends on whether your application requires &amp;ldquo;absolute correctness now&amp;rdquo; or &amp;ldquo;it will be correct shortly.&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ CAP Mapping:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-cap-mapping&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-cap-mapping&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;ACID&lt;/strong&gt; usually focuses on &lt;strong&gt;CP&lt;/strong&gt; (Consistency/Partition Tolerance).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BASE&lt;/strong&gt; usually focuses on &lt;strong&gt;AP&lt;/strong&gt; (Availability/Partition Tolerance).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can an ACID database scale horizontally?&lt;/strong&gt; (Yes, via sharding, but maintaining cross-shard transactions is very slow.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Strongly Consistent&amp;rdquo; NoSQL?&lt;/strong&gt; (e.g., MongoDB with &lt;code&gt;majority&lt;/code&gt; read concern; Google Spanner using atomic clocks.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Saga Pattern&amp;rdquo;?&lt;/strong&gt; (Used to manage transactions across multiple ACID services.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Clustered vs. Non-Clustered Indexes</title>
+      <link>http://localhost:1313/database/clustered-vs-non-clustered/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/clustered-vs-non-clustered/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the physical difference between a Clustered Index and a Non-Clustered Index? How many of each can you have?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Physical data layout on disk.&lt;/li&gt;
+&lt;li&gt;How indexes actually speed up &lt;code&gt;SELECT&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Understanding of the &amp;ldquo;Primary Key&amp;rdquo; storage.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Clustered Index:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-clustered-index&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-clustered-index&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Physical Order&lt;/strong&gt;: The data rows themselves are stored in the index.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Constraint&lt;/strong&gt;: Only &lt;strong&gt;one&lt;/strong&gt; per table (because you can only sort the physical rows once).&lt;/li&gt;
+&lt;li&gt;Most databases automatically use the &lt;strong&gt;Primary Key&lt;/strong&gt; as the clustered index.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Performance&lt;/strong&gt;: Extremely fast for range scans on the PK.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Non-Clustered Index:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-non-clustered-index&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-non-clustered-index&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Physical Order&lt;/strong&gt;: Its own structure (typically a B+ tree) that stores a reference (pointer) to the actual data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Limit&lt;/strong&gt;: Can have many.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cost&lt;/strong&gt;: A &amp;ldquo;lookup&amp;rdquo; step. Finding a key in a non-clustered index gives you a pointer → you then have to seek that row in the main table.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Covering Index:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-covering-index&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-covering-index&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If a non-clustered index contains all the columns requested in the &lt;code&gt;SELECT&lt;/code&gt;, it is called a &amp;ldquo;Covering Index.&amp;rdquo; The DB doesn&amp;rsquo;t even have to look at the main table (avoids the &amp;ldquo;Bookmark Lookup&amp;rdquo; cost).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A clustered index determines the physical storage order of the data; it resides with the rows. A non-clustered index is a separate structure that points to the data. While clustered indexes are great for primary ranges, non-clustered indexes allow for multiple efficient search paths at the cost of additional storage and a small overhead for lookups.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Index Visual:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-index-visual&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-index-visual&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Clustered&lt;/strong&gt;: &lt;code&gt;[Key | Data Page]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Non-Clustered&lt;/strong&gt;: &lt;code&gt;[Key | Pointer to Clustered Key]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Why is inserting into a clustered index expensive?&lt;/strong&gt; (Might require moving physical rows to make space in the middle of the table.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Composite Index&amp;rdquo;?&lt;/strong&gt; (An index on multiple columns.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;When to use non-clustered?&lt;/strong&gt; (For search filters that aren&amp;rsquo;t the primary key.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Databases: Sparse vs. Dense Indexes</title>
+      <link>http://localhost:1313/database/sparse-vs-dense-indexes/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/sparse-vs-dense-indexes/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Sparse and Dense Indexes. When is it better to use a Sparse index?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of Index-to-Data ratios.&lt;/li&gt;
+&lt;li&gt;Impact of storage space vs lookup speed.&lt;/li&gt;
+&lt;li&gt;How databases handle huge datasets.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Dense Index:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-dense-index&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-dense-index&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Definition&lt;/strong&gt;: An index entry for &lt;strong&gt;every single search key&lt;/strong&gt; in the data file.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Fact. To find if a key exists, you only check the index.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: High storage cost.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Sparse Index:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-sparse-index&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-sparse-index&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Definition&lt;/strong&gt;: Index entries for &lt;strong&gt;only a subset&lt;/strong&gt; of the search keys (usually one per data block/page).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Much smaller. Fits in RAM easily.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Slower. To find a key, the DB finds the closest &amp;ldquo;smaller&amp;rdquo; entry in the index, then performs a sequential scan of the data block.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Usage:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-usage&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-usage&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Clustered Indexes&lt;/strong&gt; are often Sparse (one entry per page).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LSM-based Databases&lt;/strong&gt; (like Cassandra) use Sparse indexing in their SSTables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A dense index accounts for every row, making lookups extremely direct at the cost of memory. A sparse index only maps the beginning of each physical disk block, which dramatically saves space and is highly effective when the data is physically sorted on disk. Sparse indexing is the go-to choice for managing multi-terabyte datasets where the index must remain in memory.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Dense&lt;/strong&gt;: &lt;code&gt;Row1 -&amp;gt; Ptr1&lt;/code&gt;, &lt;code&gt;Row2 -&amp;gt; Ptr2&lt;/code&gt;, &lt;code&gt;Row3 -&amp;gt; Ptr3&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Sparse&lt;/strong&gt;: &lt;code&gt;Block1_Start -&amp;gt; Ptr_Block1&lt;/code&gt;, &lt;code&gt;Block2_Start -&amp;gt; Ptr_Block2&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Multilevel Index&amp;rdquo;?&lt;/strong&gt; (Creating an index for the index itself — e.g. B-Trees.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Bitmap Index&amp;rdquo;?&lt;/strong&gt; (Used for columns with low cardinality like &amp;ldquo;Gender&amp;rdquo;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can a Sparse index be used for non-sorted data?&lt;/strong&gt; (No, it relies on the physical order of the data blocks.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: B-Tree vs. B&#43; Tree Internals</title>
+      <link>http://localhost:1313/database/b-tree-vs-b-plus-tree/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/b-tree-vs-b-plus-tree/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the primary difference between a B-Tree and a B+ Tree? Why do databases use the B+ Tree almost exclusively?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Deep knowledge of disk-optimized data structures.&lt;/li&gt;
+&lt;li&gt;Range-query performance.&lt;/li&gt;
+&lt;li&gt;Cache efficiency in tree traversal.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. B-Tree:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-b-tree&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-b-tree&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Data Location&lt;/strong&gt;: Both keys and data (or pointers to data) are stored in &lt;strong&gt;Internal Nodes&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Issue&lt;/strong&gt;: If you are searching for node X, your traversal hits fewer keys per page because space is taken up by the data itself.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. B+ Tree:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-b-tree&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-b-tree&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Data Location&lt;/strong&gt;: Only stored in the &lt;strong&gt;Leaf Nodes&lt;/strong&gt;. Internal nodes only store keys (for guiding search).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Linked Leaves&lt;/strong&gt;: All leaf nodes are linked together in a &lt;strong&gt;Doubly Linked List&lt;/strong&gt;.
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Major Benefit&lt;/strong&gt;: For a range query (&lt;code&gt;SELECT * WHERE price BETWEEN 10 AND 50&lt;/code&gt;), you find &amp;lsquo;10&amp;rsquo; once and then just traverse the linked list. In a B-Tree, you would have to go back &amp;ldquo;up&amp;rdquo; the tree repeatedly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Cache Efficiency:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-cache-efficiency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-cache-efficiency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Because B+ Tree internal nodes don&amp;rsquo;t have data, more keys fit in a single disk block (Page). This means the tree is &amp;ldquo;flatter&amp;rdquo; (fewer levels), requiring fewer disk I/O operations.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;While a B-Tree can potentially find a value in fewer hops if it&amp;rsquo;s near the root, B+ Trees are superior for real-world database workloads. Their concentration of data in the leaves and the linked-list traversal between them makes range queries incredibly fast and keeps the tree shallow, minimizing the expensive disk seeks that are the primary bottleneck in large-scale storage.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;B-Tree&lt;/strong&gt;: &lt;code&gt;(Node + Data) -&amp;gt; (Node + Data)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;B+ Tree&lt;/strong&gt;: &lt;code&gt;Nodes --(Linked List)--&amp;gt; [Data][Data][Data]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is the &amp;ldquo;Fan-out&amp;rdquo; of a tree?&lt;/strong&gt; (The number of children each node has; B+ trees have high fan-out.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Time Complexity of search?&lt;/strong&gt; ($O(\log N)$).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an &amp;ldquo;Index-Organized Table&amp;rdquo;?&lt;/strong&gt; (When the physical data is stored directly in the B+ Tree leaves of the Primary Key.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Database View vs. Materialized View</title>
+      <link>http://localhost:1313/database/views-vs-materialized/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/views-vs-materialized/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare a standard Database View and a Materialized View. When would you use each?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Memory/Disk vs CPU trade-off.&lt;/li&gt;
+&lt;li&gt;Caching results of complex queries.&lt;/li&gt;
+&lt;li&gt;Impact on data freshness and storage.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Standard View (Virtual):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-standard-view-virtual&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-standard-view-virtual&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;What&lt;/strong&gt;: Just a stored query.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Execution&lt;/strong&gt;: Every time you &lt;code&gt;SELECT * FROM view&lt;/code&gt;, the underlying query is executed &lt;strong&gt;at that moment&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: Almost zero (just the text of the SQL query).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Freshness&lt;/strong&gt;: 100% (it&amp;rsquo;s live data).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Materialized View (Physical Cache):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-materialized-view-physical-cache&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-materialized-view-physical-cache&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;What&lt;/strong&gt;: The results of the query are stored as a &lt;strong&gt;physical table&lt;/strong&gt; on disk.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Execution&lt;/strong&gt;: Queries against it are instant because the data is pre-calculated.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: High (duplicate of the underlying data).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Freshness&lt;/strong&gt;: Not guaranteed. It must be &lt;strong&gt;refreshed&lt;/strong&gt; periodically or on-demand.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A standard view is great for simplifying complex queries or providing security layers without using storage. A materialized view is a powerful optimization for heavy analytical queries (reporting) where you can tolerate slightly stale data in exchange for massive performance gains.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Use Case Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-use-case-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-use-case-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feature&lt;/th&gt;
+&lt;th&gt;View&lt;/th&gt;
+&lt;th&gt;Materialized View&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Speed&lt;/td&gt;
+&lt;td&gt;Slow (runs on demand)&lt;/td&gt;
+&lt;td&gt;Fast (pre-calculated)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Freshness&lt;/td&gt;
+&lt;td&gt;Always Live&lt;/td&gt;
+&lt;td&gt;Periodic Refresh&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Storage&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;td&gt;Yes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Use Case&lt;/td&gt;
+&lt;td&gt;Security / Simplification&lt;/td&gt;
+&lt;td&gt;Analytics / Reports&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is an &amp;ldquo;Incremental Refresh&amp;rdquo;?&lt;/strong&gt; (Only updating the materialized view with rows that changed in the base tables, rather than re-calculating the whole thing.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can you index a view?&lt;/strong&gt; (Generally no for standard views, but you CAN index a Materialized View because it&amp;rsquo;s a physical table.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an &amp;ldquo;Indexed View&amp;rdquo; in SQL Server?&lt;/strong&gt; (A specific implementation of a Materialized View that updates automatically.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: NoSQL: Graph Databases (Neo4j)</title>
+      <link>http://localhost:1313/database/graph-databases-neo4j/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/graph-databases-neo4j/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is a Graph Database? How does it differ from a Relational DB for social network analysis?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of &amp;ldquo;Relationship-first&amp;rdquo; models.&lt;/li&gt;
+&lt;li&gt;Solving the &amp;ldquo;N-degree JOIN&amp;rdquo; bottleneck.&lt;/li&gt;
+&lt;li&gt;Knowledge of Property Graphs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Relational approach to Relationships:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-relational-approach-to-relationships&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-relational-approach-to-relationships&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Use a &amp;ldquo;Join Table&amp;rdquo; (e.g. &lt;code&gt;User_Followers&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;To find &amp;ldquo;Friends of Friends,&amp;rdquo; you must JOIN this table twice.&lt;/li&gt;
+&lt;li&gt;To find &amp;ldquo;Friends of Friends of Friends (3 degrees),&amp;rdquo; you JOIN 3 times. Performance degrades exponentially.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Graph approach (Neo4j):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-graph-approach-neo4j&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-graph-approach-neo4j&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Nodes&lt;/strong&gt; (Users) and &lt;strong&gt;Edges&lt;/strong&gt; (FOLLOWS).&lt;/li&gt;
+&lt;li&gt;The &amp;ldquo;relationship&amp;rdquo; is a first-class citizen with its own data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Index-free Adjacency&lt;/strong&gt;: Each node physically stores pointers to its neighbors. Jumping to a neighbor is $O(1)$ regardless of how big the total database is.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For systems defined by complex, multi-level connections like social graphs or fraud detection, Graph Databases outperform traditional SQL because they preserve relationships as direct pointers. This eliminates the need for expensive JOIN operations, allowing for real-time traversal of deep relationship chains that would grind a relational database to a halt.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Comparison:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SQL&lt;/strong&gt;: Select friends from table where user_id in (select target from &amp;hellip;)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Graph&lt;/strong&gt;: &lt;code&gt;(me)-[:FRIEND]-&amp;gt;(friend)-[:FRIEND]-&amp;gt;(fof)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Cypher?&lt;/strong&gt; (The declarative query language used by Neo4j, similar to SQL but for patterns.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can Graph DBs be distributed?&lt;/strong&gt; (Tricky; &amp;ldquo;sharding&amp;rdquo; a graph is hard without breaking edges. Usually they rely on large single-node instances or complex cluster replications.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Triplestore&amp;rdquo;?&lt;/strong&gt; (A specific type of graph DB optimized for RDF [subject-predicate-object] logic.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: NoSQL: Time-Series Databases (InfluxDB)</title>
+      <link>http://localhost:1313/database/time-series-databases/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/time-series-databases/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is a Time-Series Database (TSDB)? Explain the role of &amp;ldquo;Tags&amp;rdquo; and &amp;ldquo;Fields&amp;rdquo; and why they are optimized for metrics.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Handling high-throughput, timestamped data.&lt;/li&gt;
+&lt;li&gt;Knowledge of InfluxDB or Prometheus storage logic.&lt;/li&gt;
+&lt;li&gt;Data retention and downsampling.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Data Point:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-data-point&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-data-point&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;Measurement + Timestamp + Tags + Fields&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Tags (Metadata)&lt;/strong&gt;: Indexed. e.g. &lt;code&gt;host=&amp;quot;server1&amp;quot;&lt;/code&gt;, &lt;code&gt;region=&amp;quot;us-east&amp;quot;&lt;/code&gt;. Use these for filtering.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fields (Values)&lt;/strong&gt;: Not indexed. e.g. &lt;code&gt;cpu_load=44.5&lt;/code&gt;, &lt;code&gt;temp=30&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. High-Throughput Aggregation:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-high-throughput-aggregation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-high-throughput-aggregation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;TSDBs are optimized for constant, high-speed writes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Unlike relational DBs, they often use &lt;strong&gt;columnar storage&lt;/strong&gt; or &lt;strong&gt;LSM Trees&lt;/strong&gt; tuned for sequential time windows.&lt;/li&gt;
+&lt;li&gt;They have built-in &lt;strong&gt;Retention Policies&lt;/strong&gt; (e.g. &amp;ldquo;Delete data older than 30 days automatically&amp;rdquo;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Continuous Queries / Downsampling:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-continuous-queries--downsampling&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-continuous-queries--downsampling&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Automatically shrinking old data:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;1-second resolution (for today).&lt;/li&gt;
+&lt;li&gt;1-minute averages (for last week).&lt;/li&gt;
+&lt;li&gt;1-hour averages (for last year).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;TSDBs are specialized for recording the state of a system over time. By separating metadata (Tags) from sensor readings (Fields), they allow for incredibly fast searching and aggregation across millions of metrics. Their native support for data lifecycle management makes them the standard choice for monitoring systems and IoT applications.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Example Query:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-example-query&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-example-query&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Relational&lt;/strong&gt;: &lt;code&gt;SELECT avg(val) FROM logs WHERE time &amp;gt; Now - 1hr AND tag = &#39;X&#39;&lt;/code&gt; (Slow)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TSDB&lt;/strong&gt;: &lt;code&gt;SELECT MEAN(value) FROM metric WHERE tag = &#39;X&#39; AND time &amp;gt; now() - 1h&lt;/code&gt; (Optimized)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Explain &amp;ldquo;High Cardinality&amp;rdquo; in TSDB.&lt;/strong&gt; (When you have too many unique tags [like UserID], the index size explodes, killing performance.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Prometheus vs InfluxDB?&lt;/strong&gt; (Prometheus is Pull-based and focused on monitoring; InfluxDB is Push-based and more general-purpose TS.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an &amp;ldquo;LSM Tree&amp;rdquo; in the context of TSDB?&lt;/strong&gt; (Sequential logs that are eventually merged.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Transaction Isolation Levels</title>
+      <link>http://localhost:1313/database/isolation-levels-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/isolation-levels-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the 4 SQL Transaction Isolation Levels. What is a &amp;ldquo;Phantom Read&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of concurrency issues in databases.&lt;/li&gt;
+&lt;li&gt;Balancing Performance vs Consistency.&lt;/li&gt;
+&lt;li&gt;Awareness of &amp;ldquo;MVCC&amp;rdquo; (Multi-Version Concurrency Control).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Read Uncommitted:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-read-uncommitted&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-read-uncommitted&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A transaction can read data changes from other uncommitted transactions.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Risk&lt;/strong&gt;: &lt;strong&gt;Dirty Reads&lt;/strong&gt; (reading data that gets rolled back later).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Read Committed:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-read-committed&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-read-committed&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A transaction only reads committed data.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Risk&lt;/strong&gt;: &lt;strong&gt;Non-repeatable Reads&lt;/strong&gt; (If I read Row X twice, it might be different because someone else committed between my reads).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Repeatable Read (Default MySQL):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-repeatable-read-default-mysql&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-repeatable-read-default-mysql&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Ensures that if you read Row X now, it will look the same for the rest of your transaction.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Risk&lt;/strong&gt;: &lt;strong&gt;Phantom Reads&lt;/strong&gt; (If I query &amp;ldquo;All users in NYC,&amp;rdquo; a new user might be inserted by another thread and show up in my second query).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Serializable:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-serializable&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-serializable&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Full isolation. Transactions occur as if they were strictly one after another.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Risk&lt;/strong&gt;: Massive performance hit (lock contention).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Isolation levels let us choose how much noise from other transactions we are willing to tolerate. While &amp;ldquo;Read Committed&amp;rdquo; avoids the most obvious bugs, many production systems require &amp;ldquo;Repeatable Read&amp;rdquo; to ensure consistent snapshot views. &amp;ldquo;Serializable&amp;rdquo; is the gold standard for accuracy but is rarely used due to the extreme locking overhead it creates.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ The 3 Phenomena:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-the-3-phenomena&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-the-3-phenomena&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Dirty Read&lt;/strong&gt;: Read uncommitted data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Non-repeatable Read&lt;/strong&gt;: Value of a row changes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Phantom Read&lt;/strong&gt;: Number of rows in a range changes.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is MVCC?&lt;/strong&gt; (Instead of locking, the DB keeps multiple versions of a row with timestamps. Readers look at the version that was current when they started.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Which level does Postgres default to?&lt;/strong&gt; (Read Committed).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Oracle handle isolation?&lt;/strong&gt; (Mostly uses MVCC to provide Read Committed and Serializable-like levels without standard locks.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Normalization vs. Denormalization Rules</title>
+      <link>http://localhost:1313/database/normalization-denormalization/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/normalization-denormalization/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: When should you violate 3rd Normal Form? Explain the tradeoffs of Denormalization.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Real-world pragmatic DB design.&lt;/li&gt;
+&lt;li&gt;Performance vs Data Integrity.&lt;/li&gt;
+&lt;li&gt;SQL for OLTP vs OLAP.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Normalization (OLTP - Apps):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-normalization-oltp---apps&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-normalization-oltp---apps&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Goal&lt;/strong&gt;: Minimize redundancy and maintain integrity.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1NF, 2NF, 3NF&lt;/strong&gt;: Splitting data into many small tables.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Large queries require 5-6 &lt;strong&gt;JOINS&lt;/strong&gt;, which is slow.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Denormalization (OLAP - Analytics):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-denormalization-olap---analytics&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-denormalization-olap---analytics&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Goal&lt;/strong&gt;: Maximize Read performance.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Method&lt;/strong&gt;: Intentionally adding redundant data (e.g., storing &lt;code&gt;username&lt;/code&gt; in the &lt;code&gt;orders&lt;/code&gt; table even though it&amp;rsquo;s already in the &lt;code&gt;users&lt;/code&gt; table).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Fewer joins, faster aggregation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;:
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Update Anomaly&lt;/strong&gt;: If a user changes their name, you must update it in multiple tables.&lt;/li&gt;
+&lt;li&gt;Increased storage.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Rule of Thumb:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-rule-of-thumb&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-rule-of-thumb&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Normalize for &lt;strong&gt;Transactions&lt;/strong&gt; (consistency is key). Denormalize for &lt;strong&gt;Analytics&lt;/strong&gt; and &lt;strong&gt;High-traffic Reads&lt;/strong&gt; (where storage is cheap but CPU/Joins are expensive).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Normalization is the academic ideal for clean data, but denormalization is the engineering reality for high-performance systems. While normalized schemas protect against data corruption during writes, redundant data structures are often necessary to satisfy complex read patterns in real-time. The key is to manage the redundant &amp;ldquo;sync&amp;rdquo; logic, often using application-level events or database triggers.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Flat Table&amp;rdquo;?&lt;/strong&gt; (A completely denormalized table with no joins allowed.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Star Schema&amp;rdquo;?&lt;/strong&gt; (A central Fact table surrounded by denormalized Dimension tables.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the risk of update anomalies?&lt;/strong&gt; (Inconsistent data — e.g. User shows different names on different pages.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Partial Indexes (SQL Optimization)</title>
+      <link>http://localhost:1313/database/partial-indexes-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/partial-indexes-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is a Partial Index? How does it help in multitenant or status-driven systems?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Precision indexing techniques.&lt;/li&gt;
+&lt;li&gt;Minimizing index maintenance overhead.&lt;/li&gt;
+&lt;li&gt;Storage efficiency in large tables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Concept:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-concept&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-concept&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A standard index logs every row. A &lt;strong&gt;Partial Index&lt;/strong&gt; only includes rows that meet a specific condition (a &lt;code&gt;WHERE&lt;/code&gt; clause in the index definition).
+&lt;code&gt;CREATE INDEX ... ON orders(created_at) WHERE status = &#39;PENDING&#39;;&lt;/code&gt;&lt;/p&gt;
+&lt;h3&gt;2. Why use it?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-why-use-it&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-why-use-it&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Small Index&lt;/strong&gt;: If 99% of your orders are &amp;lsquo;COMPLETE&amp;rsquo;, the index on &amp;lsquo;PENDING&amp;rsquo; will be tiny and stay in RAM.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Speed&lt;/strong&gt;: Inserts for &amp;lsquo;COMPLETE&amp;rsquo; orders don&amp;rsquo;t need to update this index (no overhead).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Multitenancy&lt;/strong&gt;: If 90% of data belongs to &amp;ldquo;Default Tenant&amp;rdquo;, you might only index &amp;ldquo;Paid Tenants.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Partial indexes allow us to selectively index only the &amp;ldquo;interesting&amp;rdquo; parts of a table. By excluding vast amounts of stable or irrelevant data from the index structure, we dramatically reduce disk I/O, keep the index memory-resident, and lower the write cost for the majority of database transactions. This is a crucial optimization for high-scale systems where only a fraction of raw data represents active work.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ SQL Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-sql-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-sql-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;-- Only index active users to keep session lookups fast
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;CREATE&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;INDEX&lt;/span&gt; active_users_idx 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;ON&lt;/span&gt; users (id) 
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;WHERE&lt;/span&gt; is_active &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;AND&lt;/span&gt; last_login &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;2023-01-01&amp;#39;&lt;/span&gt;;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Does MySQL support Partial Indexes?&lt;/strong&gt; (No, it&amp;rsquo;s primarily a PostgreSQL and SQL Server feature; MySQL uses &amp;ldquo;Prefix Indexes&amp;rdquo; but they aren&amp;rsquo;t the same.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What happens if a query doesn&amp;rsquo;t match the WHERE clause?&lt;/strong&gt; (The DB ignores the index and does a sequential scan or uses another index.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can you combine a Partial index with a Covering index?&lt;/strong&gt; (Yes, providing massive performance for specific, frequent queries.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Write-Ahead Logging (WAL) Internals</title>
+      <link>http://localhost:1313/database/write-ahead-logging/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/write-ahead-logging/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Write-Ahead Logging (WAL)? Why must we write to the log before the database?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Database durability (D in ACID).&lt;/li&gt;
+&lt;li&gt;Recovery from crashes.&lt;/li&gt;
+&lt;li&gt;Optimizing random writes into sequential writes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Bottleneck:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-bottleneck&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-bottleneck&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Updating the actual Data Pages (B-Tree) is &lt;strong&gt;Random I/O&lt;/strong&gt;. It&amp;rsquo;s slow. If we did it for every transaction, the DB would crawl.&lt;/p&gt;
+&lt;h3&gt;2. The WAL Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-wal-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-wal-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Instead of writing to the data file, we first write the change to a sequential, append-only &lt;strong&gt;Log File&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Efficiency&lt;/strong&gt;: Sequential writes are fast.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Atomicity&lt;/strong&gt;: The transaction is considered &amp;ldquo;Done&amp;rdquo; as soon as it is safely recorded in the Log.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Crash Recovery:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-crash-recovery&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-crash-recovery&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If the power fails before the data was actually put in the B-Tree:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;On restart, the DB reads the WAL.&lt;/li&gt;
+&lt;li&gt;It &amp;ldquo;Replays&amp;rdquo; all the transactions that were in the log but not yet in the main data file.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Write-Ahead Logging ensures that no transaction is considered committed until it has been safely persisted in a persistent, append-only file. This separates the logical commit from the physical data update, allowing the database to survive sudden crashes and significantly increasing throughput by turning expensive random disk updates into efficient sequential log entries.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Order of Ops:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-order-of-ops&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-order-of-ops&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Receive Write.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Append to WAL on Disk&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Update Memtable/B-Tree in RAM.&lt;/li&gt;
+&lt;li&gt;Return &amp;ldquo;Success&amp;rdquo; to User.&lt;/li&gt;
+&lt;li&gt;(Later) Background flush of Data to Disk.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Checkpointing&amp;rdquo;?&lt;/strong&gt; (Telling the DB &amp;ldquo;Every log entry before this point is now safely in the main file, so you can delete those logs.&amp;rdquo;)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;WAL in Postgres vs MariaDB?&lt;/strong&gt; (Same concept; Postgres calls it WAL, MariaDB/MySQL calls it Redo Log.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does WAL protect against Disk Failure?&lt;/strong&gt; (No, only against crash/reboot. For disk failure, you need Replication.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Database Replication Strategies</title>
+      <link>http://localhost:1313/database/database-replication-strategies/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/database-replication-strategies/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Master-Slave, Master-Master, and Quorum-based replication. How do they handle consistency and availability?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;High Availability (HA) architectures.&lt;/li&gt;
+&lt;li&gt;Tradeoffs in Write vs Read scaling.&lt;/li&gt;
+&lt;li&gt;Understanding of &amp;ldquo;Eventual Consistency.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Master-Slave (Single-Leader):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-master-slave-single-leader&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-master-slave-single-leader&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Writes&lt;/strong&gt;: Only to the Master.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Reads&lt;/strong&gt;: To many Slaves.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Simple, easy to manage consistency.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Master is a write bottleneck and SPOF.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Multi-Master (Leaderless/Multi-Leader):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-multi-master-leaderlessmulti-leader&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-multi-master-leaderlessmulti-leader&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Writes&lt;/strong&gt;: Can happen on any node.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: High write availability; low latency (users write to the nearest DB).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Conflict resolution is a nightmare (Vector Clocks/LWW).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Quorum-Based (Dynamo style):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-quorum-based-dynamo-style&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-quorum-based-dynamo-style&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Every write/read must be acknowledged by a minimum number of nodes ($W$ and $R$).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Rule&lt;/strong&gt;: If $W + R &amp;gt; N$ (Total nodes), you are guaranteed to read the latest value.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Flexibility&lt;/strong&gt;: Can tune for &lt;strong&gt;Fast Writes&lt;/strong&gt; ($W=1$, but risky) or &lt;strong&gt;Strong Reads&lt;/strong&gt; (High $R$).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Replication choice depends on your specific traffic patterns. For read-heavy applications, a Master-Slave setup with multiple read replicas is the standard industry choice. For geographically distributed systems where low-latency writes are critical, Multi-Master or Quorum-based systems are used to ensure availability across network partitions, provided the application can handle eventual consistency and conflict resolution.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏢 Summary Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-summary-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-summary-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Strategy&lt;/th&gt;
+&lt;th&gt;Primary Risk&lt;/th&gt;
+&lt;th&gt;Scalability&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Master-Slave&lt;/td&gt;
+&lt;td&gt;Master Failure&lt;/td&gt;
+&lt;td&gt;High Read&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Multi-Master&lt;/td&gt;
+&lt;td&gt;Conflict / Integrity&lt;/td&gt;
+&lt;td&gt;High Write&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Quorum&lt;/td&gt;
+&lt;td&gt;Latency Jitter&lt;/td&gt;
+&lt;td&gt;Tunable&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Synchronous&amp;rdquo; vs &amp;ldquo;Asynchronous&amp;rdquo; replication?&lt;/strong&gt; (Sync: Wait for slave before returning; Async: Commit on master immediately, slave catches up later.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Replication Lag?&lt;/strong&gt; (The delay between data being written to master and appearing on a slave.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Witness&amp;rdquo; node?&lt;/strong&gt; (A tiny node that doesn&amp;rsquo;t hold data but participates in voting/quorum to break ties.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Horizontal vs. Vertical Partitioning</title>
+      <link>http://localhost:1313/database/database-partitioning-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/database-partitioning-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the difference between Horizontal and Vertical Partitioning. Which one solves &amp;ldquo;Wide Tables&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Logical vs Physical storage optimization.&lt;/li&gt;
+&lt;li&gt;Scaling database limits.&lt;/li&gt;
+&lt;li&gt;Impact on JOIN operations and maintenance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Vertical Partitioning (Splitting Columns):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-vertical-partitioning-splitting-columns&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-vertical-partitioning-splitting-columns&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Problem&lt;/strong&gt;: A &amp;ldquo;Wide Table&amp;rdquo; with 100 columns. Most queries only need &lt;code&gt;ID&lt;/code&gt; and &lt;code&gt;Name&lt;/code&gt;. The &lt;code&gt;Description&lt;/code&gt; (text-heavy) slows down every scan.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Fix&lt;/strong&gt;: Move the heavy/rarely-used columns into a separate table.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Result&lt;/strong&gt;: More rows fit in one disk page for the &amp;ldquo;Main&amp;rdquo; table (faster scans).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Horizontal Partitioning / Sharding (Splitting Rows):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-horizontal-partitioning--sharding-splitting-rows&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-horizontal-partitioning--sharding-splitting-rows&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Problem&lt;/strong&gt;: A table with 1 Billion rows. Searching becomes slow even with indexes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Fix&lt;/strong&gt;: Put Rows 1-500M on Server A, and 500M-1B on Server B.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Result&lt;/strong&gt;: Parallel processing of data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Vertical partitioning optimizes the database for specific access patterns by pruning unnecessary columns, thereby increasing cache efficiency. Horizontal partitioning, or sharding, is our primary tool for high availability and volume management, allowing us to distribute a massive dataset across multiple physical nodes. Together, these strategies ensure that neither the count of rows nor the width of records becomes a structural bottleneck.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Vertical&lt;/strong&gt;: &lt;code&gt;[Col A, Col B] | [Col C (Heavy)]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Horizontal&lt;/strong&gt;: &lt;code&gt;[Row 1-10] | [Row 11-20]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Shard Key&amp;rdquo;?&lt;/strong&gt; (The column used to decide where a row goes — e.g. &lt;code&gt;user_id % 4&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Risk of Vertical Partitioning?&lt;/strong&gt; (Increases the number of JOINS needed to see the full record.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;List Partitioning&amp;rdquo;?&lt;/strong&gt; (Splitting by a specific list of values, like &lt;code&gt;Country = &#39;US&#39;&lt;/code&gt;.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Consistent Hashing (Detailed)</title>
+      <link>http://localhost:1313/database/consistent-hashing-vnodes/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/consistent-hashing-vnodes/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does Consistent Hashing work? Explain &amp;ldquo;Virtual Nodes&amp;rdquo; and why they are necessary.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Scaling distributed storage (Sharding).&lt;/li&gt;
+&lt;li&gt;Minimizing data migration when nodes join/leave.&lt;/li&gt;
+&lt;li&gt;Solving &amp;ldquo;Hotspot&amp;rdquo; issues via better distribution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Traditional Hashing: &lt;code&gt;hash(key) % N&lt;/code&gt;&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-traditional-hashing-hashkey--n&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-traditional-hashing-hashkey--n&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: If you have 10 nodes and you add node #11, &lt;strong&gt;every single key&lt;/strong&gt; will remap (&lt;code&gt;% 10&lt;/code&gt; vs &lt;code&gt;% 11&lt;/code&gt; are different for almost every number). You&amp;rsquo;d have to move 90% of your data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Consistent Hashing (The Ring):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-consistent-hashing-the-ring&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-consistent-hashing-the-ring&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Key and Nodes are hashed to a range (e.g. 0 to $2^{32}-1$).&lt;/li&gt;
+&lt;li&gt;Imagine a circle. A key identifies its &amp;ldquo;destination&amp;rdquo; as the nearest node traveling &lt;strong&gt;clockwise&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Result&lt;/strong&gt;: If a node joins, it only &amp;ldquo;steals&amp;rdquo; keys from its immediate neighbor. Only $1/N$ of data moves.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Virtual Nodes (VNodes):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-virtual-nodes-vnodes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-virtual-nodes-vnodes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Just putting nodes on the circle can lead to &amp;ldquo;Skew.&amp;rdquo; Some nodes might cover 40% of the circle, others only 5%.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Solution&lt;/strong&gt;: Mapping one physical server to &lt;strong&gt;hundreds of tiny points&lt;/strong&gt; (Virtual Nodes) on the ring.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: If a server crashes, its load is split across &lt;strong&gt;all&lt;/strong&gt; other servers (each taking a few VNodes), rather than dumping everything onto one single neighbor.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Consistent hashing is the standard for managing sharded data in highly dynamic environments like Cassandra or Memcached. By using a hash ring and virtual nodes, we minimize the disruption of adding or removing capacity. Virtual nodes are particularly critical because they ensure a mathematically uniform distribution of data, protecting the system from hot-spots and ensuring that failures don&amp;rsquo;t lead to cascading overloads on specific neighbors.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Logic Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-logic-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-logic-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Traditional&lt;/strong&gt;: &lt;code&gt;hash % N&lt;/code&gt;. Cost of node change = $O(\text{Data})$.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consistent&lt;/strong&gt;: Hash Ring. Cost of node change = $O(\text{Data} / N)$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Where is this used?&lt;/strong&gt; (DynamoDB, Cassandra, Akamai CDN.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does it prevent hot-spots for popular keys?&lt;/strong&gt; (Not entirely—if one KEY is hit a billion times, the node holding it will still suffer. You need Application-layer caching for that.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Hash Slot&amp;rdquo; in Redis?&lt;/strong&gt; (A variation of consistent hashing where the ring is pre-divided into a fixed number [16,384] of logical slots.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: Columnar vs. Row-Oriented Storage</title>
+      <link>http://localhost:1313/database/columnar-vs-row-storage/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/columnar-vs-row-storage/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Row-Oriented and Column-Oriented storage. Why is Columnar storage much faster for Analytics?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Physical disk layout optimization.&lt;/li&gt;
+&lt;li&gt;OLTP (Transactions) vs OLAP (Analytics).&lt;/li&gt;
+&lt;li&gt;Compression efficiency in columnar data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Row-Oriented (Postgres, MySQL):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-row-oriented-postgres-mysql&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-row-oriented-postgres-mysql&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Layout&lt;/strong&gt;: Data is stored row by row: &lt;code&gt;[ID1, Name1, Age1] [ID2, Name2, Age2]...&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Audit&lt;/strong&gt;: Excellent for &lt;strong&gt;Single Record Access&lt;/strong&gt;. To get ALL info on &amp;lsquo;User 5&amp;rsquo;, just read one spot on disk.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: To find the &lt;code&gt;Average Age&lt;/code&gt; of 1 Billion users, the CPU must read Name, ID, Gender&amp;hellip; and discard them, just to get to the &amp;lsquo;Age&amp;rsquo; field. Massive wasted I/O.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Column-Oriented (Parquet, ClickHouse, Redshift):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-column-oriented-parquet-clickhouse-redshift&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-column-oriented-parquet-clickhouse-redshift&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Layout&lt;/strong&gt;: Data is stored column by column: &lt;code&gt;[Age1, Age2... AgeN] [Name1, Name2...]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Audit&lt;/strong&gt;: Perfect for &lt;strong&gt;Aggregations&lt;/strong&gt;. To get &lt;code&gt;Average Age&lt;/code&gt;, the CPU reads JUST the Age block.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compression&lt;/strong&gt;: Since a million &amp;ldquo;Ages&amp;rdquo; are all integers, they compress incredibly well (using RLE or Delta encoding), further reducing disk I/O.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Row-based storage is the workhorse of transactional apps, where we focus on full-record consistency and fast single-user lookups. Columnar storage is the engine of big data analytics, optimizing for mass-aggregation by physically grouping identical data types together. This columnar layout not only minimizes disk I/O for specific fields but also enables aggressive compression, allowing us to scan trillions of records in seconds.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Quick Comparison:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-quick-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-quick-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Aspect&lt;/th&gt;
+&lt;th&gt;Row-Based&lt;/th&gt;
+&lt;th&gt;Columnar&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Workload&lt;/td&gt;
+&lt;td&gt;OLTP (Apps)&lt;/td&gt;
+&lt;td&gt;OLAP (Big Data)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Writes&lt;/td&gt;
+&lt;td&gt;Fast (Single write)&lt;/td&gt;
+&lt;td&gt;Slow (Multiple column writes)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Aggregations&lt;/td&gt;
+&lt;td&gt;Slow&lt;/td&gt;
+&lt;td&gt;Extremely Fast&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Compression&lt;/td&gt;
+&lt;td&gt;Moderate&lt;/td&gt;
+&lt;td&gt;High&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Selection of a database?&lt;/strong&gt; (Postgres for the App; ClickHouse/BigQuery for the Dashboard.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an &amp;ldquo;LSM Tree&amp;rdquo; relationship?&lt;/strong&gt; (Modern columnar stores often use LSM trees to buffer columnar writes in memory before flushing them to disk.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Apache Parquet?&lt;/strong&gt; (A widely used columnar storage file format in the Hadoop/Spark ecosystem.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Database: MVCC (Multi-Version Concurrency Control)</title>
+      <link>http://localhost:1313/database/mvcc-internals/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/database/mvcc-internals/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does MVCC allow writers and readers to perform concurrently? Why is it better than simple locking?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;High-concurrency database internals.&lt;/li&gt;
+&lt;li&gt;Understanding of &amp;ldquo;Snapshots.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Tradeoffs in storage (Vacuuming) vs speed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Simple Locking (Pessimistic):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-simple-locking-pessimistic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-simple-locking-pessimistic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;If I&amp;rsquo;m writing to Row 5, anyone who wants to read Row 5 must &lt;strong&gt;WAIT&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Result&lt;/strong&gt;: Writers block Readers. Slow throughput.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. MVCC (Optimistic-ish):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-mvcc-optimistic-ish&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-mvcc-optimistic-ish&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Instead of overwriting Row 5, the DB creates a &lt;strong&gt;New Version&lt;/strong&gt; of Row 5 with a timestamp.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Readers&lt;/strong&gt;: They look at a &amp;ldquo;Snapshot&amp;rdquo; of the DB as it was when they started. Even if a writer is currently changing Row 5, the reader sees the &lt;strong&gt;old, valid version&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Result&lt;/strong&gt;: Readers NEVER wait for Writers. Writers NEVER wait for Readers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Cost:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-cost&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-cost&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We have multiple copies of rows on disk. We need a background process (&lt;strong&gt;VACUUM&lt;/strong&gt; in Postgres) to delete old versions that no one is looking at anymore.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;MVCC transforms a database from a locked silo into a multi-temporal history. By preserving old versions of records during an update, we guarantee that readers always see a consistent, point-in-time view of the data without being stalled by active transactions. This architectural shift significantly increases concurrency and is the primary reason databases like PostgreSQL and MySQL (InnoDB) can handle massive overlapping workloads with minimal friction.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏢 Terminology:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-terminology&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-terminology&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Xmin / Xmax&lt;/strong&gt;: Internal columns in Postgres tracking which transaction created/deleted a row version.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Snapshot Isolation&lt;/strong&gt;: The consistency level provided by MVCC.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Write-Write&amp;rdquo; conflict in MVCC?&lt;/strong&gt; (If two people try to update the SAME row version, one must block or fail.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Impact of long-running transactions?&lt;/strong&gt; (They prevent the Vacuum from cleaning up old versions, leading to &amp;ldquo;Table Bloat.&amp;rdquo;)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is MVCC the same as Locking?&lt;/strong&gt; (No, MVCC uses versions to avoid locks for READS.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
       <title>Database Indexing Deep-Dive</title>
       <link>http://localhost:1313/database/indexing-deep-dive/</link>
       <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>

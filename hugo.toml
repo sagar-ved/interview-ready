@@ -32,9 +32,19 @@ title = "Tech Interview Wiki"
   weight = 10
 
 [[menu.main]]
+  name = "Spring"
+  pageRef = "/spring"
+  weight = 15
+
+[[menu.main]]
   name = "DSA"
   pageRef = "/dsa"
   weight = 20
+
+[[menu.main]]
+  name = "LeetCode"
+  pageRef = "/leetcode"
+  weight = 25
 
 [[menu.main]]
   name = "System Design"

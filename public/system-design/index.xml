@@ -1753,6 +1753,2036 @@ Rider App → [Trip Request API] → Dispatch Service
     </item>
     
     <item>
+      <title>System Design: Design a Web Crawler</title>
+      <link>http://localhost:1313/system-design/web-crawler/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/web-crawler/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Web Crawler that can scale to crawl the entire World Wide Web (trillions of pages). Handle politeness, duplicate detection, and distributed execution.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Handling large-scale distributed systems.&lt;/li&gt;
+&lt;li&gt;Deduplication techniques (Bloom filters, Hash-based checks).&lt;/li&gt;
+&lt;li&gt;Scheduling and Politeness constraints.&lt;/li&gt;
+&lt;li&gt;Storage of huge metadata.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. High-Level Workflow:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-high-level-workflow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-high-level-workflow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Seed URLs&lt;/strong&gt;: Start with a list of reputable URLs.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;URL Frontier&lt;/strong&gt;: A queue containing URLs to be crawled.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTML Downloader&lt;/strong&gt;: Fetches pages from the web.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DNS Resolver&lt;/strong&gt;: Converts URLs to IP addresses.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Content Parser&lt;/strong&gt;: Extracts text and links.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Content/URL Dedup&lt;/strong&gt;: Ensures we don&amp;rsquo;t crawl the same content or URL twice.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Storage&lt;/strong&gt;: HTML storage and metadata database.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;2. Scalability &amp;amp; Distributed Nature:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-scalability--distributed-nature&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-scalability--distributed-nature&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL Frontier&lt;/strong&gt;: Distributed queue (Kafka/Redis) sharded by hostname to enforce &lt;strong&gt;politeness&lt;/strong&gt; (don&amp;rsquo;t hit the same site too fast).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deduplication&lt;/strong&gt;: Billions of URLs cannot fit in a typical Set. Use &lt;strong&gt;Bloom Filters&lt;/strong&gt; to check if a URL is potentially seen, then verify against a disk-based KV store (HBase/Cassandra).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Politeness &amp;amp; Robots.txt:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-politeness--robotstxt&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-politeness--robotstxt&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Cache &lt;code&gt;robots.txt&lt;/code&gt; files of hosts.&lt;/li&gt;
+&lt;li&gt;Use a dedicated worker pool for each domain or a delay mechanism between requests to the same IP.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A scalable crawler must be distributed across thousands of machines. The &lt;strong&gt;URL Frontier&lt;/strong&gt; is the brain, deciding which URL to crawl next based on priority (importance of page) and politeness. Deduplication is performed at two levels: &lt;strong&gt;URL Deduplication&lt;/strong&gt; (before adding to queue) and &lt;strong&gt;Content Deduplication&lt;/strong&gt; using Fingerprinting (to avoid mirrors or duplicate content on different URLs).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Seed URLs] -&amp;gt; [URL Frontier / Distributed Queue]
+                     ↓
+             [DNS Resolver Cache]
+                     ↓
+             [HTML Downloader (Parallel Workers)]
+                     ↓
+             [Parsing &amp;amp; Link Extraction]
+                     ↓
+             [Content Filter (is binary? is error?)]
+                     ↓           ↓
+          [URL Dedup]     [Content Dedup (MinHash/SimHash)]
+                     ↓           ↓
+             [Metadata DB]   [Storage (S3/HDFS)]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Ignoring the &lt;code&gt;robots.txt&lt;/code&gt; or site-level politeness (getting IP-blocked).&lt;/li&gt;
+&lt;li&gt;Not handling cycle/traps (infinite dynamic URLs like a calendar).&lt;/li&gt;
+&lt;li&gt;Attempting to store billions of URLs in memory.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to prioritize pages?&lt;/strong&gt; (PageRank or fresh-ness requirement.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to detect &amp;ldquo;Near-Duplicates&amp;rdquo;?&lt;/strong&gt; (Use SimHash or MinHash.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What happens if the Frontier crashes?&lt;/strong&gt; (Persistent queue state is needed; checkpointing.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Key-Value Store (Consistent Hashing)</title>
+      <link>http://localhost:1313/system-design/key-value-store/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/key-value-store/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a distributed Key-Value store. How do you handle scalability, replication, and high availability? Focus on Consistent Hashing.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of distributed data partitioning.&lt;/li&gt;
+&lt;li&gt;Techniques to minimize re-sharding impact.&lt;/li&gt;
+&lt;li&gt;Replication strategies (Master-Slave vs Peer-to-Peer).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Consistent Hashing:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-consistent-hashing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-consistent-hashing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Traditional hashing &lt;code&gt;node = hash(key) % N&lt;/code&gt; fails when &lt;code&gt;N&lt;/code&gt; (number of servers) changes — almost all keys move to different nodes.
+&lt;strong&gt;Consistent Hashing&lt;/strong&gt; places keys and nodes on a circular &lt;strong&gt;Hash Ring&lt;/strong&gt;. A key belongs to the first node encountered clockwise.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Adding/Removing Nodes&lt;/strong&gt;: Only keys between two nodes move.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Virtual Nodes&lt;/strong&gt;: Multiple ring positions per physical node to ensure uniform load distribution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. High Availability (Replication):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-high-availability-replication&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-high-availability-replication&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Store copies of data on the next $N$ nodes on the ring.&lt;/p&gt;
+&lt;h3&gt;3. Data Consistency (CAP Theorem):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-data-consistency-cap-theorem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-data-consistency-cap-theorem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Often use &lt;strong&gt;Quorum-based&lt;/strong&gt; consistency.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;R + W &amp;gt; N&lt;/code&gt; ensures a read always sees the latest write.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;To scale a key-value store, we partition data using consistent hashing with virtual nodes. This minimizes data movement during scaling. For availability, we replicate keys on successors in the hash ring and use tunable consistency (Quorum) to manage the trade-off between latency and strong consistency.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Client]
+    ↓ (Lookup in Cluster Metadata / Gossip Protocol)
+[Node A (Primary for Key X)]
+    ↓ Replicate
+[Node B, Node C (Successors on ring)]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Not mentioning virtual nodes (causing non-uniform load).&lt;/li&gt;
+&lt;li&gt;Using basic Modulo hashing for distributed systems.&lt;/li&gt;
+&lt;li&gt;Ignoring Gossip Protocol for cluster membership.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle write conflicts?&lt;/strong&gt; (Vector Clocks or Last-Write-Wins.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Sloppy Quorum&amp;rdquo;?&lt;/strong&gt; (Used in Dynamo for high availability during partitions.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between Master-Slave and Master-Master?&lt;/strong&gt; (Latency vs conflict complexity.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Global Rate Limiter</title>
+      <link>http://localhost:1313/system-design/rate-limiter/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/rate-limiter/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Rate Limiter for an API distributed across multiple regions. How do you handle consistency, high concurrency, and low latency?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Algorithm selection (Token Bucket vs Leaky Bucket).&lt;/li&gt;
+&lt;li&gt;Distributed state management (Redis, Lua scripts).&lt;/li&gt;
+&lt;li&gt;Understanding &amp;ldquo;Race Conditions&amp;rdquo; in high-frequency counters.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Algorithms:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-algorithms&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-algorithms&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Token Bucket&lt;/strong&gt;: Allow a certain amount of &amp;ldquo;burst&amp;rdquo; traffic. Tokens added at a rate; consumed on request.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Leaky Bucket&lt;/strong&gt;: Fixed rate output. Good for traffic shaping.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fixed/Sliding Window&lt;/strong&gt;: Count requests in a timestamp window.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Distributed Challenge:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-distributed-challenge&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-distributed-challenge&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If we use a simple Redis &lt;code&gt;INCR&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Atomic Operations&lt;/strong&gt;: Needs &lt;code&gt;INCR&lt;/code&gt; + &lt;code&gt;EXPIRE&lt;/code&gt; or a &lt;strong&gt;Lua Script&lt;/strong&gt; to check and update atomically.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Synchronization&lt;/strong&gt;: Syncing state across US-West and EU-West clusters is slow.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Strategy&lt;/strong&gt;: Cache locally (in-memory) for 90% of requests and sync in batches with a central Redis cluster to reduce cross-region latency.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For a scalable API, a sliding window log or counter stored in a distributed cache like Redis is ideal. To prevent race conditions, we use Lua scripts so the &amp;ldquo;check-and-increment&amp;rdquo; occurs as a single atomic operation. To handle extreme scale, we deploy local rate-limit counters in each region and synchronize asynchronously or use a &amp;ldquo;Throttling Service.&amp;rdquo;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture (Token Bucket with Redis)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture-token-bucket-with-redis&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture-token-bucket-with-redis&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Client] -&amp;gt; [API Gateway / Proxy] 
+                       ↓ (Check Lock)
+                [Regional Redis Cache]
+                       ↓ (Sync asynchronously)
+                [Global Analytics DB]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Context: Resilience4j&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-context-resilience4j&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-context-resilience4j&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In a Java application, we use libraries like &lt;strong&gt;Resilience4j&lt;/strong&gt; to handle local rate limiting:&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;RateLimiterConfig config &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; RateLimiterConfig.&lt;span style=&#34;color:#a6e22e&#34;&gt;custom&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .&lt;span style=&#34;color:#a6e22e&#34;&gt;limitRefreshPeriod&lt;/span&gt;(Duration.&lt;span style=&#34;color:#a6e22e&#34;&gt;ofSeconds&lt;/span&gt;(1))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .&lt;span style=&#34;color:#a6e22e&#34;&gt;limitForPeriod&lt;/span&gt;(10)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .&lt;span style=&#34;color:#a6e22e&#34;&gt;timeoutDuration&lt;/span&gt;(Duration.&lt;span style=&#34;color:#a6e22e&#34;&gt;ofMillis&lt;/span&gt;(25))
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    .&lt;span style=&#34;color:#a6e22e&#34;&gt;build&lt;/span&gt;();&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Only providing a local in-memory solution for a distributed problem.&lt;/li&gt;
+&lt;li&gt;Not accounting for network latency between the app and the rate limiter.&lt;/li&gt;
+&lt;li&gt;Forgetting to handle &amp;ldquo;Burst&amp;rdquo; traffic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Explain the benefits of Lua scripts in Redis.&lt;/strong&gt; (Atomic execution without needing client-side locks.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the Rate Limiter is down?&lt;/strong&gt; (Fail-open: allow traffic but log an alert.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Amazon S3 handle throttling?&lt;/strong&gt; (Partitioning based on key prefixes.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Distributed Metrics System</title>
+      <link>http://localhost:1313/system-design/metrics-system/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/metrics-system/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a system to collect, store, and alert on metrics from millions of servers (like Prometheus/Datadog). Focus on Time Series storage.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of Time Series Databases (TSDB).&lt;/li&gt;
+&lt;li&gt;Handling high-throughput write workloads.&lt;/li&gt;
+&lt;li&gt;Data aggregation and downsampling.&lt;/li&gt;
+&lt;li&gt;Push vs Pull models.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Core Schema:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-core-schema&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-core-schema&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A metric consists of: &lt;code&gt;(MetricName, Labels/Tags, Timestamp, Value)&lt;/code&gt;.
+Tags like &lt;code&gt;region:us-west&lt;/code&gt; allow for efficient filtering.&lt;/p&gt;
+&lt;h3&gt;2. Push vs Pull:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-push-vs-pull&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-push-vs-pull&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pull (Prometheus)&lt;/strong&gt;: Central server probes endpoints. Good for service discovery and knowing if a server is dead.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Push (Datadog/Graphite)&lt;/strong&gt;: Agent on the server sends data to a central collector. Better for short-lived (serverless) jobs and crossing firewalls.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Data Storage (LSM Trees):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-data-storage-lsm-trees&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-data-storage-lsm-trees&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Use Time Series Databases (InfluxDB, Prometheus TSDB, TimescaleDB).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Chunking&lt;/strong&gt;: Group data into 2-hour blocks for efficient disk writes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compaction&lt;/strong&gt;: Periodically merge blocks to improve read speed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Downsampling&lt;/strong&gt;: As data gets older, replace 1-second resolution with 1-hour resolution to save space (Retention Policy).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Metric systems require incredibly high write throughput and sub-second query latency for alerting. We use a TSDB optimized for append-only sequential writes. To handle scale, we sharding metrics by name/labels and use an aggregation layer to compute common statistics (avg, p99) before storage.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Servers] -&amp;gt; [Metric Collector (Agent)] -&amp;gt; [Kafka / Message Queue] 
+                                                  ↓
+                                          [Aggregation Service]
+                                                  ↓
+                                           [TSDB / Cassandra]
+                                                  ↓           ↓
+                                          [Alert Manager]   [Grafana]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Using a standard Relational DB (SQL) for storing billions of data points without chunking.&lt;/li&gt;
+&lt;li&gt;Ignoring the &amp;ldquo;High Cardinality&amp;rdquo; problem (Too many unique tag combinations).&lt;/li&gt;
+&lt;li&gt;Not discussing data retention or downsampling.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Explain &amp;ldquo;High Cardinality&amp;rdquo;.&lt;/strong&gt; (When you have thousands of unique tags like &lt;code&gt;user_id&lt;/code&gt; on a metric, the index size explodes.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between a Gauge and a Counter?&lt;/strong&gt; (Counter only goes up; Gauge can go up or down.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to handle out-of-order samples?&lt;/strong&gt; (Most TSDBs keep a small &amp;ldquo;head&amp;rdquo; buffer in memory to sort late-arriving samples.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design an Ad Click Counter</title>
+      <link>http://localhost:1313/system-design/ad-click-counter/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/ad-click-counter/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a system to count ad clicks in real-time. Handle billions of clicks per day with sub-second latency and high accuracy.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Stream processing concepts (Kafka, Flink, Spark).&lt;/li&gt;
+&lt;li&gt;Idempotency and avoiding double counting.&lt;/li&gt;
+&lt;li&gt;Aggregation levels (Ingestion vs. Query-time).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Write Path (Ingestion):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-write-path-ingestion&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-write-path-ingestion&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Ad Click → Load Balancer → &lt;strong&gt;Click Gateway&lt;/strong&gt; (API).
+The Gateway should be lightweight. It just validates the request and publishes to &lt;strong&gt;Kafka&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3&gt;2. Stream Processing (Real-time):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-stream-processing-real-time&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-stream-processing-real-time&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Apache Flink&lt;/strong&gt; or &lt;strong&gt;Spark Streaming&lt;/strong&gt; consumes from Kafka.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Windowing&lt;/strong&gt;: Group clicks by 1-minute or 5-minute windows for specific ad-ids.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;State management&lt;/strong&gt;: Use Flink&amp;rsquo;s managed state to keep counts.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Idempotency&lt;/strong&gt;: Use a &lt;code&gt;click_id&lt;/code&gt; and a Bloom Filter or temporary DB entries to ensure one click isn&amp;rsquo;t counted twice due to retries.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Read Path (Query):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-read-path-query&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-read-path-query&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Store aggregated data in an NoSQL DB like &lt;strong&gt;Cassandra&lt;/strong&gt; or &lt;strong&gt;Redis&lt;/strong&gt; for fast lookups.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For real-time ad-click counting, we decouple ingestion from processing using a message queue like Kafka. Stream processors then perform windowed aggregations and store results in a high-speed NoSQL database. We must handle exactly-once semantics by using unique transaction IDs and idempotent database updates.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Client Click] 
+      ↓
+[Gateway API] -&amp;gt; [Kafka (Log of Clicks)]
+                       ↓
+              [Flink (Windowed Counts)]
+                       ↓ (Write to DB)
+               [Redis / Cassandra]
+                       ↓
+                [Dashboard / API]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Writing directly from the API to a SQL database (will not scale to billions).&lt;/li&gt;
+&lt;li&gt;Ignoring network retries (leading to over-counting).&lt;/li&gt;
+&lt;li&gt;Not discussing data retention for historical analytics.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle &amp;ldquo;Late Data&amp;rdquo;?&lt;/strong&gt; (Use Watermarks in Flink to allow a small delay for late-arriving events.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compare Flink vs Kafka Streams.&lt;/strong&gt; (Flink is a full distributed cluster; Kafka Streams is a library within your app.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the aggregator crashes?&lt;/strong&gt; (Use Checkpoints to restore state.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Distributed Lock</title>
+      <link>http://localhost:1313/system-design/distributed-lock/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/distributed-lock/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you implement a Distributed Lock? Compare Redis (Redlock) vs. Zookeeper-based locks.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of synchronization across multiple machines.&lt;/li&gt;
+&lt;li&gt;Safety vs Liveness trade-offs in distributed systems.&lt;/li&gt;
+&lt;li&gt;Handling of &amp;ldquo;Clock Skew&amp;rdquo; and &amp;ldquo;GC Pauses&amp;rdquo;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Redis (Redlock):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-redis-redlock&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-redis-redlock&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Use &lt;code&gt;SET lock_key unique_id NX PX 30000&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;NX&lt;/strong&gt;: Set if not exists.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PX&lt;/strong&gt;: Expiry in 30s (prevents deadlocks if client crashes).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Redlock&lt;/strong&gt;: To handle single-point-of-failure, pick $N/2 + 1$ Redis nodes and acquire the lock in each.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Susceptible to timing issues if a GC pause or network delay occurs after the lock is acquired but before it expires.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Zookeeper:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-zookeeper&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-zookeeper&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Create a &lt;strong&gt;Ephemeral Sequential&lt;/strong&gt; node.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: The client with the lowest sequence number holds the lock. Others &amp;ldquo;watch&amp;rdquo; the node before theirs.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: If the client crashes, the session ends and the ephemeral node is &lt;strong&gt;automatically deleted&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: High overhead; write-heavy for the ZK cluster.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Fencing Tokens:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-fencing-tokens&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-fencing-tokens&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;To prevent late writes from a client whose lock expired, include a monotonically increasing &amp;ldquo;Fencing Token&amp;rdquo; in each request. The resource (database) only accepts writes with a newer token.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For high-performance, best-effort locking, Redis is excellent. For mission-critical consistency where safety is paramount, Zookeeper&amp;rsquo;s ephemeral nodes provide a more reliable guarantee. In all cases, including a &amp;ldquo;fencing token&amp;rdquo; is recommended to handle the &amp;ldquo;wait-then-execute&amp;rdquo; race condition caused by client-side pauses.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Fencing Token Logic:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-fencing-token-logic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-fencing-token-logic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Client 1: Acquires Lock (Token 33) -&amp;gt; GC Pause
+Lock expires...
+Client 2: Acquires Lock (Token 34) -&amp;gt; Writes to DB
+Client 1: Wakes up -&amp;gt; Tries to write with Token 33 -&amp;gt; DB rejects (34 &amp;gt; 33)&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can you use SQL for distributed locks?&lt;/strong&gt; (Yes, &lt;code&gt;SELECT FOR UPDATE&lt;/code&gt; or a dedicated lock table, but doesn&amp;rsquo;t scale well.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Deadly Embrace&amp;rdquo; in locks?&lt;/strong&gt; (Basically a deadlock.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Explain &amp;ldquo;Lease&amp;rdquo; vs &amp;ldquo;Lock&amp;rdquo;.&lt;/strong&gt; (A lease is a lock that has a built-in time limit for safety.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design TinyURL (Distributed)</title>
+      <link>http://localhost:1313/system-design/tinyurl-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/tinyurl-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a URL shortening service like TinyURL. Focus on high throughput, ID generation, and redirection latency.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Unique ID generation at scale.&lt;/li&gt;
+&lt;li&gt;Database sharding and caching strategies.&lt;/li&gt;
+&lt;li&gt;Handling of &amp;ldquo;Custom URLs&amp;rdquo;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Requirements:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-requirements&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-requirements&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Long URL → Short URL (Base62: a-z, A-Z, 0-9).&lt;/li&gt;
+&lt;li&gt;Fast redirection ($O(1)$ amortized).&lt;/li&gt;
+&lt;li&gt;High availability.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. ID Generation (The Core):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-id-generation-the-core&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-id-generation-the-core&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Base62 encoding&lt;/strong&gt;: Encodes a numeric ID to a short string (e.g., ID 125 → &amp;ldquo;Cb&amp;rdquo;).&lt;/li&gt;
+&lt;li&gt;How to get unique IDs across servers?
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Option A - Range Reservation&lt;/strong&gt;: Use Zookeeper to assign a range of IDs (1M to 2M) to Server 1. Server 1 increments locally until the range is done.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Option B - Snowflake ID&lt;/strong&gt;: Generate 64-bit unique IDs using timestamp + machine ID + sequence.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Database:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-database&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-database&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Use a &lt;strong&gt;NoSQL KV store&lt;/strong&gt; (Cassandra or Dynamodb) if you don&amp;rsquo;t need complex relations.&lt;/li&gt;
+&lt;li&gt;Partition by the hash of the short-url.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Redirect:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-redirect&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-redirect&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When a request comes in:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Check &lt;strong&gt;Redis Cache&lt;/strong&gt; for the short URL.&lt;/li&gt;
+&lt;li&gt;If miss, check DB.&lt;/li&gt;
+&lt;li&gt;If miss, return 404.&lt;/li&gt;
+&lt;li&gt;If hit, send &lt;strong&gt;302 Redirect&lt;/strong&gt; (temporary) or &lt;strong&gt;301&lt;/strong&gt; (permanent). Usually 302 is preferred so you can track click analytics.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The bottleneck in TinyURL is generating unique numeric IDs without duplicates or collision. We use a range-based ID generator with Zookeeper to ensure each app server has its own pool of IDs. For redirection, we use a distributed cache to minimize database hits and return a 302 redirect for better analytics.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Schema Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-schema-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-schema-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Table: url_mapping
+  id: INT (Primary Key)
+  short_url: STRING (Index)
+  long_url: STRING
+  created_at: TIMESTAMP&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can we use MD5/SHA hashes for the short-url?&lt;/strong&gt; (Yes, but you&amp;rsquo;ll have collisions that must be handled by appending something to the source string.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between 301 and 302?&lt;/strong&gt; (301: Browser caches redirect; one request. 302: Browser asks server every time; good for analytics.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to handle custom aliases?&lt;/strong&gt; (If provided, check if it&amp;rsquo;s already in the DB; if not, store it.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design Reverse Proxy (Nginx Internals)</title>
+      <link>http://localhost:1313/system-design/reverse-proxy-nginx/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/reverse-proxy-nginx/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does Nginx work? Explain the &amp;ldquo;Event-driven&amp;rdquo; architecture vs. Thread-per-request model and the role of a Reverse Proxy.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;High-concurrency server patterns.&lt;/li&gt;
+&lt;li&gt;Understanding of &lt;code&gt;epoll/kqueue&lt;/code&gt; mechanisms.&lt;/li&gt;
+&lt;li&gt;Load-balancing, caching, and SSL termination roles.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Thread-per-request (Apache style):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-thread-per-request-apache-style&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-thread-per-request-apache-style&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Every request gets a dedicated worker thread.&lt;/li&gt;
+&lt;li&gt;If $N$ users are waiting on slow database calls, $N$ threads are sitting idle.&lt;/li&gt;
+&lt;li&gt;Memory overhead is high (thread stack space); context switching slows it down.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Event-driven Architecture (Nginx style):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-event-driven-architecture-nginx-style&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-event-driven-architecture-nginx-style&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;A small number of &lt;strong&gt;Worker Processes&lt;/strong&gt; handle thousands of requests.&lt;/li&gt;
+&lt;li&gt;Uses non-blocking I/O. A worker process asks the kernel for a list of &amp;ldquo;active&amp;rdquo; connections (via &lt;strong&gt;&lt;code&gt;epoll&lt;/code&gt;&lt;/strong&gt; on Linux).&lt;/li&gt;
+&lt;li&gt;It only works on connections that have data ready. No threads sit idle.&lt;/li&gt;
+&lt;li&gt;Extremely low memory footprint.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Role of Reverse Proxy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-role-of-reverse-proxy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-role-of-reverse-proxy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Load Balancing&lt;/strong&gt;: Distribute traffic to backend app servers.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SSL Termination&lt;/strong&gt;: Handle HTTPS/TLS logic to reduce load on backends.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Caching&lt;/strong&gt;: Store static assets (images/CSS) locally.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Security&lt;/strong&gt;: Hide backend topology, prevent direct IP access.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Nginx scales by using an asynchronous, event-driven model that leverages the kernel&amp;rsquo;s ability to monitor thousands of file descriptors efficiently. Instead of creating a new thread for each client, it processes events as they happen across a pool of minimal workers. This makes it a perfect gatekeeper for load balancing and caching in front of heavier application servers like those in Java or Python.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Users] -&amp;gt; [Nginx (SSL Termination &amp;#43; Cache)] 
+                 ↓ (Active connections list via epoll)
+          [App Server A] | [App Server B]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Explain the difference between a Forward Proxy and a Reverse Proxy.&lt;/strong&gt; (Forward proxy shields the client; Reverse proxy shields the server.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Hot Reloading&amp;rdquo; in Nginx?&lt;/strong&gt; (Changing config and starting new workers while old workers finish their requests without dropping traffic.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between L4 and L7 load balancing?&lt;/strong&gt; (L4: TCP/UDP ports; L7: HTTP headers/content.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Search Typeahead (Autocomplete)</title>
+      <link>http://localhost:1313/system-design/search-autocomplete-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/search-autocomplete-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Search Typeahead system (like Google Search). Revisit: Sharding the Trie and handling high search volume.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Practical application of Trie data structures.&lt;/li&gt;
+&lt;li&gt;Sharding based on prefixes.&lt;/li&gt;
+&lt;li&gt;Caching strategies for trending searches.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Data Structure: Trie&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-data-structure-trie&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-data-structure-trie&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Each node stores the top 10 most popular terms starting with that prefix. This avoids traversing the whole subtree at query time.&lt;/p&gt;
+&lt;h3&gt;2. Sharding the Trie:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-sharding-the-trie&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-sharding-the-trie&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A single Trie for the whole internet won&amp;rsquo;t fit on one machine.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Option A - Range Sharding&lt;/strong&gt;: Shard by first letter (&amp;lsquo;A&amp;rsquo; on Server1, &amp;lsquo;B&amp;rsquo; on Server2).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Option B - Hash Sharding&lt;/strong&gt;: Shard by hash of the prefix (better for uniform load, harder for neighbors).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Handling Frequent Terms:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-handling-frequent-terms&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-handling-frequent-terms&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Most people search for &amp;ldquo;weather&amp;rdquo; or &amp;ldquo;google&amp;rdquo;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use &lt;strong&gt;Redis&lt;/strong&gt; to cache the top results of popular prefixes.&lt;/li&gt;
+&lt;li&gt;Update the Trie asynchronously via a &lt;strong&gt;Data Collection Service&lt;/strong&gt; (Ingest searches → Aggregate counts → Update Trie periodically).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Client Side:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-client-side&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-client-side&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Limit requests using &lt;strong&gt;Debouncing&lt;/strong&gt; or &lt;strong&gt;Throttling&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Use Browser cache for local results.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;To build a massive typeahead system, we use a distributed Trie where each node pre-calculates its most popular completions. We shard the Trie across multiple machines based on the leading characters and use a layered caching system (browser, CDN, Redis) to handle the most frequent queries without hitting the primary Trie storage.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[User] -&amp;gt; [API Gateway (Throttle)] -&amp;gt; [Redis Cache]
+                                             ↓ (miss)
+                                    [Trie Service (Sharded)]
+                                             ↓
+[Data Pipeline] -&amp;gt; [Kafka] -&amp;gt; [Aggregator] -&amp;gt; [Trie Builder]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle &amp;ldquo;Trending&amp;rdquo; searches?&lt;/strong&gt; (Increase weight of recent searches in the aggregation pipeline; use Exponential Decay on old weights.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the term contains a typo?&lt;/strong&gt; (Use Edit Distance / Levenshtein or phonetic matches like Soundex.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between Prefix search vs Fuzzy search?&lt;/strong&gt; (Prefix is a Trie specialty; Fuzzy requires more complex structures like Suffix Trees or N-gram indexing.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Notification System</title>
+      <link>http://localhost:1313/system-design/notification-system-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/notification-system-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a large-scale Notification System (SMS, Email, Push). How do you handle retries, rate limiting, and guaranteed delivery?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Decoupling of producers and consumers via message queues.&lt;/li&gt;
+&lt;li&gt;Handling of external third-party API dependencies (Twilio, SendGrid).&lt;/li&gt;
+&lt;li&gt;Managing &amp;ldquo;Backpressure&amp;rdquo; and &amp;ldquo;Throttling&amp;rdquo;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. High-Level Flow:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-high-level-flow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-high-level-flow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;App Event → &lt;strong&gt;Notification Gateway&lt;/strong&gt; (Validation, Rate Limiting) → &lt;strong&gt;Queue&lt;/strong&gt; (Kafka/RabbitMQ) → &lt;strong&gt;Workers&lt;/strong&gt; → &lt;strong&gt;Third-party Providers&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3&gt;2. Core Components:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-core-components&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-core-components&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Rate Limiter&lt;/strong&gt;: Prevent a single user/bug from overwhelming the system.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deduplication&lt;/strong&gt;: Use a &lt;code&gt;request_id&lt;/code&gt; to ensure one event doesn&amp;rsquo;t trigger two emails.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Priority Queue&lt;/strong&gt;: Urgent notifications (OTP) vs low-priority news.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Handling Failure (The &amp;ldquo;Must Have&amp;rdquo;):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-handling-failure-the-must-have&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-handling-failure-the-must-have&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;External APIs fail all the time.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Retries with Exponential Backoff&lt;/strong&gt;: Try again after 1s, 2s, 4s&amp;hellip;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dead Letter Queue (DLQ)&lt;/strong&gt;: If a message fails after $N$ retries, put it in a separate queue for manual inspection.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Circuit Breaker&lt;/strong&gt;: If Twilio is down, stop trying for a few seconds to avoid wasting resources.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For a robust notification system, we use an asynchronous architecture with localized workers for each channel (Email, SMS). We implement strict deduplication and a retry mechanism with exponential backoff. Most importantly, we handle third-party provider downtime using circuit breakers and monitor delivery rates via webhooks provided by the vendors.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[User App] 
+     ↓
+[Notification API] -&amp;gt; [Rate Limiter] -&amp;gt; [Kafka Topic (OTP/News/Info)]
+                                                  ↓
+                            [Email Worker]  [SMS Worker]  [Push Worker]
+                                  ↓               ↓              ↓
+                             [SendGrid]        [Twilio]        [FCM]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to ensure &amp;ldquo;Exactly-once&amp;rdquo; delivery?&lt;/strong&gt; (Impossible over networks, but can achieve &amp;ldquo;Effectively-once&amp;rdquo; via idempotency keys at the receiver end.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to handle millions of scheduled notifications?&lt;/strong&gt; (Use an index in a database or a &amp;ldquo;delay queue&amp;rdquo; mechanism.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between Kafka and RabbitMQ for this?&lt;/strong&gt; (Kafka for high-throughput stream; RabbitMQ for complex routing and priority.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design Vector Clocks (Conflict Resolution)</title>
+      <link>http://localhost:1313/system-design/vector-clocks-conflict/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/vector-clocks-conflict/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do distributed systems resolve write conflicts? Explain Vector Clocks vs. LWW (Last-Write-Wins).&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Conflict detection in &amp;ldquo;Always Available&amp;rdquo; systems.&lt;/li&gt;
+&lt;li&gt;Understanding of causal consistency.&lt;/li&gt;
+&lt;li&gt;Handling data reconciliation in Dynamo-style databases.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;In a leaderless distributed system (like Cassandra or Dynamo), User A updates the price to $10 on Server 1. Simultaneously, User B updates it to $12 on Server 2. Which one &amp;ldquo;wins&amp;rdquo;?&lt;/p&gt;
+&lt;h3&gt;2. Last-Write-Wins (LWW):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-last-write-wins-lww&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-last-write-wins-lww&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The system uses physical timestamps. Whoever has the newest clock wins.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: Clock Skew! If Server 2&amp;rsquo;s clock is 5ms ahead, its update wins even if it happened first.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Vector Clocks:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-vector-clocks&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-vector-clocks&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A list of &lt;code&gt;(NodeID, VersionNumber)&lt;/code&gt; tuples.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Each node increments its own counter when it processes a write.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Causality&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;If All versions in Clock A $\ge$ Clock B, A &amp;ldquo;descends&amp;rdquo; from B (no conflict, A is newer).&lt;/li&gt;
+&lt;li&gt;If some are $\ge$ and some are $\le$, the writes are &lt;strong&gt;Concurrent (Conflict)&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resolution&lt;/strong&gt;: The system keeps BOTH versions and asks the app/user to merge them later (e.g., merging two items in a shopping cart).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;In distributed architectures, physical time is unreliable for determining order. Vector clocks provide a logical timestamp that tracks causal history, allowing the system to identify exactly when two updates occurred without awareness of each other. This shifts the complexity of conflict resolution to the application layer, ensuring no unintentional data loss occurs during network partitions.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;Clock A: [Node1: 1, Node2: 2]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Clock B: [Node1: 2, Node2: 2]&lt;/code&gt; -&amp;gt; B wins.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Clock C: [Node1: 1, Node3: 1]&lt;/code&gt; -&amp;gt; Conflict with A!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to prevent Vector Clocks from growing too large?&lt;/strong&gt; (Version Pruning — discarding oldest nodes/versions if the list gets too long.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Phanom&amp;rdquo; in Vector Clocks?&lt;/strong&gt; (Unresolvable state due to server loss; rare.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Example of a system using Vector Clocks?&lt;/strong&gt; (Riak, early Amazon Dynamo.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Key-Value Store (LSM Trees)</title>
+      <link>http://localhost:1313/system-design/lsm-key-value-store/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/lsm-key-value-store/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you design a Key-Value store like LevelDB or RocksDB? Explain the Log-Structured Merge-Tree (LSM) architecture.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;High-performance storage engine design.&lt;/li&gt;
+&lt;li&gt;Turning random writes into sequential ones.&lt;/li&gt;
+&lt;li&gt;Compaction and Bloom filter roles.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Why not B+ Trees?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-why-not-b-trees&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-why-not-b-trees&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;B+ Trees require updating data in-place on disk. For billions of small writes, this causes &amp;ldquo;Random I/O,&amp;rdquo; which is the slowest operation on HDDs and taxing for SSD wear.&lt;/p&gt;
+&lt;h3&gt;2. LSM Tree Components:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-lsm-tree-components&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-lsm-tree-components&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Memtable&lt;/strong&gt;: An in-memory sorted data structure (SkipList or Tree). All writes go here first.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SS-Table (Sorted String Table)&lt;/strong&gt;: When Memphis is full, its content is flushed to disk as a sorted file.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Write-Ahead Log (WAL)&lt;/strong&gt;: To handle crashes, every write is also appended to a raw log before hitting the Memtable.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Reading and Compaction:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-reading-and-compaction&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-reading-and-compaction&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Read&lt;/strong&gt;: To find a key, check Memtable → then check SS-Table Files (from newest to oldest).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Bloom Filter&lt;/strong&gt;: Each SS-Table file has a Bloom filter to instantly tell the system if a key IS NOT in that file, preventing useless disk seeks.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compaction&lt;/strong&gt;: Periodically merge old SS-Table files to discard updated/deleted values and reclaim space.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;LSM Trees provide dominant write performance by treating disk storage as a sequence of immutable logs. By appending all changes to memory first and only later flushing them to disk in batches, we maximize the sequential write bandwidth of the storage hardware. This architecture is the backbone of almost all modern NoSQL databases.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Write -&amp;gt; [WAL (Disk)]
+      -&amp;gt; [Memtable (RAM)] -&amp;gt; [SSTable L0 (Disk)] -&amp;gt; [SSTable L1 (Disk)]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Tombstone&amp;rdquo;?&lt;/strong&gt; (A marker indicating a key was deleted; actual deletion only happens during compaction.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &amp;ldquo;Write Amplification&amp;rdquo; problem?&lt;/strong&gt; (The same piece of data might be written multiple times as it&amp;rsquo;s merged between SSTable levels.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LevelDB vs RocksDB?&lt;/strong&gt; (LevelDB is the original by Google; RocksDB is Facebook&amp;rsquo;s fork optimized for multi-core CPUs and fast SSDs.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Rate Limiter</title>
+      <link>http://localhost:1313/system-design/rate-limiter-algorithms/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/rate-limiter-algorithms/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Rate Limiter. Compare Token Bucket, Leaky Bucket, and Sliding Window algorithms.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Knowledge of traffic shaping and protection.&lt;/li&gt;
+&lt;li&gt;Distributed counter consistency (Redis).&lt;/li&gt;
+&lt;li&gt;Trade-offs between &amp;ldquo;burstiness&amp;rdquo; and &amp;ldquo;smoothness&amp;rdquo;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Token Bucket:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-token-bucket&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-token-bucket&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: A bucket holds $N$ tokens. Each request takes one. Tokens are added at a constant rate $R$.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Allows for &lt;strong&gt;bursts&lt;/strong&gt; (if the bucket is full, you can handle $N$ requests instantly).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Simple to implement but might allow slightly higher instantaneous load.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Leaky Bucket:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-leaky-bucket&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-leaky-bucket&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Requests are &amp;ldquo;poured&amp;rdquo; into a bucket and &amp;ldquo;leak&amp;rdquo; out at a constant rate $R$ to the server.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Perfectly &lt;strong&gt;smooths&lt;/strong&gt; traffic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: No burst capability; excess traffic is dropped instantly if the bucket is full.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Sliding Window Log / Counter:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-sliding-window-log--counter&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-sliding-window-log--counter&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Track timestamps of requests in a window (e.g. 1 minute).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Most accurate. Use Redis sorted sets for the window.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: High memory usage for &amp;ldquo;Log&amp;rdquo;; simplified &amp;ldquo;Counter&amp;rdquo; has boundary issues.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For most modern web APIs, a Token Bucket is preferred because it handles bursts gracefully while enforcing an average rate over time. In a distributed environment, we use Redis with Lua scripts to ensure that checking and decrementing the token count is an atomic operation, avoiding race conditions between different API nodes.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[User Request] 
+      ↓
+[Middleware Rate Limiter] &amp;lt;-&amp;gt; [Redis (key: user_id)]
+      ↓ (Allowed)
+[Backend API]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle millions of rules?&lt;/strong&gt; (Store rules in a fast cache; partition Redis by UserID).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Hard Limit&amp;rdquo; vs &amp;ldquo;Soft Limit&amp;rdquo;?&lt;/strong&gt; (Hard: Drop request; Soft: Slow down/delay request).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DDoS vs Rate Limiting?&lt;/strong&gt; (Rate limiting handles legit user load; DDoS requires specialized network-level scrubbing [WAF/Cloudflare].)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Distributed Chat App (WhatsApp)</title>
+      <link>http://localhost:1313/system-design/chat-app-whatsapp/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/chat-app-whatsapp/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a chat app like WhatsApp. Handle one-on-one and group chats, status (online/offline), and message persistence.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Persistent connection management (WebSockets).&lt;/li&gt;
+&lt;li&gt;Presence service sharding.&lt;/li&gt;
+&lt;li&gt;Message storage schema (SQL vs NoSQL).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Connection:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-connection&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-connection&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Uses &lt;strong&gt;WebSockets&lt;/strong&gt; (or XMPP) for bi-directional, persistent connection.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Challenge&lt;/strong&gt;: Tracking which user is on which &amp;ldquo;Chat Server&amp;rdquo; (Machine ID).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Presence Service&lt;/strong&gt;: Uses &lt;strong&gt;Redis&lt;/strong&gt; (as a KV store) to map &lt;code&gt;UserID -&amp;gt; ServerID&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Message Flow (1-on-1):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-message-flow-1-on-1&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-message-flow-1-on-1&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;User A sends message to Server 1.&lt;/li&gt;
+&lt;li&gt;Server 1 checks Presence Service: User B is on Server 5.&lt;/li&gt;
+&lt;li&gt;Server 1 forwards message to Server 5 (via a Message Queue like Kafka).&lt;/li&gt;
+&lt;li&gt;Server 5 pushes to User B.&lt;/li&gt;
+&lt;li&gt;If User B is offline, store in DB for later.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Database:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-database&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-database&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Messages&lt;/strong&gt;: billions of tiny messages. Use &lt;strong&gt;NoSQL&lt;/strong&gt; (Cassandra or HBase) for high write-throughput and easy partitioning by &lt;code&gt;Chat_ID&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Media&lt;/strong&gt;: S3 with CDN.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A chat application scales by maintaining thousands of persistent WebSocket connections. We track user availability via a presence service in Redis. For message delivery, we use a message queue to route communications between different servers, ensuring that messages are either delivered instantly to online users or persisted in a distributed NoSQL database for later delivery to offline users.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Schema Example:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-schema-example&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-schema-example&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Table: messages
+  id: UUID
+  chat_id: String (Partition Key)
+  sender_id: String
+  content: Text
+  timestamp: Long (Clustering Key)&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle &amp;ldquo;Read Receipts&amp;rdquo;?&lt;/strong&gt; (Another message sent back: &lt;code&gt;ACK -&amp;gt; DELIVERED -&amp;gt; READ&lt;/code&gt; updates.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to handle Group Chats?&lt;/strong&gt; (Instead of direct routing, messages go to a &amp;ldquo;Group Topic&amp;rdquo; in Kafka; all active members consume from that topic.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;End-to-End Encryption (E2EE)?&lt;/strong&gt; (Server never sees the message content; it only handles routing of ciphertext.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Distributed Lock</title>
+      <link>http://localhost:1313/system-design/distributed-lock-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/distributed-lock-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you implement a lock across multiple servers? Compare Redis (Redlock) and Zookeeper.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Distributed consensus.&lt;/li&gt;
+&lt;li&gt;Handling server crashes during lock ownership.&lt;/li&gt;
+&lt;li&gt;Identifying SPOFs in lock managers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Redis (Redlock):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-redis-redlock&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-redis-redlock&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Set a key with a TTL (expiration) using the &lt;code&gt;NX&lt;/code&gt; (Not-Exists) flag.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Acquire&lt;/strong&gt;: Node A tries to set &lt;code&gt;lock_key=random_val&lt;/code&gt; on 5 nodes. It wins if it gets 3+ nodes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fail Case&lt;/strong&gt;: If Node A crashes, the lock will eventually time out (TTL).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Sensitive to time drift between servers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Zookeeper (Ephemeral Nodes):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-zookeeper-ephemeral-nodes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-zookeeper-ephemeral-nodes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Use &amp;ldquo;Sequential Ephemeral Nodes.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Acquire&lt;/strong&gt;: Create a node &lt;code&gt;/lock/guid-n-&lt;/code&gt;. If yours has the lowest sequence number, you have the lock.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fail Case&lt;/strong&gt;: If the owner crashes, the ZK session ends and the ephemeral node is &lt;strong&gt;instantly deleted&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Highly consistent and reliable.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Distributed locks solve the &amp;ldquo;thundering herd&amp;rdquo; problem across different machines. Redis-based locking is common for high-performance and lightweight tasks where absolute consistency is secondary to speed. Zookeeper is the standard for high-reliability scenarios because its ephemeral nodes provide a native heartbeat—if the owner dies, the lock is guaranteed to be released without waiting for a lease to expire.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Redis&lt;/strong&gt;: &lt;code&gt;LOCK -&amp;gt; SET key val NX PX 10000&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Zookeeper&lt;/strong&gt;: &lt;code&gt;WATCH /lock/p_001&lt;/code&gt; (Waiting for previous owner to disappear).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Lease&amp;rdquo;?&lt;/strong&gt; (A time-limited lock ownership.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the GC pause is longer than the TTL?&lt;/strong&gt; (Node thinks it has the lock, but TTL expired and another node got it. This is why strict locking requires &amp;lsquo;fencing tokens&amp;rsquo;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a Fencing Token?&lt;/strong&gt; (A monotonically increasing ID from the lock server. Database rejects any write with a token lower than the last processed one.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Cache Penetration, Breakdown, and Avalanche</title>
+      <link>http://localhost:1313/system-design/cache-failure-scenarios/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/cache-failure-scenarios/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are the risks of using a Cache in production? Explain Cache Penetration, Breakdown, and Avalanche.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Real-world production engineering.&lt;/li&gt;
+&lt;li&gt;Protecting the Database from &amp;ldquo;Thundering Herds.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Robustness of the caching layer.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Cache Penetration (The Non-Existent Key):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-cache-penetration-the-non-existent-key&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-cache-penetration-the-non-existent-key&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Scenario&lt;/strong&gt;: Attacker asks for a UserID that doesn&amp;rsquo;t exist (e.g., &lt;code&gt;-1&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Effect&lt;/strong&gt;: It misses Cache → Hits DB → DB says null. Repeat 1000x&amp;hellip; DB dies.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fix&lt;/strong&gt;: &lt;strong&gt;Bloom Filters&lt;/strong&gt; or &lt;strong&gt;Cache Null Objects&lt;/strong&gt; (e.g., store &amp;ldquo;null&amp;rdquo; with a 5min TTL).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Cache Breakdown (The Hot Key):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-cache-breakdown-the-hot-key&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-cache-breakdown-the-hot-key&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Scenario&lt;/strong&gt;: A single &amp;ldquo;Hot&amp;rdquo; key (like a celebrity profile) expires.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Effect&lt;/strong&gt;: Suddenly, thousands of concurrent requests miss the cache and hit the DB simultaneously.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fix&lt;/strong&gt;: &lt;strong&gt;Mutex/Locks&lt;/strong&gt;. Only the first thread is allowed to hit the DB; others wait for it to fill the cache.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Cache Avalanche (The Mass Expiry):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-cache-avalanche-the-mass-expiry&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-cache-avalanche-the-mass-expiry&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Scenario&lt;/strong&gt;: You restart your cache or 50% of your keys expire at the exact same moment.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Effect&lt;/strong&gt;: Total system collapse as the DB is overwhelmed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fix&lt;/strong&gt;: &lt;strong&gt;Randomized TTLs&lt;/strong&gt;. Instead of 60m, use &lt;code&gt;60m + random(1m to 10m)&lt;/code&gt;. Distribute the load.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Caching isn&amp;rsquo;t just about speed; it&amp;rsquo;s about system protection. To build a resilient cluster, we must defend against malicious misses with Bloom filters, synchronize hot-key refills via localized locks, and prevent mass-expiry floods by introducing entropy into our TTL values. These defensive patterns ensure that the database remains stable even when the caching layer undergoes churn or targeted load.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Cache Warm-up&amp;rdquo;?&lt;/strong&gt; (Pre-loading the cache with popular values before launching or after a restart.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Negative Cache&amp;rdquo;?&lt;/strong&gt; (Same as caching null objects; specifically caching the ABSENCE of data.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between LRU and LFU in this context?&lt;/strong&gt; (LRU is standard; LFU protects against &amp;ldquo;scans&amp;rdquo; that touch every key once.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design an Image Hosting Backend (S3 &#43; CDN)</title>
+      <link>http://localhost:1313/system-design/image-hosting-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/image-hosting-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a system to handle high-resolution image uploads and serving (like Flickr/Instagram). Focus on thumbnail generation and serving at scale.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Handling large binary objects (BLOBs).&lt;/li&gt;
+&lt;li&gt;Decoupling processing from ingestion.&lt;/li&gt;
+&lt;li&gt;Multi-region CDN serving.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Upload Path:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-upload-path&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-upload-path&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Client → &lt;strong&gt;API Gateway&lt;/strong&gt; → &lt;strong&gt;Image Service&lt;/strong&gt; → &lt;strong&gt;Object Store (S3)&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Direct Upload (Optimization)&lt;/strong&gt;: Instead of piping bytes through your app, have your app generate a &lt;strong&gt;Signed URL&lt;/strong&gt; (temporary permission) and give it to the client. The client uploads directly to S3. This saves your server bandwidth and CPU.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Processing (Thumbnail generation):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-processing-thumbnail-generation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-processing-thumbnail-generation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When image lands in S3, it triggers an &lt;strong&gt;S3 Event&lt;/strong&gt; → &lt;strong&gt;Lambda function&lt;/strong&gt; (or Message Queue → Workers).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The worker generates different sizes (small, med, large) and saves them back to S3.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Serving:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-serving&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-serving&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;User → &lt;strong&gt;CDN (Cloudfront/Cloudflare)&lt;/strong&gt; → &lt;strong&gt;Object Store&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CDN caches the images globally.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;URL naming&lt;/strong&gt;: &lt;code&gt;/image_id/size.webp&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;To scale image hosting, we move the heavy lifting away from our application servers. We use pre-signed URLs for direct client-to-store uploads and a serverless pipeline for asynchronous image resizing. Serving is handled exclusively via a CDN to minimize latency and offload the traffic from our primary storage.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[User App] -&amp;gt; [Auth API] -&amp;gt; [Generate Signed URL] 
+                               ↓
+[User App] -&amp;gt; (Direct Upload) -&amp;gt; [S3] -&amp;gt; [Lambda (Resize)] -&amp;gt; [S3 (Processed)]
+                                                                    ↓
+[User] &amp;lt;--------------------- [CDN] &amp;lt;-------------------------------|&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle &amp;ldquo;Deleted&amp;rdquo; images in CDN?&lt;/strong&gt; (Caches can be purged via API, or use a versioned URL like &lt;code&gt;img_v2.png&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Formats?&lt;/strong&gt; (Convert everything to &lt;strong&gt;WebP&lt;/strong&gt; for better compression/quality ratio.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Signed URL&amp;rdquo;?&lt;/strong&gt; (A short-lived URL containing an HMAC signature that grants temporary access to a resource.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Consistency Levels (Strong vs. Eventual)</title>
+      <link>http://localhost:1313/system-design/consistency-levels-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/consistency-levels-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare Strong Consistency and Eventual Consistency. When would you sacrifice &amp;ldquo;consistency&amp;rdquo; for &amp;ldquo;availability&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;CAP Theorem application.&lt;/li&gt;
+&lt;li&gt;Real-world database behavior.&lt;/li&gt;
+&lt;li&gt;Business impact of stale data.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Strong Consistency:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-strong-consistency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-strong-consistency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Expectation&lt;/strong&gt;: As soon as a write returns &amp;ldquo;Success,&amp;rdquo; any subsequent read &lt;strong&gt;anywhere&lt;/strong&gt; in the world must return that new value.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Usually requires synchronous replication or a leader-based lock.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cost&lt;/strong&gt;: High latency and potentially lower availability (if the master is down, you can&amp;rsquo;t write).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Eventual Consistency:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-eventual-consistency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-eventual-consistency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Expectation&lt;/strong&gt;: If no new updates happen, all nodes will &lt;strong&gt;eventually&lt;/strong&gt; converge to the same value. In the short term, some users might see &amp;ldquo;stale&amp;rdquo; data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Asynchronous replication.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Extreme availability and low latency. You can write to ANY node.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Compromise (Causal Consistency):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-compromise-causal-consistency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-compromise-causal-consistency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Ensures that if Person A comments on a post, Person B sees the post BEFORE seeing the comment. Order of &amp;ldquo;cause and effect&amp;rdquo; is preserved.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The choice between strong and eventual consistency is fundamentally a business decision. While strong consistency is required for financial ledgering and sensitive inventory, eventual consistency is the preferred choice for social media feeds and analytical dashboards where a few seconds of lag is imperceptible to the user but allows the underlying system to remain resilient against global network partitions.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Use Case Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-use-case-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-use-case-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Case&lt;/th&gt;
+&lt;th&gt;Consistency Mode&lt;/th&gt;
+&lt;th&gt;Reason&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Bank Transfer&lt;/td&gt;
+&lt;td&gt;Strong&lt;/td&gt;
+&lt;td&gt;Prevents double-spending.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Facebook Like Count&lt;/td&gt;
+&lt;td&gt;Eventual&lt;/td&gt;
+&lt;td&gt;High availability; exact count isn&amp;rsquo;t critical.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DNS Records&lt;/td&gt;
+&lt;td&gt;Eventual&lt;/td&gt;
+&lt;td&gt;Global scale requires caching.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;User Profile Edit&lt;/td&gt;
+&lt;td&gt;Causal&lt;/td&gt;
+&lt;td&gt;User must see their own changes immediately.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Explain the &amp;ldquo;P&amp;rdquo; in CAP.&lt;/strong&gt; (Partition Tolerance: When the network is broken, you MUST choose between C [Consistency] or A [Availability].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Read-your-own-writes&amp;rdquo;?&lt;/strong&gt; (A level of consistency where a specific user is guaranteed to see their own updates, even if the rest of the world sees old data.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Which databases are known for Eventual Consistency?&lt;/strong&gt; (Cassandra, Riak, DynamoDB.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Which are Strong?&lt;/strong&gt; (MySQL/Postgres [in standard setup], Spanner, CockroachDB.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design an API Gateway</title>
+      <link>http://localhost:1313/system-design/api-gateway-responsibilities/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/api-gateway-responsibilities/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is an API Gateway? Explain its core responsibilities: Auth, Rate Limiting, Routing, and Aggregation.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Consolidating ingress in a Microservices architecture.&lt;/li&gt;
+&lt;li&gt;Cross-cutting concerns management (BFF - Backend for Frontend).&lt;/li&gt;
+&lt;li&gt;Tradeoffs in latency vs decoupling.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Auth &amp;amp; Security:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-auth--security&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-auth--security&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Instead of every microservice validating JWTs or API keys, the Gateway does it once.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: &amp;ldquo;Zero-trust&amp;rdquo; inside the VPC, but only one place needs the complex logic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Rate Limiting:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-rate-limiting&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-rate-limiting&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The gateway protects the entire cluster from being flooded by a single malicious or buggy client.&lt;/p&gt;
+&lt;h3&gt;3. Request Aggregation:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-request-aggregation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-request-aggregation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Scenario&lt;/strong&gt;: A user profile page needs data from &lt;code&gt;UserService&lt;/code&gt;, &lt;code&gt;OrderService&lt;/code&gt;, and &lt;code&gt;ReviewService&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Optimization&lt;/strong&gt;: The client sends &lt;strong&gt;one&lt;/strong&gt; request to the Gateway. The Gateway calls the 3 services internally, combines the JSON, and sends one response back. This saves massive mobile battery and network overhead (less RTT).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Routing/Versioning:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-routingversioning&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-routingversioning&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Mapping &lt;code&gt;/v1/orders&lt;/code&gt; to &lt;code&gt;OrderService-Node-A&lt;/code&gt; and &lt;code&gt;/v2/orders&lt;/code&gt; to &lt;code&gt;OrderService-Node-B&lt;/code&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;An API Gateway acts as the single entry point for all clients, decoupling external consumers from the internal complexity of a microservice mesh. By centralizing security, performance throttling, and data transformation, it ensures global consistency while allowing back-end teams to iterate on individual services without breaking the public interface.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Client] -&amp;gt; [Load Balancer] -&amp;gt; [API Gateway (Kong/Nginx/Zuul)]
+                                    ↓ (Internal RPC)
+                        [Svc A]  [Svc B]  [Svc C]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;SPOF Risk?&lt;/strong&gt; (The Gateway must be highly available and monitored; if it&amp;rsquo;s down, the entire system is invisible.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Latency?&lt;/strong&gt; (Every hop adds delay; the Gateway must be extremely thin [usually written in C++/Go/Rust or Lua-Nginx].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;BFF (Backend for Frontend)?&lt;/strong&gt; (A variation where a specific Gateway is built for Mobile apps and another for Web apps.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Distributed Scheduler (Cron)</title>
+      <link>http://localhost:1313/system-design/distributed-scheduler/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/distributed-scheduler/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you design a distributed cron/scheduler system? How do you ensure a job is only run once by a single server?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Solving the &amp;ldquo;Double-run&amp;rdquo; race condition.&lt;/li&gt;
+&lt;li&gt;Using DB-based locking or Zookeeper.&lt;/li&gt;
+&lt;li&gt;Concepts of high availability in long-running tasks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Strategy: Leader Election&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-strategy-leader-election&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-strategy-leader-election&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Only the &amp;ldquo;Leader&amp;rdquo; node checks the schedule and dispatches jobs.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Tools&lt;/strong&gt;: Zookeeper or Etcd can be used to elect a leader.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Strategy: Shared State (DB Locking)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-strategy-shared-state-db-locking&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-strategy-shared-state-db-locking&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;All nodes are equal.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;All nodes query &lt;code&gt;JobsTable&lt;/code&gt;: &lt;code&gt;SELECT * FROM jobs WHERE next_run &amp;lt; NOW AND status = &#39;IDLE&#39;&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;To claim a job, a node must perform an &lt;strong&gt;Optimistic Lock&lt;/strong&gt;: &lt;code&gt;UPDATE jobs SET status = &#39;RUNNING&#39;, worker_id = &#39;X&#39; WHERE id = 1 AND status = &#39;IDLE&#39;&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Only the node that successfully updates the row runs the job.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Large Scale:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-large-scale&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-large-scale&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;At massive scale (e.g., millions of user-defined alerts), use a &lt;strong&gt;Time-Wheel&lt;/strong&gt; data structure or a dedicated scheduler like &lt;strong&gt;Quartz&lt;/strong&gt; or &lt;strong&gt;JobRunr&lt;/strong&gt; (which handles the DB locking for you).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A distributed scheduler depends on shared consensus to prevent duplicate job execution. For simple systems, we use a database-centered locking mechanism where nodes compete to &amp;ldquo;claim&amp;rdquo; a task. For high-scale or low-latency scheduling, we use a dedicated leader-follower architecture coordinated by Zookeeper to ensure centralized control and reliable failover.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Schema:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-schema&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-schema&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;Table: scheduled_tasks
+  id: Primary Key
+  task_name: String
+  cron_expression: String
+  next_run_time: Timestamp
+  last_executed_by: WorkerID
+  status: [IDLE, RUNNING, FAILED]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Missed Fire&amp;rdquo;?&lt;/strong&gt; (When a job was supposed to run at 2:00, but the server was down until 2:05.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Job Idempotency?&lt;/strong&gt; (Vital! If a job runs twice due to a network glitch, it should have no effect the second time.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between Cron and a Task Queue?&lt;/strong&gt; (Cron is time-based; Task Queue is event-based.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a CDN (Content Delivery Network)</title>
+      <link>http://localhost:1313/system-design/cdn-detailed-routing/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/cdn-detailed-routing/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Global CDN. How do you handle cache invalidation and routing users to the nearest node?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Anycast routing.&lt;/li&gt;
+&lt;li&gt;Cache pull vs push models.&lt;/li&gt;
+&lt;li&gt;Handling stale data across 1000s of edge nodes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. User Routing:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-user-routing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-user-routing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;How does a user find the nearest CDN node?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Anycast IP&lt;/strong&gt;: Multiple nodes share the same IP; BGP routes the user to the topologically nearest node automatically.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DNS-based Routing&lt;/strong&gt;: The DNS server looks at the User&amp;rsquo;s IP and returns a different CDN IP based on geography.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Content Injection:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-content-injection&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-content-injection&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pull Model (Common)&lt;/strong&gt;: User requests &lt;code&gt;image.png&lt;/code&gt; from CDN. CDN doesn&amp;rsquo;t have it. CDN &amp;ldquo;pulls&amp;rdquo; it from the Origin Server, saves a copy, and serves the user.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Push Model&lt;/strong&gt;: The Origin Server explicitly pushes new assets to CDN nodes when they change.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Cache Invalidation:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-cache-invalidation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-cache-invalidation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TTL (Time to Live)&lt;/strong&gt;: The resource expires after X minutes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Purge/Eviction&lt;/strong&gt;: The app tells the CDN &amp;ldquo;Delete image.png now&amp;rdquo; (very hard at scale).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Versioning&lt;/strong&gt;: Recommended. Use &lt;code&gt;image_v2.png&lt;/code&gt;. New URL means a fresh cache miss and a fresh pull.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A CDN scales by placing &amp;ldquo;Edges&amp;rdquo; near users and using Anycast or specialized DNS for geo-routing. We prioritize pull-based models for simplified scaling and use resource versioning to manage data freshness without the complexity of global cache purging. This effectively shifts the traffic burden away from the origin server and into the hyper-scalable edge network.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[User] -&amp;gt; [Internet (Anycast)] -&amp;gt; [CDN Edge Node]
+                                    ↓ (Cache Miss)
+                                  [Origin Server (S3/App)]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Difference between CDN and Edge Computing?&lt;/strong&gt; (CDN is for static assets; Edge Computing handles logic like security headers or A/B testing at the edge [e.g. Cloudflare Workers].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Shield&amp;rdquo; (Origin Shield)?&lt;/strong&gt; (An extra layer of caching between many Edges and the One Origin to prevent &amp;ldquo;Thundering Herd&amp;rdquo;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Brotli/Gzip&amp;rdquo; role here?&lt;/strong&gt; (Compression managed by the CDN to reduce transfer time.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Key-Value Store (Partitioning)</title>
+      <link>http://localhost:1313/system-design/key-value-partitioning/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/key-value-partitioning/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do you partition a massive Key-Value store? Focus on Hot-spot mitigation and Rebalancing.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Consistent Hashing revisit.&lt;/li&gt;
+&lt;li&gt;Multi-dimensional partitioning.&lt;/li&gt;
+&lt;li&gt;Scaling out a storage cluster.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Partition Key:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-partition-key&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-partition-key&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;How do we decide which row goes to which server?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Hash-based&lt;/strong&gt;: &lt;code&gt;hash(key) % N&lt;/code&gt;. Good distribution, but hard to rebalance.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Range-based&lt;/strong&gt;: &lt;code&gt;A-M&lt;/code&gt; on Server 1, &lt;code&gt;N-Z&lt;/code&gt; on Server 2. Great for range scans, but can lead to &amp;ldquo;Hot-spots&amp;rdquo; (e.g., if everyone&amp;rsquo;s name starts with &amp;lsquo;S&amp;rsquo;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Solving Hotspots:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-solving-hotspots&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-solving-hotspots&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Consistent Hashing&lt;/strong&gt;: Use virtual nodes. This ensures that even if one server is bigger, we can assign it more &amp;ldquo;slots&amp;rdquo; on the ring.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pre-splitting&lt;/strong&gt;: Split your range into many small &amp;ldquo;Logical Partitions&amp;rdquo; (e.g. 1024) and move these logical blocks between physical servers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Rebalancing:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-rebalancing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-rebalancing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When adding a node, you shouldn&amp;rsquo;t MOVE all data.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Ideal&lt;/strong&gt;: Only $1/N$ of data should move.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Live Migration&lt;/strong&gt;: The source server continues taking reads while data is streaming to the new destination.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Scaling a key-value store is a balancing act between data locality and cluster load. We use consistent hashing to map data to a virtual coordinate space, allowing for seamless expansion without massive data reshuffling. To prevent localized bottlenecks, we decouple logical data partitions from physical hardware, moving granular blocks to maintain equilibrium as the cluster grows.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Logical Partition&amp;rdquo;?&lt;/strong&gt; (A small unit of data [e.g. 100MB] that is the smallest thing the balancer can move.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to find which server has my key?&lt;/strong&gt; (The client often has the &amp;lsquo;Partition Map&amp;rsquo; cached and talks DIRECTLY to the correct IP. This is called &amp;ldquo;Client-side load balancing&amp;rdquo;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Gossip Protocol?&lt;/strong&gt; (How servers in a cluster tell each other &amp;ldquo;Hey, Node X is down&amp;rdquo; or &amp;ldquo;I am now responsible for Partition 5.&amp;rdquo;)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Distributed Message Queue (Kafka vs SQS)</title>
+      <link>http://localhost:1313/system-design/message-queue-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/message-queue-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Distributed Message Queue. Compare a &amp;ldquo;Pull&amp;rdquo; model (Kafka) and a &amp;ldquo;Managed/Direct&amp;rdquo; model (SQS).&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Persistence vs Transit.&lt;/li&gt;
+&lt;li&gt;Scaling to millions of events per second.&lt;/li&gt;
+&lt;li&gt;Ordering guarantees and partition logic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The &amp;ldquo;Push/Managed&amp;rdquo; Model (AWS SQS):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-pushmanaged-model-aws-sqs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-pushmanaged-model-aws-sqs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Role&lt;/strong&gt;: A &amp;ldquo;Mailbox.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Behavior&lt;/strong&gt;: Server manages visibility. Once a worker picks a message, it is hidden. If the worker fails, it reappears.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Scaling&lt;/strong&gt;: Easy, just keep adding messages.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: No native &amp;ldquo;Rewind&amp;rdquo; capability. Once deleted, it&amp;rsquo;s gone.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The &amp;ldquo;Log/Pull&amp;rdquo; Model (Kafka):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-logpull-model-kafka&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-logpull-model-kafka&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Role&lt;/strong&gt;: A &amp;ldquo;Log&amp;rdquo; of events.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Behavior&lt;/strong&gt;: Data is saved to an immutable, append-only disk file. Consumers manage their own &lt;strong&gt;Offset&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Replayability&lt;/strong&gt;: You can reset your offset to &amp;ldquo;1 hour ago&amp;rdquo; and re-calculate results.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;High Throughput&lt;/strong&gt;: Sequential disk I/O.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Managing offsets and partitions is complex.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Kafka is an event-streaming platform where data is treated as an immutable history, allowing multiple independent consumers to process the same data at their own pace. SQS is a point-to-point messaging queue designed for decoupling specific tasks. While SQS is easier to operate, Kafka is the standard for high-throughput architectures where data durability and the ability to re-process historical events are required.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Producer] -&amp;gt; [Partition 1] -&amp;gt; [Consumer A (Offset 100)]
+           -&amp;gt; [Partition 2] -&amp;gt; [Consumer B (Offset 22)]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How does Kafka handle &amp;ldquo;Zero-Copy&amp;rdquo;?&lt;/strong&gt; (Uses the &lt;code&gt;sendfile()&lt;/code&gt; system call to send bytes from disk directly to the network socket without copying them to user-space RAM.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Consumer Group&amp;rdquo;?&lt;/strong&gt; (A set of consumers working together to share the load of a single topic; each partition is read by exactly one member.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Message Durability?&lt;/strong&gt; (Kafka writes to disk; SQS replicates across 3 AZs automatically.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design a Web Crawler</title>
+      <link>http://localhost:1313/system-design/web-crawler-logic/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/web-crawler-logic/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a high-scale Web Crawler (Googlebot). How do you handle politeness, duplicate detection, and the &amp;ldquo;URL frontier&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Managing massive distributed state (URLs seen).&lt;/li&gt;
+&lt;li&gt;Handling the DNS bottleneck.&lt;/li&gt;
+&lt;li&gt;Social/Legal ethics of crawling (Robots.txt).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The URL Frontier:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-url-frontier&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-url-frontier&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A queue of URLs to crawl.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Politeness&lt;/strong&gt;: Ensure you don&amp;rsquo;t overwhelm one server (e.g., &lt;code&gt;amazon.com&lt;/code&gt;) by hitting it 1000 times a second.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Implementation&lt;/strong&gt;: Map &lt;code&gt;Domain -&amp;gt; Dedicated Queue&lt;/code&gt;. Have workers only pull from a queue if enough time has passed since the last hit on that domain.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Duplicate Detection:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-duplicate-detection&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-duplicate-detection&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We must avoid crawling the same page twice.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;URL Seen&lt;/strong&gt;: Use a &lt;strong&gt;Bloom Filter&lt;/strong&gt; or a massive &lt;strong&gt;HashSet&lt;/strong&gt; (sharded across Redis cluster) to store billions of URLs.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Content Duplicate&lt;/strong&gt;: Sometimes different URLs show the same content. Use &lt;strong&gt;SimHash&lt;/strong&gt; to compare page bodies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. DNS Resolver:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-dns-resolver&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-dns-resolver&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;DNS takes time. Standard libraries are blocking.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Optimization&lt;/strong&gt;: Use a local DNS cache or a high-performance &lt;strong&gt;Asynchronous DNS Resolver&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Scaling a crawler is a challenge of volume and etiquette. We use a URL frontier that enforces per-domain rate limiting to remain &amp;ldquo;polite&amp;rdquo; to host servers. To process billions of pages, we use optimized lookup structures like Bloom Filters for URL tracking and fuzzy hashing for near-duplicate content detection, ensuring our storage and bandwidth are used efficiently.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Frontier] -&amp;gt; [DNS Resolver] -&amp;gt; [Downloader] -&amp;gt; [Parser] -&amp;gt; [Link Extractor]
+                                                  ↓             ↓
+                                              [Store]    [Seen filter]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Trapping&amp;rdquo;?&lt;/strong&gt; (Infinite loops in a site like a calendar with &amp;ldquo;next month&amp;rdquo; links; solved by limiting crawl depth.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to prioritize pages?&lt;/strong&gt; (Pagerank or &amp;ldquo;Freshness&amp;rdquo; — crawl news sites more often than static blogs.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How many pages on the web?&lt;/strong&gt; (Tens of trillions; you can&amp;rsquo;t crawl them all.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Notification System</title>
+      <link>http://localhost:1313/system-design/notification-system-design/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/notification-system-design/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a large-scale Notification System (Push, Email, SMS). How do you handle &amp;ldquo;Priority&amp;rdquo; and &amp;ldquo;Retry&amp;rdquo; logic?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Third-party API integration (Twilio, Firebase).&lt;/li&gt;
+&lt;li&gt;Dealing with flaky external dependencies.&lt;/li&gt;
+&lt;li&gt;Deduplication and Rate Limiting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Ingestion:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-ingestion&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-ingestion&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Microservices send &amp;ldquo;SendNotification&amp;rdquo; messages to a &lt;strong&gt;Message Queue&lt;/strong&gt; (Kafka).&lt;/p&gt;
+&lt;h3&gt;2. Workers &amp;amp; Priority:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-workers--priority&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-workers--priority&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Use multiple queues:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;High Priority&lt;/strong&gt;: Verification codes (OTP) - MUST be sent in &amp;lt; 2 seconds.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Low Priority&lt;/strong&gt;: Marketing ads - Can wait 1 hour.&lt;/li&gt;
+&lt;li&gt;This prevents a mass marketing campaign from blocking important password resets.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Retry Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-retry-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-retry-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;External APIs (like Apple Push) can fail.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Exponential Backoff&lt;/strong&gt;: Try again in 1s, 2s, 4s&amp;hellip;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dead Letter Queue (DLQ)&lt;/strong&gt;: If it fails 5 times, move it to a DLQ for manual inspection.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Deduplication:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-deduplication&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-deduplication&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Avoid sending the same &amp;ldquo;Order Confirmed&amp;rdquo; SMS twice.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use a &lt;code&gt;NotificationID&lt;/code&gt; and a shared cache (Redis) to check &lt;code&gt;AlreadySent(NotificationID, UserID)&lt;/code&gt; before firing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A production notification system must balance speed with reliability. We use a multi-queue architecture to isolate critical traffic from marketing volume, ensuring sub-second delivery for time-sensitive events like OTPs. Our workers implement robust retry mechanisms with exponential backoff and localized deduplication to gracefully handle the inherent flakiness of third-party delivery providers.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Services] -&amp;gt; [Load Balancer] -&amp;gt; [Notification API]
+                                      ↓
+[Redis Cache] &amp;lt;--- [Worker] &amp;lt;--- [Priority Queues]
+                     ↓
+[FCM (Push)] [Twilio (SMS)] [SendGrid (Email)]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;User Preferences?&lt;/strong&gt; (Need a &lt;code&gt;PreferencesService&lt;/code&gt; to check if a user blocked &amp;ldquo;Marketing SMS&amp;rdquo; before sending.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Batching?&lt;/strong&gt; (For emails, we might batch 10 notifications into one summary email to avoid spamming.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Tracking?&lt;/strong&gt; (The system must track &amp;ldquo;Opened&amp;rdquo; or &amp;ldquo;Clicked&amp;rdquo; status via callback webhooks from the providers.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Design Twitter (The Feed)</title>
+      <link>http://localhost:1313/system-design/twitter-feed-architectures/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/twitter-feed-architectures/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design the Twitter Timeline. How do you handle &amp;ldquo;Celebrities&amp;rdquo; with millions of followers?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Fan-out write vs Fan-out read.&lt;/li&gt;
+&lt;li&gt;Dealing with skewed data (Hot-shards).&lt;/li&gt;
+&lt;li&gt;Hybrid push/pull architectures.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Standard Way (Push Model / Fan-out on Write):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-standard-way-push-model--fan-out-on-write&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-standard-way-push-model--fan-out-on-write&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When I tweet, my tweet is copied into the pre-computed &amp;ldquo;Feed Cache&amp;rdquo; of all my followers.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: &amp;ldquo;Is ready&amp;rdquo; instantly. Reads are lightning fast.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Celebrity Problem&lt;/strong&gt;: If Lady Gaga (80M followers) tweets, the system must perform 80M writes. The system lags, and the database dies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Celebrity Way (Pull Model / Fan-out on Read):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-celebrity-way-pull-model--fan-out-on-read&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-celebrity-way-pull-model--fan-out-on-read&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Celebrity tweets are NOT pushed.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;When a user loads their feed, the system:
+&lt;ol&gt;
+&lt;li&gt;Grabs their pre-computed feed (from common users).&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Pulls&amp;rdquo; the latest tweets from the celebrities they follow.&lt;/li&gt;
+&lt;li&gt;Merges them on-the-fly.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Hybrid Model:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-hybrid-model&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-hybrid-model&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Twitter uses both.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Most users&lt;/strong&gt;: Push model.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Celebrities (&amp;gt; 100k followers)&lt;/strong&gt;: Pull model.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A social feed at scale is a challenge of data distribution. For the average user, we pre-compute timelines during the write phase to ensure low-latency reads. For high-influence accounts (celebrities), we switch to a pull-based model to avoid the devastating &amp;ldquo;fan-out&amp;rdquo; overhead of millions of simultaneous writes. This hybrid approach ensures that the system remains responsive for both creators and consumers, regardless of their social graph complexity.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Celebrity Tweet] -&amp;gt; [Master Tweet Store]
+[Common Tweet]    -&amp;gt; [In-memory Feed Cache of 100 followers]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to define &amp;ldquo;Celebrity&amp;rdquo;?&lt;/strong&gt; (Usually by follower count, but it can also be &amp;ldquo;active&amp;rdquo; vs &amp;ldquo;inactive&amp;rdquo; followers.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Data Consistency?&lt;/strong&gt; (Timelines are usually &amp;ldquo;Eventually Consistent&amp;rdquo;—it&amp;rsquo;s okay if my friend sees a tweet 5 seconds before I do.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &lt;code&gt;In-memory&lt;/code&gt; cache choice?&lt;/strong&gt; (Redis is the industry standard for feed caching.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Metrics &amp; Monitoring (Prometheus)</title>
+      <link>http://localhost:1313/system-design/metrics-monitoring-prometheus/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/metrics-monitoring-prometheus/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a metrics monitoring system like Prometheus. Compare Push vs. Pull models.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of observability at scale.&lt;/li&gt;
+&lt;li&gt;Dealing with high-velocity data points (Counter, Gauge, Histogram).&lt;/li&gt;
+&lt;li&gt;Scalability of metric collection.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Pull Model (Prometheus):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-pull-model-prometheus&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-pull-model-prometheus&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The monitoring server asks each target: &amp;ldquo;What are your metrics?&amp;rdquo;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Centralized scaling (server decides when to scrape).&lt;/li&gt;
+&lt;li&gt;No need for targets to know the server&amp;rsquo;s IP.&lt;/li&gt;
+&lt;li&gt;Down targets are easily detected (if scrape fails, target is down).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Difficult for short-lived (serverless) jobs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Push Model (InfluxDB / StatsD):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-push-model-influxdb--statsd&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-push-model-influxdb--statsd&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Targets send their data to the server.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Good for ephemeral tasks (Lambdas).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Can overwhelm the server with a &amp;ldquo;thundering herd.&amp;rdquo; Security is harder (authentication).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Prometheus Storage:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-prometheus-storage&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-prometheus-storage&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Uses a &lt;strong&gt;Time-Series DB&lt;/strong&gt;. Highly optimized for appending data to blocks that are eventually compressed and moved to long-term storage (S3/GCS).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For long-running infrastructure, a pull-based model is preferred as it gives the monitoring system full control over traffic volume and health detection. At the storage layer, we utilize a time-series database optimized for append-only writes. To prevent data explosions, we apply strict metric naming conventions and implement downsampling for long-term historical analysis.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;pre&gt;&lt;code&gt;[Target Service] &amp;lt;-- [Prometheus (Scraper)] --&amp;gt; [TSDB Storage]
+      ↓                                             ↓
+[Pushgateway] (For short-lived jobs)            [Grafana (UI)]&lt;/code&gt;&lt;/pre&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Cardinality Explosion&amp;rdquo;?&lt;/strong&gt; (When you add a unique label like &lt;code&gt;user_id&lt;/code&gt; to a metric, creating millions of unique time-series, which crashes the DB.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Gauge vs Counter?&lt;/strong&gt; (Counter only goes up [until reset]; Gauge can go up and down.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is AlertManager?&lt;/strong&gt; (A component that deduplicates, groups, and routes alerts to Slack/Email based on metric thresholds.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Distributed ID Generator (Snowflake)</title>
+      <link>http://localhost:1313/system-design/distributed-id-snowflake/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/distributed-id-snowflake/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a unique ID generator for a distributed system. Why don&amp;rsquo;t we use UUID or Auto-Increment?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Scalability without a central coordinator.&lt;/li&gt;
+&lt;li&gt;Sorting IDs by time.&lt;/li&gt;
+&lt;li&gt;Handling clock drift.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Why not UUID?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-why-not-uuid&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-why-not-uuid&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Size&lt;/strong&gt;: 128 bits (too large).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Indexing&lt;/strong&gt;: Not monotonically increasing. B-Trees perform terribly with random keys (page-splitting).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Why not Auto-Increment (DB)?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-why-not-auto-increment-db&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-why-not-auto-increment-db&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Performance&lt;/strong&gt;: Centralized. If the ID database is slow, the whole system is slow.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The Snowflake Solution (64 bits):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-snowflake-solution-64-bits&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-snowflake-solution-64-bits&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;1 bit&lt;/strong&gt;: Unused (sign bit).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;41 bits&lt;/strong&gt;: &lt;strong&gt;Timestamp&lt;/strong&gt; (milliseconds). Gives ~69 years of IDs from a custom epoch.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;10 bits&lt;/strong&gt;: &lt;strong&gt;Machine ID&lt;/strong&gt; / Datacenter ID. Up to 1024 unique servers.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;12 bits&lt;/strong&gt;: &lt;strong&gt;Sequence Number&lt;/strong&gt;. Up to 4096 IDs per millisecond per server.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Characteristics:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-characteristics&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-characteristics&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Sortable by time.&lt;/li&gt;
+&lt;li&gt;Zero network communication during ID generation.&lt;/li&gt;
+&lt;li&gt;Highly available (each node generates its own ID).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For a global scale system, we need IDs that are both unique and chronologically sortable. The Snowflake approach achieves this by embedding a high-precision timestamp and a machine-specific identifier within a 64-bit integer. This enables every server in our cluster to generate valid, indexed IDs at high velocity without the bottleneck of a central lock or database transaction.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏢 Bit Composition:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-bit-composition&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-bit-composition&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[0 | 41-bit Timestamp | 5-bit DC | 5-bit Mach | 12-bit Seq]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Clock Drift?&lt;/strong&gt; (If the system clock rolls back, the generator should throw an error or wait until the clock catches up to prevent duplicate IDs.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if we have 2000 machines?&lt;/strong&gt; (Need more bits for machine ID, reducing the sequence or timestamp bits.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Alternative?&lt;/strong&gt; (Ticket Server like Flickr or Segmented Range from DB.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Recommendation Systems</title>
+      <link>http://localhost:1313/system-design/recommendation-system-basics/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/recommendation-system-basics/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Video Recommendation System (Netflix). Compare Content-Based Filtering and Collaborative Filtering.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Machine Learning system architecture.&lt;/li&gt;
+&lt;li&gt;Processing &amp;ldquo;Signals&amp;rdquo; (click, watch-time, like).&lt;/li&gt;
+&lt;li&gt;Overcoming the &amp;ldquo;Cold Start&amp;rdquo; problem.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Content-Based Filtering:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-content-based-filtering&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-content-based-filtering&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: &amp;ldquo;User watched &amp;lsquo;Marvel&amp;rsquo;, so they will like &amp;lsquo;DC&amp;rsquo;.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Data&lt;/strong&gt;: Metadata about the items (Genre, Actors).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Works immediately for new items (if we know the metadata).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Becomes predictable; doesn&amp;rsquo;t &amp;ldquo;discover&amp;rdquo; new tastes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Collaborative Filtering (User-User or Item-Item):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-collaborative-filtering-user-user-or-item-item&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-collaborative-filtering-user-user-or-item-item&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Logic&lt;/strong&gt;: &amp;ldquo;User A and B have similar history. A liked &amp;lsquo;Inception&amp;rsquo;, so let&amp;rsquo;s show it to B.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Data&lt;/strong&gt;: User interaction matrix (the &amp;ldquo;wisdom of the crowd&amp;rdquo;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Can discover surprising new genres for a user based on similar people.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: &lt;strong&gt;Cold Start Problem&lt;/strong&gt; (We have no idea what to show a brand new user).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Hybrid Model (The Real World):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-hybrid-model-the-real-world&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-hybrid-model-the-real-world&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Use content-based for new users/items, then switch to collaborative as more data arrives. Use &lt;strong&gt;Embeddings&lt;/strong&gt; (vectors) to perform &amp;ldquo;Nearest Neighbor&amp;rdquo; searches in multi-dimensional flavor space.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Modern systems use a multi-stage funnel: Candidate Generation (filtering millions down to hundreds) followed by Ranking (using a heavy neural network to guess the score). By combining content metadata with collaborative behavioral patterns, we ensure recommendations are both personally relevant and serendipitous, maximizing long-term user engagement.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ The Pipeline:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-the-pipeline&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-the-pipeline&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;Ingestion (Kafka) -&amp;gt; Feature Store (Redis) -&amp;gt; Scoring (ML Model) -&amp;gt; Filtering (Serving API)&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Matrix Factorization&amp;rdquo;?&lt;/strong&gt; (The mathematical core of Collaborative filtering; breaking a giant User-Item matrix into two smaller, feature-rich matrices.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to handle &amp;ldquo;Explicit&amp;rdquo; vs &amp;ldquo;Implicit&amp;rdquo; feedback?&lt;/strong&gt; (Explicit = Star rating; Implicit = Watch time. Implicit is much more plentiful and often more honest.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Exploration vs Exploitation?&lt;/strong&gt; (Showing what you know they like vs taking a risk on something new to keep the user curious.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>System Design: Distributed Wallet (2PC vs. Saga)</title>
+      <link>http://localhost:1313/system-design/distributed-wallet-saga/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/system-design/distributed-wallet-saga/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Design a Distributed Payment Wallet. How do you handle a transfer from User A (Bank 1) to User B (Bank 2) with absolute consistency?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Distributed Transactions.&lt;/li&gt;
+&lt;li&gt;Two-Phase Commit (2PC) vs. Saga Pattern (Choreography/Orchestration).&lt;/li&gt;
+&lt;li&gt;Idempotency in financial systems.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Two-Phase Commit (2PC):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-two-phase-commit-2pc&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-two-phase-commit-2pc&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: A &amp;ldquo;Coordinator&amp;rdquo; asks both banks: &amp;ldquo;Can you do this?&amp;rdquo; (Prepare). If both say yes, it says &amp;ldquo;Do it&amp;rdquo; (Commit).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Strong consistency (ACID).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Blocking and slow. If the coordinator dies during the commit, nodes stay locked. Not suitable for microservices.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Saga Pattern (Standard for High Scale):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-saga-pattern-standard-for-high-scale&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-saga-pattern-standard-for-high-scale&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A sequence of local transactions.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Service 1: Deduct from A.&lt;/li&gt;
+&lt;li&gt;Service 2: Add to B.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: What if Step 2 fails (User B&amp;rsquo;s bank is down)?&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Solution: Compensating Transactions&lt;/strong&gt;. The system must trigger a &amp;ldquo;Refund&amp;rdquo; to User A.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Idempotency:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-idempotency&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-idempotency&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Every transfer request must have a &lt;code&gt;RequestID&lt;/code&gt;. If the user hits &amp;ldquo;Send&amp;rdquo; twice, the system uses the ID to see &amp;ldquo;I already processed this&amp;rdquo; and doesn&amp;rsquo;t double-charge.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Managing money in a distributed system requires moving from atomic locks to eventual consistency with verified compensations. While 2PC ensures a &amp;ldquo;single-unit&amp;rdquo; transaction, its performance cost is unacceptable for internet-scale wallets. Instead, we use the Saga pattern, breaking the transfer into independent, verifiable steps with associated rollback logic (refunds) to ensure that the system eventually reaches a correct financial state even in the face of partial failures.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Architecture&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-architecture&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-architecture&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[Wallet API] -&amp;gt; [Kafka (Event: Transfer_Started)]&lt;/code&gt;
+&lt;code&gt;[Transfer Svc] -&amp;gt; [Deduct A] -&amp;gt; [Add B] -&amp;gt; [DLQ on Failure]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;At-Least-Once Delivery?&lt;/strong&gt; (If a message is lost, we might under-charge or skip a payment. We need exactly-once logic using idempotent keys.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Performance of Sagas?&lt;/strong&gt; (Much higher throughput than 2PC because nodes aren&amp;rsquo;t locked during network round-trips.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Monitoring?&lt;/strong&gt; (Need a &amp;ldquo;Transaction Dashboard&amp;rdquo; to see pending Sagas that haven&amp;rsquo;t finished.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
       <title>System Design: Distributed Rate Limiter</title>
       <link>http://localhost:1313/system-design/distributed-rate-limiter/</link>
       <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>

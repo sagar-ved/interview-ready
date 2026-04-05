@@ -1486,5 +1486,1652 @@ Server → Client: HTTP 101 Switching Protocols
       </description>
     </item>
     
+    <item>
+      <title>Networks: DNS over HTTPS (DoH)</title>
+      <link>http://localhost:1313/networks/dns-over-https/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/dns-over-https/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is DNS over HTTPS (DoH)? How does it improve privacy over traditional DNS, and what are its architectural implications?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Modern network security trends.&lt;/li&gt;
+&lt;li&gt;Encapsulation and protocol layering.&lt;/li&gt;
+&lt;li&gt;Privacy vs Network Control trade-offs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Traditional DNS (UDP 53):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-traditional-dns-udp-53&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-traditional-dns-udp-53&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Unencrypted&lt;/strong&gt;: Anyone on the path (ISP, government, local admin) can see exactly which domains you are visiting.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Vulnerable&lt;/strong&gt;: Susceptible to &amp;ldquo;DNS Hijacking&amp;rdquo; / Spoofing.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. DNS over HTTPS (DoH):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-dns-over-https-doh&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-dns-over-https-doh&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Encapsulates DNS queries inside &lt;strong&gt;HTTPS (TCP 443)&lt;/strong&gt; packets.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Encryption&lt;/strong&gt;: Uses TLS to hide query content and prevent tampering.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Privacy&lt;/strong&gt;: The ISP only sees that you are talking to a DoH resolver (like 1.1.1.1), not which site you want.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. DNS over TLS (DoT):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-dns-over-tls-dot&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-dns-over-tls-dot&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Similar to DoH, but uses a dedicated port (853) instead of port 443.&lt;/li&gt;
+&lt;li&gt;More &amp;ldquo;network-friendly&amp;rdquo; as admins can block it explicitly.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Architectural Impacts:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-architectural-impacts&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-architectural-impacts&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;CDN performance&lt;/strong&gt;: Can bypass the ISP&amp;rsquo;s GeoDNS, potentially sending you to a sub-optimal edge node (solved by EDNS Client Subnet).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Security Bypass&lt;/strong&gt;: Enterprise firewalls and parental filters based on DNS names are bypassed by DoH.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;DoH solves the privacy leak of the traditional unencrypted DNS protocol by wrapping queries in TLS. It makes it harder for ISPs to track or censor browsing history but can complicate network management and enterprise security filtering.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Confusing DoH with DoT.&lt;/li&gt;
+&lt;li&gt;Thinking DoH creates a VPN (it only hides DNS, not the actual IP traffic, although encrypted SNI helps further).&lt;/li&gt;
+&lt;li&gt;Thinking it&amp;rsquo;s faster (it&amp;rsquo;s actually slightly slower due to TCP/TLS overhead, but amortized with connection reuse).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is ESNI / ECH?&lt;/strong&gt; (Encrypted Client Hello — hides the domain name even during the TLS handshake.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Chrome/Firefox implement DoH?&lt;/strong&gt; (They have lists of &amp;ldquo;Trusted Recursive Resolvers&amp;rdquo;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the downside for ISPs?&lt;/strong&gt; (Lose out on data monetization and law-enforcement metadata.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: gRPC vs. REST</title>
+      <link>http://localhost:1313/networks/grpc-vs-rest/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/grpc-vs-rest/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare gRPC and REST. When would you use one over the other in a microservices environment?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of modern serialization and transport protocols.&lt;/li&gt;
+&lt;li&gt;Latency vs Readability trade-offs.&lt;/li&gt;
+&lt;li&gt;Internal vs External API design.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Protocols &amp;amp; Payload:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-protocols--payload&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-protocols--payload&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;REST&lt;/strong&gt;: Typically HTTP/1.1; JSON (text).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;gRPC&lt;/strong&gt;: HTTP/2; Protocol Buffers (binary).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Core Differences:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-core-differences&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-core-differences&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Efficiency&lt;/strong&gt;: Binary serialization in gRPC is faster and uses less bandwidth than JSON.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Contract&lt;/strong&gt;: gRPC is &lt;strong&gt;Contract-First&lt;/strong&gt; (&lt;code&gt;.proto&lt;/code&gt; file). REST is usually document-first or informal.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Streaming&lt;/strong&gt;: gRPC supports client-side, server-side, and bidirectional streaming out of the box. REST is mostly unary (request-response).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Browser Support&lt;/strong&gt;: REST is native. gRPC requires a proxy (gRPC-web) as browsers don&amp;rsquo;t expose fine-grained HTTP/2 control.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Protobuf Internals:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-protobuf-internals&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-protobuf-internals&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Unlike JSON which stores keys every time (&lt;code&gt;{&amp;quot;name&amp;quot;: &amp;quot;Alice&amp;quot;}&lt;/code&gt;), Protobuf uses &lt;strong&gt;Tags&lt;/strong&gt; (integers) to map values. This is significantly smaller and faster to parse.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For internal microservice communication, gRPC is superior due to its performance, strict type safety, and HTTP/2 efficiency. For external-facing APIs where third-party consumers need easy, human-readable access, REST is the industry standard.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Visual / Config&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual--config&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual--config&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Protobuf Definition (&lt;code&gt;user.proto&lt;/code&gt;):&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-protobuf&#34; data-lang=&#34;protobuf&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;message&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;User&lt;/span&gt; {&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;int32&lt;/span&gt; id &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;;      &lt;span style=&#34;color:#75715e&#34;&gt;// Tag 1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;  &lt;span style=&#34;color:#66d9ef&#34;&gt;string&lt;/span&gt; name &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#ae81ff&#34;&gt;2&lt;/span&gt;;   &lt;span style=&#34;color:#75715e&#34;&gt;// Tag 2
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;&lt;/span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking gRPC only works over HTTP/2 (it does, but that&amp;rsquo;s a frequent &amp;ldquo;why&amp;rdquo;).&lt;/li&gt;
+&lt;li&gt;Ignoring the difficulty of debugging binary vs text.&lt;/li&gt;
+&lt;li&gt;Thinking gRPC is &amp;ldquo;ready-to-go&amp;rdquo; in a browser.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Multiplexing in HTTP/2?&lt;/strong&gt; (Sending multiple requests/responses over a single TCP connection.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Header Compression (HPACK)?&lt;/strong&gt; (Optimizing recurrent HTTP headers.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;When to use JSON over Protobuf?&lt;/strong&gt; (When human readability, simple tool integration, or browser compatibility are prioritized.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: BGP Hijacking and Anycast Routing</title>
+      <link>http://localhost:1313/networks/bgp-anycast/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/bgp-anycast/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is BGP Hijacking? Explain how Anycast routing works using BGP and its role in CDNs.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Global internet routing fundamentals.&lt;/li&gt;
+&lt;li&gt;Understanding of &amp;ldquo;Path-based&amp;rdquo; trust in BGP.&lt;/li&gt;
+&lt;li&gt;Advanced routing techniques used in Cloud infrastructure.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. BGP (Border Gateway Protocol):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-bgp-border-gateway-protocol&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-bgp-border-gateway-protocol&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;BGP is the protocol that manages how packets are routed across the internet between different Autonomous Systems (AS) (like ISPs, Google, Amazon). It is based on &lt;strong&gt;Implicit Trust&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3&gt;2. BGP Hijacking:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-bgp-hijacking&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-bgp-hijacking&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Occurs when an AS maliciously (or accidentally) &amp;ldquo;advertises&amp;rdquo; an IP prefix it DOES NOT own, claiming to be the shortest path to that destination.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Other routers update their tables.&lt;/li&gt;
+&lt;li&gt;Traffic intended for a legit site (e.g., YouTube) is routed to the attacker.&lt;/li&gt;
+&lt;li&gt;Outcome: DDoS, wiretapping, or &amp;ldquo;blackholing&amp;rdquo; traffic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Anycast Routing:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-anycast-routing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-anycast-routing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;BGP allows multiple physical servers in different locations to &lt;strong&gt;advertise the same IP address&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The internet routers will naturally route your packet to the &amp;ldquo;shortest BGP path&amp;rdquo; (effectively the closest location).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use Case&lt;/strong&gt;: DNS (1.1.1.1 is actually hundreds of locations) and CDNs (Cloudflare).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Reduced latency and high availability.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;BGP Hijacking is a security flaw where an attacker announces a fake route to redirect global traffic. Anycast is a routing methodology that uses BGP to allow many servers to share one IP. This provides distributed load balancing at the network layer and is a foundational technology for DNS and CDNs.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking BGP is a protocol for internal LAN routers (it&amp;rsquo;s for inter-ISP routing).&lt;/li&gt;
+&lt;li&gt;Confusing Anycast with Multicast (Multicast is one-to-many; Anycast is one-to-one-of-many).&lt;/li&gt;
+&lt;li&gt;Forgetting that BGP is mostly unauthenticated (though RPKI is fixing this).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is RPKI?&lt;/strong&gt; (Resource Public Key Infrastructure: Helps verify that an AS has the right to announce an IP prefix.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an Autonomous System (AS)?&lt;/strong&gt; (A collection of IP networks managed by a single entity.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Anycast handle TCP session continuity?&lt;/strong&gt; (Tricky; if BGP paths flip, a TCP connection might break because it hits a different server. Usually solved by ensuring stable routes or using QUIC.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: QUIC Protocol</title>
+      <link>http://localhost:1313/networks/quic-protocol/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/quic-protocol/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the QUIC protocol? How does it improve upon TCP, and why is it used as the foundation for HTTP/3?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of the evolution of transport protocols.&lt;/li&gt;
+&lt;li&gt;Solving the &amp;ldquo;Head-of-Line Blocking&amp;rdquo; problem.&lt;/li&gt;
+&lt;li&gt;Modern web performance optimizations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The TCP Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-tcp-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-tcp-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Handshake overhead&lt;/strong&gt;: TCP (ping-pong) + TLS (ping-pong) = multiple round trips before data flows.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Head-of-Line (HoL) Blocking&lt;/strong&gt;: If one packet in a TCP sequence is lost, all subsequent packets must wait, even if they were successfully received. This is because TCP is an ordered byte stream.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Enter QUIC (built over UDP):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-enter-quic-built-over-udp&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-enter-quic-built-over-udp&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;0-RTT Handshake&lt;/strong&gt;: Combines transport and crypto handshakes into one. Frequently visited sites can start sending data instantly.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stream Independence&lt;/strong&gt;: QUIC supports multiple independent streams. If an image packet is lost, it doesn&amp;rsquo;t block the CSS file coming in another stream.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Connection Migration&lt;/strong&gt;: QUIC uses a &lt;strong&gt;Connection ID&lt;/strong&gt; instead of IP/Port. If you switch from Wi-Fi to 4G, your session stays alive.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. HTTP/3:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-http3&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-http3&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;HTTP/3 is simply HTTP semantics mapped over the QUIC transport protocol.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;QUIC is a UDP-based transport protocol that eliminates most of the latency bottlenecks of TCP. It integrates TLS encryption by default, reduces handshake round-trips to zero for frequent connections, and prevents Head-of-Line blocking by treating different data streams independently. This makes the modern web significantly faster on mobile and unstable networks.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Protocol Stack Change:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-protocol-stack-change&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-protocol-stack-change&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Old&lt;/strong&gt;: HTTP/2 -&amp;gt; TLS -&amp;gt; TCP -&amp;gt; IP&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;New&lt;/strong&gt;: HTTP/3 -&amp;gt; (QUIC + TLS 1.3) -&amp;gt; UDP -&amp;gt; IP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking QUIC replaces UDP (it sits on top of it).&lt;/li&gt;
+&lt;li&gt;Underestimating the difficulty of implementing QUIC (it&amp;rsquo;s very complex compared to simple TCP).&lt;/li&gt;
+&lt;li&gt;Forgetting that many firewalls block UDP port 443, requiring fallback to TCP.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How does QUIC handle Congestion Control?&lt;/strong&gt; (It implements its own mechanisms similar to BBR inside the protocol.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Why build over UDP?&lt;/strong&gt; (Because OS kernels and routers are hard-coded for TCP/UDP; getting a new protocol supported is nearly impossible.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is TLS 1.3?&lt;/strong&gt; (The latest, most secure version of TLS that QUIC mandates.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: TCP Keep-Alive vs. WebSockets</title>
+      <link>http://localhost:1313/networks/keep-alive-vs-websockets/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/keep-alive-vs-websockets/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between TCP Keep-Alive, HTTP Keep-Alive, and WebSockets?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Confusion avoidance between similarly-named features at different layers.&lt;/li&gt;
+&lt;li&gt;Persistent connection management.&lt;/li&gt;
+&lt;li&gt;Real-time data delivery models.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. TCP Keep-Alive (Layer 4):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-tcp-keep-alive-layer-4&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-tcp-keep-alive-layer-4&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: To detect if the other side is still there.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: After a period of inactivity, the OS sends an empty ACK. If the other side doesn&amp;rsquo;t reply, the connection is closed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Visibility&lt;/strong&gt;: Your application code usually never &amp;ldquo;sees&amp;rdquo; this.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. HTTP Keep-Alive (Persistent Connections - Layer 7):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-http-keep-alive-persistent-connections---layer-7&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-http-keep-alive-persistent-connections---layer-7&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: To reuse one TCP connection for multiple HTTP requests.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: The &lt;code&gt;Connection: keep-alive&lt;/code&gt; header.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Context&lt;/strong&gt;: Solves the &amp;ldquo;handshake for every image&amp;rdquo; problem.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. WebSockets (Layer 7):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-websockets-layer-7&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-websockets-layer-7&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Full-duplex communication (both sides can send data at any time).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Mechanism&lt;/strong&gt;: Starts as HTTP, upgrades to the &lt;code&gt;ws&lt;/code&gt; protocol.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Context&lt;/strong&gt;: Used for chats, games, and real-time dashboards.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;TCP Keep-Alive is a low-level &amp;ldquo;is the link alive&amp;rdquo; check. HTTP Keep-Alive allows sequential request reuse of a connection. WebSockets provide a true persistent tunnel for real-time, bi-directional communication. They operate at different levels of the stack and solve different performance/feature needs.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Layer Mismatch:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-layer-mismatch&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-layer-mismatch&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TCP Keep-Alive&lt;/strong&gt;: Networking layer level.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTTP/WebSockets&lt;/strong&gt;: Application level.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How do WebSockets handle heartbeats?&lt;/strong&gt; (They have built-in Ping/Pong frames to ensure the connection is alive.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does HTTP/2 need HTTP Keep-Alive?&lt;/strong&gt; (No, HTTP/2 connections are persistent and multiplexed by default.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Max number of WebSockets on a server?&lt;/strong&gt; (Limited by memory and file descriptors, often 64k per IP, but Millions with tuning.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: DNS Resolution (Recursive vs. Iterative)</title>
+      <link>http://localhost:1313/networks/dns-resolution-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/dns-resolution-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the difference between Recursive and Iterative DNS queries. What happens at the OS and DNS server level?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Understanding of the distributed &amp;ldquo;Query and Respond&amp;rdquo; nature of DNS.&lt;/li&gt;
+&lt;li&gt;Role of local and global caches.&lt;/li&gt;
+&lt;li&gt;Caching policies (TTL).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Recursive Query (The client perspective):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-recursive-query-the-client-perspective&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-recursive-query-the-client-perspective&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Your computer (resolver) asks the ISP&amp;rsquo;s DNS server: &amp;ldquo;What is example.com?&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;The ISP server &lt;strong&gt;must&lt;/strong&gt; return the answer (it does the work for you).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Iterative Query (The server-to-server perspective):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-iterative-query-the-server-to-server-perspective&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-iterative-query-the-server-to-server-perspective&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;The ISP DNS server asks the &lt;strong&gt;Root Server&lt;/strong&gt;: &amp;ldquo;Where is .com?&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Root replies: &amp;ldquo;I don&amp;rsquo;t know, but here is the IP for the .com Top-Level Domain (TLD) server.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;The ISP then asks the &lt;strong&gt;TLD Server&lt;/strong&gt;: &amp;ldquo;Where is example.com?&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;TLD replies: &amp;ldquo;I don&amp;rsquo;t know, but here is the &lt;strong&gt;Authoritative Server&lt;/strong&gt; for example.com.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;The ISP asks the Authoritative server and gets the final IP.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Caching:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-caching&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-caching&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Every level (OS, ISP, Authoritative) caches the result for the duration of its &lt;strong&gt;TTL (Time to Live)&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;DNS uses a hierarchical, distributed lookup mechanism. Clients typically make recursive queries to a local resolver, which in turn performs multiple iterative queries up the tree (Root → TLD → Authoritative) to find the final mapping. This decentralizes the load and allows for massive scalability.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking your computer talks directly to the Authoritative server for every site (it almost always talks to a recursive resolver).&lt;/li&gt;
+&lt;li&gt;Confusing TLD with Root.&lt;/li&gt;
+&lt;li&gt;Ignoring the impacts of caching.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Negative Cache&amp;rdquo;?&lt;/strong&gt; (Caching the fact that a domain DOES NOT exist, to prevent re-querying.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is an A vs CNAME record?&lt;/strong&gt; (A: Domain to IP; CNAME: Domain to Domain.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is DNSSEC?&lt;/strong&gt; (Extends DNS to add cryptographic signatures to prevent spoofing.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Anycast affect DNS?&lt;/strong&gt; (Allows 1.1.1.1 to resolve to the geographically nearest server.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: TLS 1.3 vs. 1.2 Performance</title>
+      <link>http://localhost:1313/networks/tls-13-performance/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/tls-13-performance/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does TLS 1.3 differ from 1.2? Explain why it is significantly faster for mobile connections.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Modern security protocol improvements.&lt;/li&gt;
+&lt;li&gt;Latency reduction via round-trip optimization (RTT).&lt;/li&gt;
+&lt;li&gt;Removal of obsolete crypto.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Handshake Round-Trips (RTT):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-handshake-round-trips-rtt&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-handshake-round-trips-rtt&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TLS 1.2&lt;/strong&gt;: Requires 2 RTTs before encryption keys are established and data can start flowing.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLS 1.3&lt;/strong&gt;: Reduces this to &lt;strong&gt;1 RTT&lt;/strong&gt;. It makes a &amp;ldquo;best guess&amp;rdquo; about what cipher suites the client wants, including the key share in the first Hello.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Zero-RTT (0-RTT):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-zero-rtt-0-rtt&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-zero-rtt-0-rtt&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;If a client has visited a server before, it can send data &lt;strong&gt;immediately&lt;/strong&gt; in its first message using a &amp;ldquo;Resume&amp;rdquo; session key. This reduces the wait time to exactly 0 extra round trips.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Security Cleanup:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-security-cleanup&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-security-cleanup&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;TLS 1.3 removed support for insecure algorithms like MD5, SHA-1, RC4, and DES.&lt;/li&gt;
+&lt;li&gt;It enforces &lt;strong&gt;Perfect Forward Secrecy (PFS)&lt;/strong&gt; by default.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;TLS 1.3 is much faster because it fundamentally changes how handshakes work, eliminating a full round-trip of latency. The ability to use 0-RTT for returning clients is a major boost for mobile users on high-latency networks. Furthermore, by stripping out legacy crypto, it is both faster to process and more secure.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Handshake:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-handshake&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-handshake&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;1.2&lt;/strong&gt;: &lt;code&gt;ClientHello&lt;/code&gt; → &lt;code&gt;ServerHello&lt;/code&gt; → &lt;code&gt;KeyExchange&lt;/code&gt; → &lt;code&gt;Done&lt;/code&gt;. (2 trips)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;1.3&lt;/strong&gt;: &lt;code&gt;ClientHello + KeyShare&lt;/code&gt; → &lt;code&gt;ServerHello + Finished&lt;/code&gt;. (1 trip)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;⚠️ Common Mistakes&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-common-mistakes&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-common-mistakes&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Thinking TLS 1.3 is &amp;ldquo;only for websites&amp;rdquo;. (It&amp;rsquo;s for all TLS traffic).&lt;/li&gt;
+&lt;li&gt;Forgetting that 0-RTT has a &lt;strong&gt;Replay Attack&lt;/strong&gt; risk if not handled correctly.&lt;/li&gt;
+&lt;li&gt;Confusing TLS with SSL (SSL is the obsolete name).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Explain Perfect Forward Secrecy.&lt;/strong&gt; (If the server&amp;rsquo;s private key is stolen later, past encrypted sessions still can&amp;rsquo;t be decoded.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Middlebox&amp;rdquo; problem?&lt;/strong&gt; (Many corporate firewalls were hard-coded for TLS 1.2 and broke when 1.3 arrived; fixed by making 1.3 look like 1.2 &amp;ldquo;on the wire.&amp;rdquo;)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is HTTPS?&lt;/strong&gt; (HTTP over TLS.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: CDN and Edge Side Includes (ESI)</title>
+      <link>http://localhost:1313/networks/cdn-internals/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/cdn-internals/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is a CDN? Explain the difference between Push and Pull CDNs and how Edge Side Includes (ESI) help with dynamic content.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Content delivery at the &amp;ldquo;Edge&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Caching strategies and TTL.&lt;/li&gt;
+&lt;li&gt;Mixing static and dynamic content efficiently.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. How a CDN Works:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-how-a-cdn-works&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-how-a-cdn-works&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;It is a distributed network of proxy servers (POPs) that store content closer to users to reduce latency.&lt;/p&gt;
+&lt;h3&gt;2. Push vs Pull CDNs:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-push-vs-pull-cdns&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-push-vs-pull-cdns&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Pull CDN&lt;/strong&gt;: You put nothing on the CDN. When a user requests an asset, the CDN &amp;ldquo;pulls&amp;rdquo; it from your server (Origin) and caches it. Simple, automatic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Push CDN&lt;/strong&gt;: You actively upload your content to the CDN ahead of time. Best for large, non-changing content (games, updates).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Edge Side Includes (ESI):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-edge-side-includes-esi&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-edge-side-includes-esi&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Standard CDN caching is all-or-nothing (full-page).
+&lt;strong&gt;Problem&lt;/strong&gt;: How to cache a page where the body is the same for everyone but the header says &amp;ldquo;Welcome, [Username]&amp;rdquo;?
+&lt;strong&gt;Solution&lt;/strong&gt;: ESI allows you to mark specific parts of an HTML page as &amp;ldquo;dynamic fragments&amp;rdquo;. The CDN caches the main template and fetches only the tiny dynamic fragment from the origin, merging them at the &lt;strong&gt;Edge&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;CDNs reduce latency by bringing content geographically closer to the end user. While static assets are easy to pull and cache, dynamic content requires clever approaches like Edge Side Includes (ESI), which allow the CDN to stitch together cached and live components, maximizing speed without sacrificing personalization.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Workflow:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-workflow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-workflow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;User -&amp;gt; [Edge Server (Cache Hit!)]&lt;/code&gt;
+&lt;code&gt;User -&amp;gt; [Edge Server (Cache Miss!)] -&amp;gt; [Origin Server] -&amp;gt; [Edge (Cache it!)] -&amp;gt; [User]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Cache Invalidation?&lt;/strong&gt; (Clearing the CDN cache when content changes; a very hard problem in distributed systems.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is TTL (Time To Live)?&lt;/strong&gt; (The duration an edge server keeps a file before asking the origin again.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Anycast relate to CDNs?&lt;/strong&gt; (Used to route users to the nearest physical Edge server.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: DNS over TLS (DoT) Internals</title>
+      <link>http://localhost:1313/networks/dot-vs-doh/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/dot-vs-doh/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does DNS over TLS (DoT) differ from DNS over HTTPS (DoH)? Compare their use cases in enterprise vs. public environments.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Protocol-level security knowledge.&lt;/li&gt;
+&lt;li&gt;Port-based vs Content-based filtering.&lt;/li&gt;
+&lt;li&gt;Modern network privacy stacks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. DoT (UDP/TCP 853):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-dot-udptcp-853&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-dot-udptcp-853&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Stack&lt;/strong&gt;: &lt;code&gt;DNS → TLS → TCP → IP&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Visibility&lt;/strong&gt;: Admins can see &amp;ldquo;This is DNS traffic&amp;rdquo; because it&amp;rsquo;s on a dedicated port.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Security&lt;/strong&gt;: Full encryption, no snooping.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. DoH (TCP 443):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-doh-tcp-443&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-doh-tcp-443&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Stack&lt;/strong&gt;: &lt;code&gt;DNS → HTTP → TLS → TCP → IP&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Visibility&lt;/strong&gt;: Indistinguishable from regular website traffic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Privacy&lt;/strong&gt;: Bypasses local network filters.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Comparison:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Enterprise&lt;/strong&gt;: Prefers DoT. It provides privacy for users while allowing the IT team to see that DNS requests are happening (for monitoring/security).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Public/Censored&lt;/strong&gt;: Prefers DoH. Since it looks like regular web traffic, it&amp;rsquo;s almost impossible to block without blocking the entire web.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;DoT is a cleaner, more dedicated protocol for DNS security that is easy to manage on corporate networks. DoH is more &amp;ldquo;stealthy&amp;rdquo; and browser-focused, allowing users to bypass local censorship or tracking by blending DNS queries with standard web traffic on port 443.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Protocol Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-protocol-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-protocol-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Feature&lt;/th&gt;
+&lt;th&gt;DNS over TLS (DoT)&lt;/th&gt;
+&lt;th&gt;DNS over HTTPS (DoH)&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Port&lt;/td&gt;
+&lt;td&gt;853&lt;/td&gt;
+&lt;td&gt;443&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Stealth&lt;/td&gt;
+&lt;td&gt;Visible as DNS&lt;/td&gt;
+&lt;td&gt;Hidden in HTTPS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Overhead&lt;/td&gt;
+&lt;td&gt;Lower&lt;/td&gt;
+&lt;td&gt;Higher (HTTP layer)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is the risk of DoH in a secure environment?&lt;/strong&gt; (Can be used as a tunnel to exfiltrate data past firewalls.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How to block DoH?&lt;/strong&gt; (Requires IP-level blacklisting of known DoH resolvers like Cloudflare or SNI filtering.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Which one does Android support?&lt;/strong&gt; (Private DNS in Android uses DoT.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: TCP Congestion Control (Slow Start)</title>
+      <link>http://localhost:1313/networks/tcp-congestion-control/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/tcp-congestion-control/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain how TCP handles Network Congestion. What are the roles of &amp;ldquo;Slow Start&amp;rdquo; and &amp;ldquo;Fast Retransmit&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;In-depth understanding of flow control vs congestion control.&lt;/li&gt;
+&lt;li&gt;How the internet prevents self-collapse under heavy load.&lt;/li&gt;
+&lt;li&gt;Modern improvements like BBR vs Cubic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Congestion Window (cwnd):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-congestion-window-cwnd&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-congestion-window-cwnd&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A limit on how many bytes can be in-flight before receiving an ACK.&lt;/p&gt;
+&lt;h3&gt;2. Slow Start:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-slow-start&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-slow-start&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Concept&lt;/strong&gt;: Start small (e.g. 10 packets) and &lt;strong&gt;double&lt;/strong&gt; the window size every RTT.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: Rapidly find the available bandwidth without overwhelming the network immediately.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Congestion Avoidance:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-congestion-avoidance&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-congestion-avoidance&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Once a threshold is reached, switch from exponential growth to &lt;strong&gt;linear growth&lt;/strong&gt; (+1 packet per RTT).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Fast Retransmit:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-fast-retransmit&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-fast-retransmit&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If the sender receives &lt;strong&gt;3 duplicate ACKs&lt;/strong&gt; for the same packet, it assumes that packet was lost. It immediately re-sends the missing packet without waiting for a full retransmission timer to expire.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;TCP congestion control is a &amp;ldquo;self-governing&amp;rdquo; mechanism where the sender probe for bandwidth. We start exponentially (Slow Start) to quickly saturate the link and then pull back or slow down (AIMD - Additive Increase Multiplicative Decrease) when loss is detected. This prevents the &amp;ldquo;congestion collapse&amp;rdquo; of shared network segments.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Algorithm States:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-algorithm-states&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-algorithm-states&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Slow Start&lt;/strong&gt;: &lt;code&gt;cwnd&lt;/code&gt; doubles every RTT.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Congestion Avoidance&lt;/strong&gt;: &lt;code&gt;cwnd&lt;/code&gt; increases by 1 each RTT.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fast Recovery&lt;/strong&gt;: After loss, don&amp;rsquo;t drop to zero; drop &lt;code&gt;cwnd&lt;/code&gt; by half and continue.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Flow Control vs Congestion Control?&lt;/strong&gt; (Flow: Don&amp;rsquo;t overwhelm the receiver; Congestion: Don&amp;rsquo;t overwhelm the network router.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is BBR (Bottleneck Bandwidth and Round-trip)?&lt;/strong&gt; (Google&amp;rsquo;s modern algorithm that looks at actual link speed rather than packet loss as a signal.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Silly Window Syndrome&amp;rdquo;?&lt;/strong&gt; (When the window becomes tiny, leading to inefficiently small packets.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: Socket Programming (TCP/UDP)</title>
+      <link>http://localhost:1313/networks/socket-programming-lifecycle/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/socket-programming-lifecycle/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the low-level lifecycle of a TCP Socket. What do &lt;code&gt;bind()&lt;/code&gt;, &lt;code&gt;listen()&lt;/code&gt;, &lt;code&gt;accept()&lt;/code&gt;, and &lt;code&gt;connect()&lt;/code&gt; do?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Low-level network API flow.&lt;/li&gt;
+&lt;li&gt;Port management.&lt;/li&gt;
+&lt;li&gt;Difference between &amp;ldquo;The Listening Socket&amp;rdquo; and &amp;ldquo;The Connection Socket.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Server Lifecycle:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-server-lifecycle&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-server-lifecycle&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;socket()&lt;/strong&gt;: Create a file descriptor for networking.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;bind(IP, Port)&lt;/strong&gt;: Reserve a specific port with the OS.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;listen()&lt;/strong&gt;: Tell the OS to keep a &amp;ldquo;backlog&amp;rdquo; of incoming connection requests.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;accept()&lt;/strong&gt;: &lt;strong&gt;Blocks&lt;/strong&gt; until a client connects. It returns a &lt;strong&gt;NEW file descriptor&lt;/strong&gt; dedicated to this specific client. (This is huge: the listening socket remains free to accept more users).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;2. Client Lifecycle:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-client-lifecycle&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-client-lifecycle&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;socket()&lt;/strong&gt;: Create descriptor.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;connect(IP, Port)&lt;/strong&gt;: Attempt the 3-way handshake with the server.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Teardown:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-teardown&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-teardown&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;close()&lt;/strong&gt;: Initiates the 4-way FIN/ACK handshake.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Socket programming is the manual implementation of transport-layer protocols. The core concept is the separation of the &amp;ldquo;listening socket&amp;rdquo; (which waits for callers) and the &amp;ldquo;communication socket&amp;rdquo; (which is spawned for each individual connection). This allows a single server port to handle thousands of concurrent conversations.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Process Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-process-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-process-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Call&lt;/th&gt;
+&lt;th&gt;Role&lt;/th&gt;
+&lt;th&gt;Blocking?&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;bind&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Server&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;listen&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Server&lt;/td&gt;
+&lt;td&gt;No&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;accept&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Server&lt;/td&gt;
+&lt;td&gt;Yes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;connect&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Client&lt;/td&gt;
+&lt;td&gt;Yes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Port&amp;rdquo;?&lt;/strong&gt; (A 16-bit number that helps the OS route packets to the correct application/process.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What happens if two processes try to &lt;code&gt;bind()&lt;/code&gt; to the same port?&lt;/strong&gt; (Second one fails with &lt;code&gt;EADDRINUSE&lt;/code&gt; unless &lt;code&gt;SO_REUSEADDR&lt;/code&gt; is set [rarely advisable].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference for UDP?&lt;/strong&gt; (No &lt;code&gt;listen&lt;/code&gt; or &lt;code&gt;accept&lt;/code&gt;; just &lt;code&gt;sendto&lt;/code&gt; and &lt;code&gt;recvfrom&lt;/code&gt;.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: HTTP 1.1 vs. 2.0 vs. 3.0</title>
+      <link>http://localhost:1313/networks/http-versions-evolution/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/http-versions-evolution/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What are the primary differences between HTTP 1.1, 2.0, and 3.0?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Historical evolution of web performance.&lt;/li&gt;
+&lt;li&gt;Solving the &amp;ldquo;HOL (Head-of-Line) Blocking&amp;rdquo; problem.&lt;/li&gt;
+&lt;li&gt;Impact of the Transport layer (TCP vs UDP).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. HTTP 1.1 (The persistent one):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-http-11-the-persistent-one&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-http-11-the-persistent-one&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Feature&lt;/strong&gt;: Persistent connections (reusing TCP).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: &lt;strong&gt;HOL Blocking at Application Layer&lt;/strong&gt;. One slow image request blocks all subsequent ones on that same connection.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Hack&lt;/strong&gt;: Browsers open 6-8 parallel connections.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. HTTP 2.0 (The binary one):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-http-20-the-binary-one&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-http-20-the-binary-one&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Feature&lt;/strong&gt;: &lt;strong&gt;Multiplexing&lt;/strong&gt;. Many streams on ONE TCP connection.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Internal&lt;/strong&gt;: Binary framing.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: &lt;strong&gt;HOL Blocking at Transport Layer&lt;/strong&gt;. Since it uses TCP, if ONE packet is lost, the OS stops ALL streams while waiting for retransmission.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. HTTP 3.0 (The modern one):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-http-30-the-modern-one&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-http-30-the-modern-one&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Feature&lt;/strong&gt;: Uses &lt;strong&gt;QUIC over UDP&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Result&lt;/strong&gt;: &lt;strong&gt;No HOL Blocking&lt;/strong&gt;. If a stream&amp;rsquo;s packet is lost, it only affects that one stream. Others continue.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Extra&lt;/strong&gt;: Built-in TLS 1.3 and 0-RTT.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Each version of HTTP was designed to solve the bottlenecks of its predecessor. HTTP/2 introduced multiplexing to remove application-level stalls. HTTP/3 moved to UDP-based QUIC to solve the fundamental transport-layer stalls of TCP. This evolution has made the modern web dramatically faster and more resilient, especially on unstable mobile networks.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Protocol Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-protocol-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-protocol-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Version&lt;/th&gt;
+&lt;th&gt;Transport&lt;/th&gt;
+&lt;th&gt;Key Feature&lt;/th&gt;
+&lt;th&gt;Weakness&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTP 1.1&lt;/td&gt;
+&lt;td&gt;TCP&lt;/td&gt;
+&lt;td&gt;Persistence&lt;/td&gt;
+&lt;td&gt;App-level HOL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTP 2.0&lt;/td&gt;
+&lt;td&gt;TCP&lt;/td&gt;
+&lt;td&gt;Multiplexing&lt;/td&gt;
+&lt;td&gt;TCP-level HOL&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;HTTP 3.0&lt;/td&gt;
+&lt;td&gt;QUIC (UDP)&lt;/td&gt;
+&lt;td&gt;No HOL&lt;/td&gt;
+&lt;td&gt;Firewall UDP blocks&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is Server Push in HTTP/2?&lt;/strong&gt; (Server sends assets before client asks; mostly removed in HTTP/3 due to complexity.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is HTTP/3 always faster?&lt;/strong&gt; (Not on very stable, high-bandwidth wired connections where TCP&amp;rsquo;s mature congestion control is excellent.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is HPACK?&lt;/strong&gt; (Header compression in HTTP/2 to save bandwidth on redundant headers.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: Anycast Routing vs Unicast</title>
+      <link>http://localhost:1313/networks/anycast-vs-unicast/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/anycast-vs-unicast/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between Unicast, Multicast, Broadcast, and Anycast?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Fundamental packet routing methodologies.&lt;/li&gt;
+&lt;li&gt;Use cases for global traffic management (DNS/CDN).&lt;/li&gt;
+&lt;li&gt;Impact on latency.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Unicast (1 to 1):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-unicast-1-to-1&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-unicast-1-to-1&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;One sender, one receiver. The most common internet communication.&lt;/p&gt;
+&lt;h3&gt;2. Broadcast (1 to All):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-broadcast-1-to-all&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-broadcast-1-to-all&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;One sender, everyone on the local subnet receives. (e.g., ARP). Stop at routers.&lt;/p&gt;
+&lt;h3&gt;3. Multicast (1 to Many):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-multicast-1-to-many&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-multicast-1-to-many&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;One sender, specific group of receivers (e.g., IPTV or video conferencing). Requires IGMP protocol.&lt;/p&gt;
+&lt;h3&gt;4. Anycast (1 to Nearest):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-anycast-1-to-nearest&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-anycast-1-to-nearest&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;One IP is shared by many servers across the globe.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Magic&lt;/strong&gt;: Internet routers (BGP) will naturally route your packet to the &lt;strong&gt;physically closest&lt;/strong&gt; server sharing that IP.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Use case&lt;/strong&gt;: Cloudflare (1.1.1.1), Google DNS (8.8.8.8), CDNs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Anycast is the secret behind global performance. While Unicast routes to a specific machine, Anycast allows a single address to be shared by hundreds of locations, routing the user to the topologically nearest node. This significantly reduces latency and provides built-in DDoS resistance through natural traffic distribution.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Use Case Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-use-case-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-use-case-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Type&lt;/th&gt;
+&lt;th&gt;Ratio&lt;/th&gt;
+&lt;th&gt;Key Use Case&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Unicast&lt;/td&gt;
+&lt;td&gt;1 : 1&lt;/td&gt;
+&lt;td&gt;Web browsing, Email&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Broadcast&lt;/td&gt;
+&lt;td&gt;1 : All&lt;/td&gt;
+&lt;td&gt;Address Resolution (ARP)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Multicast&lt;/td&gt;
+&lt;td&gt;1 : Group&lt;/td&gt;
+&lt;td&gt;Live Streaming&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Anycast&lt;/td&gt;
+&lt;td&gt;1 : Nearest&lt;/td&gt;
+&lt;td&gt;DNS, CDN&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can you use TCP over Anycast?&lt;/strong&gt; (Yes, but it&amp;rsquo;s risky. If a BGP route flips mid-session, your packet hits a DIFFERENT server, and the TCP connection breaks. Usually handled by ensuring very stable routes or using UDP/QUIC.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How does Anycast protect against DDoS?&lt;/strong&gt; (The traffic is naturally &amp;ldquo;sharded&amp;rdquo; across many global locations instead of hitting one single pipeline.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between Anycast and Load Balancing?&lt;/strong&gt; (Load balancing is inside a data center; Anycast is global network routing.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: HTTP Headers (ETag and Caching)</title>
+      <link>http://localhost:1313/networks/etags-and-caching/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/etags-and-caching/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How do the &lt;code&gt;ETag&lt;/code&gt; and &lt;code&gt;If-None-Match&lt;/code&gt; headers work together? Explain &amp;ldquo;Conditional Requests.&amp;rdquo;&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Efficient bandwidth utilization.&lt;/li&gt;
+&lt;li&gt;Cache validation logic.&lt;/li&gt;
+&lt;li&gt;Awareness of stale data handling.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;The Request&lt;/strong&gt;: Browser asks for &lt;code&gt;image.png&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Response&lt;/strong&gt;: Server sends the image along with an &lt;code&gt;ETag&lt;/code&gt; (a hash of the file content, e.g., &lt;code&gt;W/6789&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Caching&lt;/strong&gt;: Browser stores the image AND the ETag.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Conditional Request&lt;/strong&gt;: Next time the browser needs the image:
+&lt;ul&gt;
+&lt;li&gt;It sends a request with &lt;code&gt;If-None-Match: W/6789&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Server Logic&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;If the file hasn&amp;rsquo;t changed, its hash is still &lt;code&gt;W/6789&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The server replies with &lt;strong&gt;304 Not Modified&lt;/strong&gt; (no body!).&lt;/li&gt;
+&lt;li&gt;If it HAS changed, the server sends the new file and a new ETag.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Impact:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;impact&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#impact&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Saves massive bandwidth by not sending the same file twice if the client already has a valid copy.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;ETags provide a unique fingerprint for a resource&amp;rsquo;s content. By using conditional requests, a client can ask the server to only send the resource if the fingerprint has changed. This &amp;ldquo;304 Not Modified&amp;rdquo; mechanism is fundamental to modern web performance, shifting the burden from downloading large assets to merely validating their existing state.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Other Cache Headers:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-other-cache-headers&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-other-cache-headers&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Last-Modified / If-Modified-Since&lt;/strong&gt;: Time-based validation.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cache-Control: max-age=60&lt;/strong&gt;: Don&amp;rsquo;t even ask the server for 60 seconds (Client-side cache).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Vary&lt;/strong&gt;: Tells the CDN that the cache depends on a header (e.g. &lt;code&gt;Vary: Accept-Encoding&lt;/code&gt; means cache separate versions for Gzip vs Brotli).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;Weak ETag&amp;rdquo;?&lt;/strong&gt; (Starts with &lt;code&gt;W/&lt;/code&gt;; indicates the content is semantically the same even if its exact bytes changed in a minor way.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between ETag and Last-Modified?&lt;/strong&gt; (ETag is content-based; Last-Modified is time-based. ETag is more accurate for files updated frequently.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Fingerprinting&amp;rdquo; in asset filenames?&lt;/strong&gt; (Putting hashes in URLs like &lt;code&gt;app.v3.js&lt;/code&gt; to bypass cache headers entirely.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: TCP 3-Way Handshake vs. 4-Way Teardown</title>
+      <link>http://localhost:1313/networks/tcp-handshake-teardown/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/tcp-handshake-teardown/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the TCP 3-Way Handshake and the 4-Way Teardown. Why do we need 4 steps to close but only 3 to open?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Connection lifecycle states (&lt;code&gt;SYN&lt;/code&gt;, &lt;code&gt;ACK&lt;/code&gt;, &lt;code&gt;FIN&lt;/code&gt;, &lt;code&gt;TIME_WAIT&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Reliability and state synchronization.&lt;/li&gt;
+&lt;li&gt;Half-close state understanding.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Handshake (3 steps):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-handshake-3-steps&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-handshake-3-steps&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;SYN&lt;/strong&gt;: Client sends &amp;ldquo;Let&amp;rsquo;s connect, my Sequence ID is X&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SYN-ACK&lt;/strong&gt;: Server says &amp;ldquo;Agreed. Your X is received. My ID is Y.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ACK&lt;/strong&gt;: Client says &amp;ldquo;Your Y is received. Let&amp;rsquo;s go.&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;2. The Teardown (4 steps):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-teardown-4-steps&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-teardown-4-steps&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;FIN&lt;/strong&gt;: Side A says &amp;ldquo;I&amp;rsquo;m done sending data.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ACK&lt;/strong&gt;: Side B says &amp;ldquo;Acknowledged. I might still have data to send you.&amp;rdquo; (&lt;strong&gt;Half-closed state&lt;/strong&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;FIN&lt;/strong&gt;: Side B says &amp;ldquo;I&amp;rsquo;m done too.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;ACK&lt;/strong&gt;: Side A says &amp;ldquo;Got it. Goodbye.&amp;rdquo;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;3. Why the difference?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-why-the-difference&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-why-the-difference&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Connections are &lt;strong&gt;Full-Duplex&lt;/strong&gt;. Just because one side is done sending doesn&amp;rsquo;t mean the other is. Thus, both sides must independently negotiate their closure, leading to the extra step.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;TCP requires a 3-way handshake to synchronize sequence numbers and establish initial state. The teardown requires 4 steps because TCP is bi-directional; each side must independently signal its completion. This &amp;ldquo;graceful close&amp;rdquo; ensures that all in-flight data is reliably received before the connection is completely severed.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ State Spotlight: TIME_WAIT&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-state-spotlight-time_wait&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-state-spotlight-time_wait&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;After the last &lt;code&gt;ACK&lt;/code&gt;, the client waits for ~2 minutes (2MSL).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Reason&lt;/strong&gt;: To handle the case where the last &lt;code&gt;ACK&lt;/code&gt; is lost and the server re-sends its &lt;code&gt;FIN&lt;/code&gt;. Also to prevent old packets from a &amp;ldquo;dead&amp;rdquo; connection from interfering with a &amp;ldquo;new&amp;rdquo; connection on the same port.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is a &amp;ldquo;SYN Flood&amp;rdquo; attack?&lt;/strong&gt; (Attacker sends thousands of SYNs but never sends the final ACKs, exhausting server resources.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can data be sent in the 3rd step of the handshake?&lt;/strong&gt; (Yes, the ACK can carry some payload.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &amp;ldquo;Half-open&amp;rdquo; state?&lt;/strong&gt; (One side crashed or closed without the other knowing; the link is dead but one side thinks it&amp;rsquo;s alive.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: CORS (Preflight and Simple)</title>
+      <link>http://localhost:1313/networks/cors-preflight/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/cors-preflight/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is CORS? Explain when a &amp;ldquo;Preflight&amp;rdquo; request (OPTIONS) is triggered.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Browser security model (Same-Origin Policy).&lt;/li&gt;
+&lt;li&gt;Handling cross-domain API calls.&lt;/li&gt;
+&lt;li&gt;Security vs Performance of different request types.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Same-Origin Policy (SOP):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-same-origin-policy-sop&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-same-origin-policy-sop&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A browser security rule: Script on &lt;code&gt;siteA.com&lt;/code&gt; cannot read data from &lt;code&gt;apiB.com&lt;/code&gt; unless &lt;code&gt;apiB.com&lt;/code&gt; explicitly allows it.&lt;/p&gt;
+&lt;h3&gt;2. CORS (Cross-Origin Resource Sharing):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-cors-cross-origin-resource-sharing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-cors-cross-origin-resource-sharing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The mechanism to relax SOP. The server sends headers like &lt;code&gt;Access-Control-Allow-Origin: siteA.com&lt;/code&gt;.&lt;/p&gt;
+&lt;h3&gt;3. Preflight Request (OPTIONS):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-preflight-request-options&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-preflight-request-options&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;For &amp;ldquo;Non-Simple&amp;rdquo; requests, the browser sends an extra flight check &lt;strong&gt;before&lt;/strong&gt; the actual request.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Triggers&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Methods other than GET/POST/HEAD.&lt;/li&gt;
+&lt;li&gt;Custom headers (e.g., &lt;code&gt;X-Auth-Token&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Content-Types other than &lt;code&gt;text/plain&lt;/code&gt;, &lt;code&gt;form-data&lt;/code&gt;, or &lt;code&gt;x-www-form-urlencoded&lt;/code&gt; (e.g., &lt;strong&gt;&lt;code&gt;application/json&lt;/code&gt;&lt;/strong&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;4. Simple Requests:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-simple-requests&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-simple-requests&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;GET/POST with basic headers. These go straight to the server but the browser hides the response if the CORS headers aren&amp;rsquo;t back.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;CORS is a developer-controlled relaxation of the brownser&amp;rsquo;s security model. The &amp;ldquo;Preflight&amp;rdquo; check is a safety handshake where the browser asks the server if a specific high-risk request (like a JSON post with an auth header) is allowed. This prevents a malicious site from firing potentially destructive cross-site requests that the browser wouldn&amp;rsquo;t otherwise permit.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Preflight Flow:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-preflight-flow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-preflight-flow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;OPTIONS /api&lt;/code&gt; -&amp;gt; &lt;code&gt;Allow: POST, Headers: X-Token&lt;/code&gt;?&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;200 OK&lt;/code&gt; (Server says yes).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;POST /api&lt;/code&gt; (Actual request).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to avoid Preflight?&lt;/strong&gt; (Keep headers simple or keep everything on the same domain/subdomain.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;Access-Control-Allow-Credentials&lt;/code&gt;?&lt;/strong&gt; (Must be true for the browser to send cookies in a cross-origin request.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;*&lt;/code&gt; and a specific domain in CORS?&lt;/strong&gt; (&lt;code&gt;*&lt;/code&gt; is for public APIs like Google Maps; specific domains are for private app security.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: DNS Resolution (Recursive vs. Iterative)</title>
+      <link>http://localhost:1313/networks/dns-resolution-logic/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/dns-resolution-logic/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Trace a DNS request for &lt;code&gt;google.com&lt;/code&gt;. What is the difference between a Recursive and an Iterative query?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;DNS hierarchy (Root, TLD, Authoritative).&lt;/li&gt;
+&lt;li&gt;Offloading work to resolvers.&lt;/li&gt;
+&lt;li&gt;Impact on network load.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;The Client (Recursive)&lt;/strong&gt;: Asks the ISP/Google Resolver (8.8.8.8): &amp;ldquo;Give me the IP for google.com. You do all the work and just give me the answer.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Resolver (Iterative)&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Asks &lt;strong&gt;Root Server&lt;/strong&gt;: &amp;ldquo;Where is .com?&amp;rdquo; -&amp;gt; Root says &amp;ldquo;Go ask TLD server X.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Asks &lt;strong&gt;TLD Server&lt;/strong&gt;: &amp;ldquo;Where is google.com?&amp;rdquo; -&amp;gt; TLD says &amp;ldquo;Go ask Authoritative server Y.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Asks &lt;strong&gt;Authoritative Server&lt;/strong&gt;: &amp;ldquo;What is the IP?&amp;rdquo; -&amp;gt; Auth says &amp;ldquo;&lt;strong&gt;142.250&amp;hellip;&lt;/strong&gt;&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;The Resolver returns the result to the Client and &lt;strong&gt;Caches&lt;/strong&gt; it.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Why Iterative for Servers?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;why-iterative-for-servers&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#why-iterative-for-servers&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Root and TLD servers handle trillions of requests. They cannot afford to perform recursive searches (managing millions of pending requests). They simply point the way.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;DNS functions as a distributed, hierarchical pointer system. Clients typically perform recursive queries to offload the search to a specialized resolver, while high-level servers (like Root and TLD) only perform iterative queries to maintain their own scalability. This separation of duty ensures that no single server is responsible for the entire global search path.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Layer Hierarchy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-layer-hierarchy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-layer-hierarchy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Client (Stub Resolver)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Recursive Resolver (ISP / Cloudflare)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Root Server (&lt;code&gt;.&lt;/code&gt;)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLD Server (&lt;code&gt;.com&lt;/code&gt;, &lt;code&gt;.net&lt;/code&gt;)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Authoritative Server&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Glue Records&amp;rdquo;?&lt;/strong&gt; (When the nameserver for a domain is INSIDE the domain itself, you need the IP in the TLD record to avoid a chicken-and-egg problem.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DNS over UDP vs TCP?&lt;/strong&gt; (Usually UDP 53; switches to TCP if the response is too large [&amp;gt; 512 bytes].)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is TTL in DNS?&lt;/strong&gt; (How long the record should be cached by recursive resolvers.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: DNS over HTTPS vs. DNS over TLS</title>
+      <link>http://localhost:1313/networks/doh-vs-dot-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/doh-vs-dot-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Compare DoH (DNS over HTTPS) and DoT (DNS over TLS). Why are browsers moving toward DoH?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Modern privacy protocol evolution.&lt;/li&gt;
+&lt;li&gt;Handling of network censorship.&lt;/li&gt;
+&lt;li&gt;Integration at the app-layer vs os-layer.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Common Goal:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-common-goal&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-common-goal&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Standard DNS (UDP Port 53) is in &lt;strong&gt;Plaintext&lt;/strong&gt;. ISPs and hackers can see exactly which sites you are visiting. Both DoH and DoT solve this by encrypting queries.&lt;/p&gt;
+&lt;h3&gt;2. DoT (DNS over TLS - Port 853):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-dot-dns-over-tls---port-853&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-dot-dns-over-tls---port-853&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Role&lt;/strong&gt;: System-wide encryption.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Visibility&lt;/strong&gt;: Clearly visible to network admins as &amp;ldquo;DNS traffic&amp;rdquo; because of the dedicated port.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Support&lt;/strong&gt;: Native to Windows 11 and Android &amp;ldquo;Private DNS&amp;rdquo; setting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. DoH (DNS over HTTPS - Port 443):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-doh-dns-over-https---port-443&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-doh-dns-over-https---port-443&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Role&lt;/strong&gt;: Browser-focused encryption.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Stealth&lt;/strong&gt;: &lt;strong&gt;Indistinguishable&lt;/strong&gt; from regular website traffic.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Advantage&lt;/strong&gt;: It cannot be blocked by simple firewall rules without blocking the entire internet. This is why it&amp;rsquo;s excellent for bypassing local censorship.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;While DoT provides robust system-wide privacy, DoH has gained mass adoption because it is &amp;ldquo;stealthy&amp;rdquo; and operates at the application layer. Moving DNS to port 443 ensures that queries are protected from both eavesdropping and interference by intermediate network operators, providing a seamless privacy upgrade that doesn&amp;rsquo;t require complex OS-level configuration.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Quick Comparison:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-quick-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-quick-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Aspect&lt;/th&gt;
+&lt;th&gt;DoT&lt;/th&gt;
+&lt;th&gt;DoH&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Port&lt;/td&gt;
+&lt;td&gt;853&lt;/td&gt;
+&lt;td&gt;443&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Stealth&lt;/td&gt;
+&lt;td&gt;Transparent&lt;/td&gt;
+&lt;td&gt;High (Blends with HTTPS)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Performance&lt;/td&gt;
+&lt;td&gt;Slightly Faster&lt;/td&gt;
+&lt;td&gt;Slightly Slower (HTTP overhead)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Control&lt;/td&gt;
+&lt;td&gt;OS Level&lt;/td&gt;
+&lt;td&gt;Application/Browser Level&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Is DoH &amp;ldquo;Zero-Trust&amp;rdquo;?&lt;/strong&gt; (It helps, but you still have to trust the &lt;strong&gt;Resolver&lt;/strong&gt; [e.g. Cloudflare] to not log your requests.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is ESNI (Encrypted Server Name Indication)?&lt;/strong&gt; (The next step: encrypting the &amp;rsquo;target domain&amp;rsquo; in the actual TLS handshake of the website.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can enterprise admins block DoH?&lt;/strong&gt; (Yes, but they have to use sophisticated IP blacklists or intercept the initial connection attempt.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: HTTP Security Headers</title>
+      <link>http://localhost:1313/networks/http-security-headers/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/http-security-headers/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain the purpose of HSTS, CSP, and X-Frame-Options. Why are they critical for production APIs?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Awareness of modern web security standards.&lt;/li&gt;
+&lt;li&gt;Preventing Clickjacking and Cross-Site Scripting (XSS).&lt;/li&gt;
+&lt;li&gt;Defense-in-depth engineering.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. HSTS (Strict-Transport-Security):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-hsts-strict-transport-security&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-hsts-strict-transport-security&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Tells the browser: &amp;ldquo;Only communicate with this site over HTTPS.&amp;rdquo;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Prevents &lt;strong&gt;SSL Stripping&lt;/strong&gt; attacks where an attacker replaces the HTTPS link with HTTP before it reaches the user.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. CSP (Content-Security-Policy):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-csp-content-security-policy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-csp-content-security-policy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Tells the browser which scripts/resources are allowed to execute.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Defeats &lt;strong&gt;XSS&lt;/strong&gt;. Even if an attacker injects a &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; tag, the browser won&amp;rsquo;t run it if it doesn&amp;rsquo;t come from a &amp;ldquo;trusted domain&amp;rdquo; defined in the CSP.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. X-Frame-Options:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-x-frame-options&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-x-frame-options&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Tells the browser whether this site is allowed to be embedded in an &lt;code&gt;&amp;lt;iframe&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: Prevents &lt;strong&gt;Clickjacking&lt;/strong&gt; (where an attacker hides your site inside an invisible frame to trick users into clicking buttons).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Security headers provide a standardized way for servers to instruct the browser&amp;rsquo;s security engine. HSTS ensures encryption is always present, CSP mitigates the impact of successful script injections, and X-Frame-Options protects the user interface from UI redress attacks. Implementing these is mandatory for any production-facing enterprise application.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Example Header Set:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-example-header-set&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-example-header-set&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-http&#34; data-lang=&#34;http&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;Strict-Transport-Security: max-age=31536000; includeSubDomains
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;Content-Security-Policy: default-src &amp;#39;self&amp;#39;; script-src scripts.site.com
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;X-Frame-Options: DENY&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can CSP be bypassed?&lt;/strong&gt; (Yes, if the policy is too loose [e.g. &lt;code&gt;unsafe-inline&lt;/code&gt;] or if a trusted domain carries a known exploit/library.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Difference between &lt;code&gt;DENY&lt;/code&gt; and &lt;code&gt;SAMEORIGIN&lt;/code&gt; in X-Frame-Options?&lt;/strong&gt; (&lt;code&gt;DENY&lt;/code&gt; = no one can embed; &lt;code&gt;SAMEORIGIN&lt;/code&gt; = only you can embed yourself.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &lt;code&gt;Referrer-Policy&lt;/code&gt;?&lt;/strong&gt; (Controls how much info is shared with other sites when a user clicks a link.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: WebSocket Handshake Internals</title>
+      <link>http://localhost:1313/networks/websocket-handshake-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/websocket-handshake-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does a WebSocket connection begin? Explain the role of the &lt;code&gt;Upgrade&lt;/code&gt; header and the &lt;code&gt;Sec-WebSocket-Key&lt;/code&gt;.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Protocol switching mechanics.&lt;/li&gt;
+&lt;li&gt;Relationship between HTTP and binary streams.&lt;/li&gt;
+&lt;li&gt;Security and &amp;ldquo;Magic Strings.&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Handshake:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-handshake&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-handshake&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;WebSockets share port 80/443 with HTTP. They start as a regular HTTP request.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Header&lt;/strong&gt;: &lt;code&gt;Upgrade: websocket&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Header&lt;/strong&gt;: &lt;code&gt;Connection: Upgrade&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Verification (&lt;code&gt;Sec-WebSocket-Key&lt;/code&gt;):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-verification-sec-websocket-key&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-verification-sec-websocket-key&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The client sends a random Base64 key.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Purpose&lt;/strong&gt;: NOT for encryption. It&amp;rsquo;s to prove that the server actually understands WebSockets and isn&amp;rsquo;t just a proxy blindly reflecting headers.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;The Calculation&lt;/strong&gt;: The server takes the key, appends a globally unique &lt;strong&gt;&amp;ldquo;Magic String&amp;rdquo;&lt;/strong&gt; (&lt;code&gt;258EAFA5-E914-47DA-95CA-C5AB0DC85B11&lt;/code&gt;), hashes it with SHA-1, and sends it back in &lt;code&gt;Sec-WebSocket-Accept&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. After the Switch:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-after-the-switch&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-after-the-switch&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The application stops using HTTP verbs and starts sending binary/text &lt;strong&gt;Frames&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;WebSockets are initiated through an HTTP &amp;ldquo;Upgrade&amp;rdquo; handshake. This allows a standard web connection to evolve into a full-duplex binary stream. The security keys exchanged during this phase ensure that both the client and server explicitly support the protocol, preventing unintended communication with legacy proxies or misconfigured servers.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Flow:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-flow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-flow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;Browser: Can we speak WebSocket? (Key: 123) -&amp;gt; Server: Yes! (Accept: SHA1(123+Magic)) -&amp;gt; [Binary Stream Starts]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Does WebSocket use TLS?&lt;/strong&gt; (Yes, &lt;code&gt;wss://&lt;/code&gt; is secure, using standard TLS exactly like HTTPS.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;WebSockets vs gRPC-Web?&lt;/strong&gt; (WebSockets are better for arbitrary bi-directional messaging; gRPC-Web is more structured but requires a proxy to translate the browser&amp;rsquo;s restricted HTTP/2 to standard gRPC.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is heartbeating/Pings?&lt;/strong&gt; (Since the connection is long-lived, intermediate routers might kill &amp;ldquo;idle&amp;rdquo; links unless we send periodic small ping frames.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: TLS 1.3 Handshake (Perfect Forward Secrecy)</title>
+      <link>http://localhost:1313/networks/tls-handshake-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/tls-handshake-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does the TLS 1.3 Handshake improve on TLS 1.2? What is &amp;ldquo;Perfect Forward Secrecy&amp;rdquo;?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Modern encryption lifecycle.&lt;/li&gt;
+&lt;li&gt;Protocol latency (Round trips).&lt;/li&gt;
+&lt;li&gt;Protecting old data from future leaks.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. Performance (Round Trips):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-performance-round-trips&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-performance-round-trips&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TLS 1.2&lt;/strong&gt;: Requires &lt;strong&gt;2 RTT&lt;/strong&gt; (Round Trip Times) before data can be sent.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;TLS 1.3&lt;/strong&gt;: Requires only &lt;strong&gt;1 RTT&lt;/strong&gt;. It assumes a key exchange set and sends it in the first message. It also supports &lt;strong&gt;0-RTT&lt;/strong&gt; (re-using old keys for absolute speed).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Security (Removing legacy):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-security-removing-legacy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-security-removing-legacy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;TLS 1.3 removed old, weak ciphers (RC4, SHA-1).&lt;/p&gt;
+&lt;h3&gt;3. Perfect Forward Secrecy (PFS):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-perfect-forward-secrecy-pfs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-perfect-forward-secrecy-pfs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Old Way (RSA)&lt;/strong&gt;: If you steal the server&amp;rsquo;s private key, you can decrypt ALL past traffic you ever recorded.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PFS Way (Diffie-Hellman)&lt;/strong&gt;: A unique, temporary &amp;ldquo;session key&amp;rdquo; is generated for every single conversation. Even if the server&amp;rsquo;s master key is compromised tomorrow, &lt;strong&gt;past conversations remain unreadable&lt;/strong&gt; because their unique ephemeral keys are gone.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;TLS 1.3 is a massive upgrade in both speed and security. By reducing the number of round-trips needed to start a conversation and mandating ephemeral key exchanges, it provides &amp;ldquo;Perfect Forward Secrecy.&amp;rdquo; This ensures that a single security breach in the future cannot be used to retrospectively decrypt years of recorded communication.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Handshake Visual:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-handshake-visual&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-handshake-visual&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;TLS 1.2: HELLO -&amp;gt; ACK -&amp;gt; KEY_EXCHANGE -&amp;gt; DONE -&amp;gt; DATA&lt;/code&gt; (Slow)
+&lt;code&gt;TLS 1.3: HELLO+KEY -&amp;gt; DONE -&amp;gt; DATA&lt;/code&gt; (Fast)&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What is SNI (Server Name Indication)?&lt;/strong&gt; (The header telling the server which website you want; encrypted in TLS 1.3 ESNI extension.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is Diffie-Hellman better than RSA?&lt;/strong&gt; (For session keys, yes. RSA is still used for identifying the server, but not for the actual transport encryption encryption.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is Certificate Pinning?&lt;/strong&gt; (Hardcoding a specific certificate footprint in an app to prevent Man-in-the-Middle attacks. Becoming less common now.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: XSS vs. CSRF</title>
+      <link>http://localhost:1313/networks/xss-vs-csrf-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/xss-vs-csrf-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is the difference between XSS and CSRF? How do &lt;code&gt;SameSite&lt;/code&gt; cookie settings prevent them?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Web application security fundamentals.&lt;/li&gt;
+&lt;li&gt;Understanding of Browser-Server trust models.&lt;/li&gt;
+&lt;li&gt;Practical mitigation headers.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. XSS (Cross-Site Scripting):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-xss-cross-site-scripting&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-xss-cross-site-scripting&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Attack&lt;/strong&gt;: An attacker injects &lt;strong&gt;JavaScript&lt;/strong&gt; into your page (via a search box or a malicious profile update).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Goal&lt;/strong&gt;: Steal the user&amp;rsquo;s data (read cookies, capture keystrokes) while browsing YOUR site.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Trust&lt;/strong&gt;: User&amp;rsquo;s browser trusts the malicious script because it appears to come from YOUR site.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. CSRF (Cross-Site Request Forgery):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-csrf-cross-site-request-forgery&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-csrf-cross-site-request-forgery&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Attack&lt;/strong&gt;: An attacker tricks a user into clicking a link on &lt;code&gt;malicious.com&lt;/code&gt; that sends a POST request to &lt;code&gt;bank.com/transfer&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Goal&lt;/strong&gt;: Perform an &lt;strong&gt;action&lt;/strong&gt; on the user&amp;rsquo;s behalf.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Trust&lt;/strong&gt;: &lt;code&gt;bank.com&lt;/code&gt; trusts the request because the browser automatically attached the user&amp;rsquo;s session cookies.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. The &lt;code&gt;SameSite&lt;/code&gt; Defense:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-the-samesite-defense&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-the-samesite-defense&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SameSite=Strict&lt;/strong&gt;: Browser NEVER sends the cookie if the link came from another domain.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;SameSite=Lax (Default)&lt;/strong&gt;: Browser only sends cookie on top-level GET requests (like clicking a link), but NEVER on POST/IFRAME from other sites. This &lt;strong&gt;kills CSRF&lt;/strong&gt; immediately.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;XSS is an attack against the integrity of your site&amp;rsquo;s code, while CSRF is an attack against the browser&amp;rsquo;s automatic trust of session cookies. To defend against them, we use Content Security Policies (CSP) to block injected scripts and enforce &lt;code&gt;SameSite=Lax&lt;/code&gt; cookie flags to prevent cross-origin request manipulation. These two defense layers are essential for ensuring that only authorized user actions are executed by the backend.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Protocol Comparison:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-protocol-comparison&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-protocol-comparison&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Aspect&lt;/th&gt;
+&lt;th&gt;XSS&lt;/th&gt;
+&lt;th&gt;CSRF&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Medium&lt;/td&gt;
+&lt;td&gt;Injected Script (JS)&lt;/td&gt;
+&lt;td&gt;Malicious Link / Form&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Goal&lt;/td&gt;
+&lt;td&gt;Read Data&lt;/td&gt;
+&lt;td&gt;Commit Action&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Fix&lt;/td&gt;
+&lt;td&gt;CSP / Sanitization&lt;/td&gt;
+&lt;td&gt;CSRF Tokens / SameSite&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can XSS be stored?&lt;/strong&gt; (Yes, &amp;ldquo;Stored XSS&amp;rdquo; is when the script is saved in the DB and shown to every user.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What are CSRF Tokens?&lt;/strong&gt; (A random token hidden in a form. The server checks if the incoming POST has a token that matches the session.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does SameSite prevent all CSRF?&lt;/strong&gt; (Almost all, but old browsers or subdomains can sometimes bypass it if not careful.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: HTTP/2 HPACK (Header Compression)</title>
+      <link>http://localhost:1313/networks/hpack-compression-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/hpack-compression-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does HTTP/2 reduce the size of headers? Explain the HPACK algorithm and why it&amp;rsquo;s safer than Gzip.&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Bandwidth optimization details.&lt;/li&gt;
+&lt;li&gt;Security vulnerabilities in compression (CRIME/BREACH).&lt;/li&gt;
+&lt;li&gt;State-aware protocol design.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;An HTTP/2 connection is long-lived and handles many requests. Sending &lt;code&gt;User-Agent: Mozilla...&lt;/code&gt; and &lt;code&gt;Cookie: ABC...&lt;/code&gt; in every single request is a massive waste of bandwidth.&lt;/p&gt;
+&lt;h3&gt;2. HPACK Logic:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-hpack-logic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-hpack-logic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Static Table&lt;/strong&gt;: A hardcoded list of common headers (e.g., index 2 is &lt;code&gt;GET&lt;/code&gt;). We only send the ID &lt;code&gt;2&lt;/code&gt; instead of the string.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Dynamic Table&lt;/strong&gt;: The request-answer state. If we already sent &lt;code&gt;Cookie: 123&lt;/code&gt;, the server remembers it. In the next request, we just say &amp;ldquo;Use the value from the previous index.&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Huffman Encoding&lt;/strong&gt;: Used to compress individual strings that aren&amp;rsquo;t in the tables.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Why not Gzip? (The Security Part):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-why-not-gzip-the-security-part&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-why-not-gzip-the-security-part&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Gzip is vulnerable to &lt;strong&gt;CRIME&lt;/strong&gt; and &lt;strong&gt;BREACH&lt;/strong&gt; attacks. Because Gzip groups similar strings, an attacker can guess a secret cookie by seeing how much the compressed size changes when they inject different strings. HPACK was designed to be &amp;ldquo;Differential&amp;rdquo; but safe from these side-channel attacks.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;HPACK maximizes web performance by eliminating the redundancy of HTTP headers. By maintaining a shared state between the client and server, we can replace repetitive strings with tiny index identifiers. It was specifically engineered to avoid the security flaws of standard compression algorithms like Gzip, providing a safe, stateful optimization that makes HTTP/2 significantly faster on bandwidth-limited connections.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ HPACK Elements:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-hpack-elements&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-hpack-elements&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;Static Dictionary (61 fixed entries).&lt;/li&gt;
+&lt;li&gt;Dynamic Dictionary (Built during connection).&lt;/li&gt;
+&lt;li&gt;Huffman Encoding (Per-string compression).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Can you clear the Dynamic Table?&lt;/strong&gt; (It has a size limit; once full, old entries are removed to make room for new ones.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &amp;ldquo;Cookie Header&amp;rdquo; overhead?&lt;/strong&gt; (Usually the largest part of any header list; HPACK is extremely effective here.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Does HTTP/3 use HPACK?&lt;/strong&gt; (No, it uses &lt;strong&gt;QPACK&lt;/strong&gt;, which is adapted for UDP/QUIC to prevent HOL blocking during header synchronization.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: WebSockets vs. SSE (Server-Sent Events)</title>
+      <link>http://localhost:1313/networks/sse-vs-websockets/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/sse-vs-websockets/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Explain Server-Sent Events (SSE). When would you choose SSE over WebSockets?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Uni-directional vs Bi-directional performance.&lt;/li&gt;
+&lt;li&gt;Protocol simplicity vs Power.&lt;/li&gt;
+&lt;li&gt;Practical use cases (Dashboards/Stock Tickers).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. SSE (Server-Sent Events):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-sse-server-sent-events&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-sse-server-sent-events&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Direction&lt;/strong&gt;: One-way (Server → Client).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Protocol&lt;/strong&gt;: Standard &lt;strong&gt;HTTP&lt;/strong&gt;. The server keeps the response open and sends data in &lt;code&gt;text/event-stream&lt;/code&gt; format.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;:
+&lt;ul&gt;
+&lt;li&gt;Automatic reconnection logic.&lt;/li&gt;
+&lt;li&gt;No special protocol needed (Firewall friendly).&lt;/li&gt;
+&lt;li&gt;Extremely lightweight.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Unidirectional only.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. WebSockets:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-websockets&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-websockets&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Direction&lt;/strong&gt;: Full-Duplex (Both ways).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Protocol&lt;/strong&gt;: Custom binary protocol (after HTTP upgrade).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pros&lt;/strong&gt;: Fast, low-latency, works for 2-way chat/gaming.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Cons&lt;/strong&gt;: Harder to scale; must manage heartbeats and custom proxies manually.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;While WebSockets provide a powerful &amp;ldquo;any-to-any&amp;rdquo; communication channel, they introduce significant complexity in state management and load balancing. For apps where data only flows from the server (like stock tickers, news feeds, or status dashboards), SSE is the superior architectural choice. It leverages native HTTP features, including automatic reconnection, while maintaining a significantly lower memory footprint on the server.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Use Case Table:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-use-case-table&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-use-case-table&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Case&lt;/th&gt;
+&lt;th&gt;Best Choice&lt;/th&gt;
+&lt;th&gt;Reason&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Chat App&lt;/td&gt;
+&lt;td&gt;WebSocket&lt;/td&gt;
+&lt;td&gt;Both sides send messages.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Crypto Ticker&lt;/td&gt;
+&lt;td&gt;SSE&lt;/td&gt;
+&lt;td&gt;Only price info is pushed.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Collaborative Editor&lt;/td&gt;
+&lt;td&gt;WebSocket&lt;/td&gt;
+&lt;td&gt;Real-time input synchronization.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Progress Bar&lt;/td&gt;
+&lt;td&gt;SSE&lt;/td&gt;
+&lt;td&gt;Server sends progress status.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;How to handle reconnection in SSE?&lt;/strong&gt; (Browsers have a &lt;code&gt;retry&lt;/code&gt; header built-in; the client automatically connects if the link breaks.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Browser Limit for SSE?&lt;/strong&gt; (Old browsers were limited to 6 connections per domain; HTTP/2 multiplexing removes this limit.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is the &lt;code&gt;Last-Event-ID&lt;/code&gt;?&lt;/strong&gt; (In SSE, the client sends this on reconnection so the server can send any missed messages.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: Zero-Copy (Performance)</title>
+      <link>http://localhost:1313/networks/zero-copy-internals/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/zero-copy-internals/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is &amp;ldquo;Zero-Copy&amp;rdquo;? How does &lt;code&gt;sendfile()&lt;/code&gt; or Java&amp;rsquo;s &lt;code&gt;FileChannel.transferTo()&lt;/code&gt; bypass the CPU?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Kernel/User space boundary overhead.&lt;/li&gt;
+&lt;li&gt;Maximizing network throughput.&lt;/li&gt;
+&lt;li&gt;Modern I/O optimizations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Standard &amp;ldquo;Copy&amp;rdquo; (Slow):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-standard-copy-slow&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-standard-copy-slow&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Disk&lt;/strong&gt; -&amp;gt; Kernel Buffer (Context Switch).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Kernel Buffer&lt;/strong&gt; -&amp;gt; App Buffer (User Space).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;App Buffer&lt;/strong&gt; -&amp;gt; Socket Buffer (Kernel Space).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Socket Buffer&lt;/strong&gt; -&amp;gt; &lt;strong&gt;NIC (Network Card)&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Problem&lt;/strong&gt;: 4 copies and 4 context switches. The CPU is busy moving bytes that it doesn&amp;rsquo;t even need to look at.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The Zero-Copy Way (Fast):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-zero-copy-way-fast&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-zero-copy-way-fast&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Using the &lt;code&gt;sendfile()&lt;/code&gt; system call (or &lt;code&gt;FileChannel.transferTo&lt;/code&gt; in Java):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Disk&lt;/strong&gt; -&amp;gt; Kernel Buffer.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Kernel Buffer&lt;/strong&gt; -&amp;gt; &lt;strong&gt;NIC&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Results&lt;/strong&gt;: The data NEVER enters user-space. The CPU only has to send a &amp;ldquo;pointer&amp;rdquo; to the data.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Benefit&lt;/strong&gt;: 2 copies saved, 2 context switches saved. Performance can increase by 3x-4x.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Zero-Copy is a performance optimization that allows the operating system to transfer data directly from the storage disk to the network card without passing through application memory. By bypassing the user-space/kernel-space boundary, we eliminate redundant CPU cycles and memory bandwidth, allowing high-throughput servers like Kafka or Nginx to saturate 10Gbps links with minimal CPU overhead.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual Logic:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-logic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-logic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[ Disk ] --DMA--&amp;gt; [ Kernel Buffer ] --DMA--&amp;gt; [ NIC ]&lt;/code&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;(DMA = Direct Memory Access, meaning CPU is totally uninvolved).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Where is this used?&lt;/strong&gt; (Kafka uses it to serve logs to consumers; Nginx for static assets; Netty for high-speed networking.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can we use Zero-Copy if we need to encrypt/transform data?&lt;/strong&gt; (No. If the CPU needs to MODIFY the data, it must be copied into User Space first.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What is &amp;ldquo;Scatter/Gather&amp;rdquo; I/O?&lt;/strong&gt; (An advanced NIC feature that can collect data from multiple memory locations and send them as one packet, further avoiding copies.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: HTTP/3 (QUIC) and HOL Blocking</title>
+      <link>http://localhost:1313/networks/http3-quic-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/http3-quic-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: How does HTTP/3 (QUIC) solve the Head-of-Line (HOL) blocking problem found in HTTP/2?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;TCP vs UDP performance.&lt;/li&gt;
+&lt;li&gt;Protocol evolution history.&lt;/li&gt;
+&lt;li&gt;Handling packet loss in multiplexed streams.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. HTTP/2 HOL Blocking:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-http2-hol-blocking&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-http2-hol-blocking&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;HTTP/2 multiplexes many streams over &lt;strong&gt;one TCP connection&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;The Problem&lt;/strong&gt;: If ONE packet from Stream A is lost, TCP waits for the retransmission.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Effect&lt;/strong&gt;: Stream B and C (which are perfectly fine) are &lt;strong&gt;blocked&lt;/strong&gt; behind the missing packet. This is TCP-level HOL blocking.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. HTTP/3 (QUIC) Solution:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-http3-quic-solution&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-http3-quic-solution&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;QUIC runs on &lt;strong&gt;UDP&lt;/strong&gt;, not TCP.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Individual Streams&lt;/strong&gt;: Each stream in QUIC handles its own reliability.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Effect&lt;/strong&gt;: If a packet for Stream A is lost, Stream B and C can still proceed and be processed. No global bottleneck.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Connection Migration:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-connection-migration&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-connection-migration&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;If you switch from WiFi to 4G, your IP changes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;TCP&lt;/strong&gt;: Connection breaks (based on 4-tuple IP/Port).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;QUIC&lt;/strong&gt;: Uses a &amp;ldquo;Connection ID.&amp;rdquo; The connection continues seamlessly without a new handshake.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;HTTP/3 represents a paradigm shift by moving the responsibility for reliability from the transport layer (TCP) to the application layer (QUIC). While HTTP/2&amp;rsquo;s single-stream multiplexing was a step forward, it suffered from severe latency whenever a packet was lost. QUIC&amp;rsquo;s independent stream processing ensures that a single failure doesn&amp;rsquo;t compromise the entire pipe, while its support for connection migration makes it vastly superior for modern mobile environments.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Visual State:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-visual-state&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-visual-state&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HTTP/2&lt;/strong&gt;: &lt;code&gt;[Packets A1, A2(Lost), B1, B2]&lt;/code&gt; -&amp;gt; Total Block until A2 arrives.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;HTTP/3&lt;/strong&gt;: &lt;code&gt;[Packets A1, A2(Lost), B1, B2]&lt;/code&gt; -&amp;gt; B1/B2 are processed immediately.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Wait, UDP is unreliable?&lt;/strong&gt; (Raw UDP is, but QUIC builds its own ACK/Retransmission logic ON TOP of UDP.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;0-RTT Handshake?&lt;/strong&gt; (QUIC combines the connection and encryption handshake into one, allowing data to be sent on the first byte.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is it widely used?&lt;/strong&gt; (Yes, YouTube, Facebook, and Google search already serve most traffic over HTTP/3.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Networks: Multipath TCP (MPTCP)</title>
+      <link>http://localhost:1313/networks/multipath-tcp-detailed/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/networks/multipath-tcp-detailed/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: What is Multipath TCP (MPTCP)? How does it allow a phone to use WiFi and 4G simultaneously?&lt;/h1&gt;&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Advanced transport layer protocol evolution.&lt;/li&gt;
+&lt;li&gt;Resilience and through-put improvement.&lt;/li&gt;
+&lt;li&gt;Practical mobile networking.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. The Standard TCP Limit:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-the-standard-tcp-limit&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-the-standard-tcp-limit&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;TCP binds to a &amp;ldquo;4-tuple&amp;rdquo; (Source IP, Source Port, Dest IP, Dest Port).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If you switch from WiFi to 4G, your &lt;strong&gt;Source IP&lt;/strong&gt; changes.&lt;/li&gt;
+&lt;li&gt;In standard TCP, the connection &lt;strong&gt;breaks&lt;/strong&gt; and must be re-established.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. The MPTCP Solution:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-the-mptcp-solution&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-the-mptcp-solution&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;MPTCP allows the same connection to use &lt;strong&gt;multiple paths&lt;/strong&gt; (subflows).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It groups several TCP subflows under one &amp;ldquo;Master&amp;rdquo; MPTCP session.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Throughput&lt;/strong&gt;: It can aggregate bandwidth. (e.g. WiFi 10Mbps + 4G 10Mbps = Total 20Mbps).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Resilience&lt;/strong&gt;: If WiFi dies, the subflow on 4G continues immediately with no interruption to the user.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Usage:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-usage&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-usage&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Used heavily by Apple (Siri/App Store) to prevent &amp;ldquo;dead spots&amp;rdquo; in cell coverage.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Multipath TCP evolves the traditional peer-to-peer connection into a multi-interface session. By allowing a single application stream to be distributed across several network paths—like WiFi and Cellular—it provides both a bandwidth boost and seamless failover. This ensures that modern mobile applications can maintain high-quality streaming and connectivity even as the user physically transitions between different network environments.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🏗️ Relationship:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-relationship&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-relationship&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;&lt;code&gt;[ App Data ] -&amp;gt; [ MPTCP Layer ] -&amp;gt; [ TCP Subflow 1 ] -&amp;gt; [ NIC 1 (WiFi) ]&lt;/code&gt;
+&lt;code&gt;                                 -&amp;gt; [ TCP Subflow 2 ] -&amp;gt; [ NIC 2 (4G) ]&lt;/code&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;MPTCP vs QUIC?&lt;/strong&gt; (MPTCP happens at the Kernel/TCP level; QUIC does it at the App/UDP level. Both solve the &amp;ldquo;connection migration&amp;rdquo; problem in different ways.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Server Support?&lt;/strong&gt; (Both the client and the server must support the MPTCP headers for it to work; otherwise, it falls back to standard TCP.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Impact on Battery?&lt;/strong&gt; (Using two radios at once consumes significantly more power.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
   </channel>
 </rss>
