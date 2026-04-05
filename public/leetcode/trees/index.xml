@@ -5,6 +5,7 @@
     <description>Recent content in Trees &amp; Graphs on Tech Interview Wiki</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
     
 	  <atom:link href="http://localhost:1313/leetcode/trees/index.xml" rel="self" type="application/rss+xml" />
     
@@ -13,6 +14,613 @@
         
       
     
+    
+    <item>
+      <title>LeetCode 98: Validate Binary Search Tree</title>
+      <link>http://localhost:1313/leetcode/trees/validate-bst/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/validate-bst/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Validate Binary Search Tree (LeetCode 98)&lt;/h1&gt;&lt;p&gt;Given the root of a binary tree, determine if it is a valid BST.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;BST invariant applies to ALL descendants, not just immediate children.&lt;/li&gt;
+&lt;li&gt;Recursive range-boundary propagation.&lt;/li&gt;
+&lt;li&gt;In-order traversal alternative.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Trap:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-trap&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-trap&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Only checking &lt;code&gt;left &amp;lt; root &amp;lt; right&lt;/code&gt; locally fails. Example: &lt;code&gt;[10, 5, 15, null, null, 6, 20]&lt;/code&gt; — node 6 is right-child of 15 (local check passes) but 6 &amp;lt; 10 (root), violating BST globally.&lt;/p&gt;
+&lt;h3&gt;Correct Approach: Recursive Range&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;correct-approach-recursive-range&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#correct-approach-recursive-range&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Pass &lt;code&gt;(min, max)&lt;/code&gt; boundaries down:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Root: &lt;code&gt;(-∞, +∞)&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Left child of &lt;code&gt;X&lt;/code&gt;: &lt;code&gt;(min, X.val)&lt;/code&gt; — must be smaller than parent&lt;/li&gt;
+&lt;li&gt;Right child of &lt;code&gt;X&lt;/code&gt;: &lt;code&gt;(X.val, max)&lt;/code&gt; — must be larger than parent&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Every node must satisfy its inherited range, not just compare to its immediate parent. We pass down the valid range boundary through the recursion.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;isValidBST&lt;/span&gt;(TreeNode root) { &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; validate(root, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;validate&lt;/span&gt;(TreeNode node, Integer min, Integer max) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (min &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; min) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (max &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; max) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; validate(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, min, node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; validate(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;, node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;, max);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;In-order traversal approach?&lt;/strong&gt; (BST in-order must produce strictly ascending sequence. Track &lt;code&gt;prev&lt;/code&gt; value.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Iterative?&lt;/strong&gt; (Use a Stack for in-order traversal.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Space complexity?&lt;/strong&gt; ($O(H)$ where H = tree height.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 102: Binary Tree Level Order Traversal</title>
+      <link>http://localhost:1313/leetcode/trees/level-order-traversal/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/level-order-traversal/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Binary Tree Level Order Traversal (LeetCode 102)&lt;/h1&gt;&lt;p&gt;Return the level order (BFS) traversal of a binary tree — left to right, level by level.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;BFS on trees using a Queue.&lt;/li&gt;
+&lt;li&gt;Grouping nodes by depth level.&lt;/li&gt;
+&lt;li&gt;Foundation for many BFS variants (Zigzag, Right View, etc.).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Key Trick:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-key-trick&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-key-trick&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;At each level, &lt;strong&gt;capture &lt;code&gt;queue.size()&lt;/code&gt;&lt;/strong&gt; before processing. This is the exact number of nodes at the current depth. Process only that many — children added during this pass belong to the next level.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;BFS naturally processes nodes level by level. By snapshotting the current queue size at the start of each iteration, we can cleanly group all nodes at the same depth into a sub-list before moving to the next level.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;levelOrder&lt;/span&gt;(TreeNode root) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (root &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;TreeNode&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; queue &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(root);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; level &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; size; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                TreeNode node &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                level.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            result.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(level);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Zigzag Level Order?&lt;/strong&gt; (LeetCode 103: Reverse alternate levels — use a &lt;code&gt;Deque&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Right Side View?&lt;/strong&gt; (LeetCode 199: Take the last node of each level list.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time, $O(N)$ space for the queue.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 572: Subtree of Another Tree</title>
+      <link>http://localhost:1313/leetcode/trees/subtree-of-another-tree/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/subtree-of-another-tree/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 572: Subtree of Another Tree (Easy/Medium)&lt;/h1&gt;&lt;p&gt;Given the roots of two binary trees &lt;code&gt;root&lt;/code&gt; and &lt;code&gt;subRoot&lt;/code&gt;, return &lt;code&gt;true&lt;/code&gt; if there is a subtree of &lt;code&gt;root&lt;/code&gt; that has the same structure and values as &lt;code&gt;subRoot&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Tree equality check as a helper function.&lt;/li&gt;
+&lt;li&gt;DFS over entire tree.&lt;/li&gt;
+&lt;li&gt;Recognizing recursive subproblem.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Two trees are the same if they have identical structure and values.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Write &lt;code&gt;isSameTree(s, t)&lt;/code&gt;: check if both nodes are null, or equal values and both subtrees match.&lt;/li&gt;
+&lt;li&gt;Then &lt;code&gt;isSubtree(root, subRoot)&lt;/code&gt;:
+&lt;ul&gt;
+&lt;li&gt;If &lt;code&gt;root == null&lt;/code&gt; → false.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;isSameTree(root, subRoot)&lt;/code&gt; → true.&lt;/li&gt;
+&lt;li&gt;Recurse on &lt;code&gt;root.left&lt;/code&gt; or &lt;code&gt;root.right&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Each &lt;code&gt;isSubtree&lt;/code&gt; call does $O(M)$ work, and there are $O(N)$ nodes → $O(N \cdot M)$ overall.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The problem decomposes cleanly into two recursive functions: one for complete tree equality and one for subtree search. We attempt a match at every node, and the equality check propagates through both trees simultaneously.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;isSubtree&lt;/span&gt;(TreeNode root, TreeNode subRoot) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (root &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (isSame(root, subRoot)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; isSubtree(root.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, subRoot) &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; isSubtree(root.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;, subRoot);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;isSame&lt;/span&gt;(TreeNode s, TreeNode t) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (s &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; t &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (s &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; t &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; s.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; t.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; isSame(s.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, t.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; isSame(s.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;, t.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;$O(N + M)$ approach?&lt;/strong&gt; (Serialize both trees as strings — if &lt;code&gt;subRoot_str&lt;/code&gt; is a substring of &lt;code&gt;root_str&lt;/code&gt;, return true. Use KMP for $O(N+M)$.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if the tree is huge?&lt;/strong&gt; (Hashing subtrees can detect matches in $O(N)$.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Same tree vs Subtree?&lt;/strong&gt; (&lt;code&gt;isSameTree&lt;/code&gt; requires both roots; &lt;code&gt;isSubtree&lt;/code&gt; only requires the smaller one to match somewhere inside.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 199: Binary Tree Right Side View</title>
+      <link>http://localhost:1313/leetcode/trees/right-side-view/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/right-side-view/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 199: Binary Tree Right Side View (Medium)&lt;/h1&gt;&lt;p&gt;Return all node values visible when looking at the tree from the right side.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;BFS level order traversal.&lt;/li&gt;
+&lt;li&gt;DFS with depth tracking (alternative).&lt;/li&gt;
+&lt;li&gt;Extracting the last node of each level.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;BFS Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;bfs-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#bfs-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Do a level-order traversal. For each level, the &lt;strong&gt;last node&lt;/strong&gt; is visible from the right. Add it to the result.&lt;/p&gt;
+&lt;h3&gt;DFS Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;dfs-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#dfs-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Traverse right-first DFS. Track current depth. If &lt;code&gt;depth == result.size()&lt;/code&gt;, this is the first node seen at this depth — it&amp;rsquo;s the rightmost visible node.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The right side view is simply the last element of each level in a BFS traversal. The DFS alternative exploits the right-first traversal order: whichever node we reach first at each depth is the rightmost visible one.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (BFS)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-bfs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-bfs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;rightSideView&lt;/span&gt;(TreeNode root) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (root &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;TreeNode&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; q &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(root);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;q.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; size; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                TreeNode node &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (i &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; size &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1) result.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;); &lt;span style=&#34;color:#75715e&#34;&gt;// Last in level&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Left Side View?&lt;/strong&gt; (Take the first node of each level instead of the last.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;DFS code?&lt;/strong&gt; (Traverse right child first; add &lt;code&gt;node.val&lt;/code&gt; when &lt;code&gt;result.size() == depth&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time, $O(N)$ space for queue/result.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 297: Serialize and Deserialize Binary Tree</title>
+      <link>http://localhost:1313/leetcode/trees/serialize-deserialize-tree/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/serialize-deserialize-tree/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 297: Serialize and Deserialize Binary Tree ⭐ (Hard)&lt;/h1&gt;&lt;p&gt;Design an algorithm to serialize and deserialize a binary tree.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;BFS or DFS-based tree encoding.&lt;/li&gt;
+&lt;li&gt;Using &lt;code&gt;null&lt;/code&gt; markers to preserve structure.&lt;/li&gt;
+&lt;li&gt;Queue-based deserialization.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;BFS (Level-Order) Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;bfs-level-order-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#bfs-level-order-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Serialize&lt;/strong&gt;: BFS, write node values and &amp;ldquo;null&amp;rdquo; for missing children.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deserialize&lt;/strong&gt;: Split by comma, use a Queue. For each node in the queue, read the next two tokens as its left and right children.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Pre-Order DFS Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;pre-order-dfs-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#pre-order-dfs-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Serialize&lt;/strong&gt;: Pre-order DFS, write &amp;ldquo;#&amp;rdquo; for null nodes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deserialize&lt;/strong&gt;: Use a global/array index or iterator. Read token; if &amp;ldquo;#&amp;rdquo; return null; else create node, recurse left then right.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The key insight is that a pre-order traversal with explicit null markers fully encodes the tree&amp;rsquo;s structure. Deserialization reconstructs the tree by consuming tokens in the same pre-order sequence.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (BFS)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-bfs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-bfs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Codec&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; String &lt;span style=&#34;color:#a6e22e&#34;&gt;serialize&lt;/span&gt;(TreeNode root) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (root &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;&amp;#34;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;TreeNode&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; q &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        StringBuilder sb &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; StringBuilder();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(root);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;q.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            TreeNode node &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) { sb.&lt;span style=&#34;color:#a6e22e&#34;&gt;append&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;null,&amp;#34;&lt;/span&gt;); &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            sb.&lt;span style=&#34;color:#a6e22e&#34;&gt;append&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;).&lt;span style=&#34;color:#a6e22e&#34;&gt;append&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;,&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; sb.&lt;span style=&#34;color:#a6e22e&#34;&gt;toString&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; TreeNode &lt;span style=&#34;color:#a6e22e&#34;&gt;deserialize&lt;/span&gt;(String data) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (data.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        String&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; vals &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; data.&lt;span style=&#34;color:#a6e22e&#34;&gt;split&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;,&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;TreeNode&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; q &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        TreeNode root &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; TreeNode(Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;parseInt&lt;/span&gt;(vals&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(root);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;q.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            TreeNode node &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;vals&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;equals&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;null&amp;#34;&lt;/span&gt;)) { node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; TreeNode(Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;parseInt&lt;/span&gt;(vals&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)); q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;); } i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;vals&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;equals&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;null&amp;#34;&lt;/span&gt;)) { node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; TreeNode(Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;parseInt&lt;/span&gt;(vals&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)); q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;); } i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; root;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Why not use in-order alone?&lt;/strong&gt; (In-order doesn&amp;rsquo;t uniquely identify a tree without a second traversal or null markers.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Compact serialization?&lt;/strong&gt; (LeetCode 536/331: Encode as bracket notation or RPN.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time and space for both operations.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 124: Binary Tree Maximum Path Sum</title>
+      <link>http://localhost:1313/leetcode/trees/max-path-sum/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/max-path-sum/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 124: Binary Tree Maximum Path Sum ⭐ (Hard)&lt;/h1&gt;&lt;p&gt;Find the maximum path sum in a binary tree. A path is a sequence of nodes where each pair of adjacent nodes has an edge. A path does not need to pass through the root.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Post-order DFS with global variable.&lt;/li&gt;
+&lt;li&gt;Understanding that a path can &amp;ldquo;peak&amp;rdquo; at any node.&lt;/li&gt;
+&lt;li&gt;Discarding negative subtrees.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Key Distinction:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-key-distinction&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-key-distinction&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Branch gain&lt;/strong&gt;: The maximum sum going through a node in ONE direction (for parent use).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Path through node&lt;/strong&gt;: Left gain + node value + right gain (uses both children).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The second value updates the global max but &lt;strong&gt;cannot be returned&lt;/strong&gt; to the parent (a path can&amp;rsquo;t fork).&lt;/p&gt;
+&lt;h3&gt;Algorithm (Post-Order):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;algorithm-post-order&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#algorithm-post-order&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Recursively get max gain from left and right subtrees.&lt;/li&gt;
+&lt;li&gt;Discard negative gains (take &lt;code&gt;max(gain, 0)&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Update &lt;code&gt;globalMax = max(globalMax, node.val + leftGain + rightGain)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Return &lt;code&gt;node.val + max(leftGain, rightGain)&lt;/code&gt; to parent (choose one direction).&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Post-order processing lets us compute the best &amp;ldquo;contribution&amp;rdquo; each subtree offers to its parent. The global max is updated at each node considering the possibility of the path &amp;ldquo;peaking&amp;rdquo; here — the returned value only contributes one direction to keep paths valid.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; maxSum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;MIN_VALUE&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;maxPathSum&lt;/span&gt;(TreeNode root) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        maxGain(root);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; maxSum;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;maxGain&lt;/span&gt;(TreeNode node) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; left &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(maxGain(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;), 0);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; right &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(maxGain(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;), 0);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        maxSum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(maxSum, node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; left &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; right); &lt;span style=&#34;color:#75715e&#34;&gt;// Path through this node&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(left, right); &lt;span style=&#34;color:#75715e&#34;&gt;// Best single-branch return&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What if all nodes are negative?&lt;/strong&gt; (The &lt;code&gt;Integer.MIN_VALUE&lt;/code&gt; initial value handles it — we must pick at least one node.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Can a path have 0 nodes?&lt;/strong&gt; (No — must contain at least one node.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ — visit each node once in post-order.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 235 &amp; 236: Lowest Common Ancestor</title>
+      <link>http://localhost:1313/leetcode/trees/lowest-common-ancestor/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/lowest-common-ancestor/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 235 &amp;amp; 236: Lowest Common Ancestor (Easy / Medium)&lt;/h1&gt;&lt;p&gt;Find the lowest common ancestor (LCA) of two nodes &lt;code&gt;p&lt;/code&gt; and &lt;code&gt;q&lt;/code&gt; in a tree.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;BST ordering property (LC 235).&lt;/li&gt;
+&lt;li&gt;Post-order recursion for general trees (LC 236).&lt;/li&gt;
+&lt;li&gt;Handling the case where one node is an ancestor of the other.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;LC 235: BST — Navigate by Value&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;lc-235-bst--navigate-by-value&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#lc-235-bst--navigate-by-value&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Both &lt;code&gt;p,q&lt;/code&gt; &amp;lt; &lt;code&gt;root.val&lt;/code&gt; → go left.&lt;/li&gt;
+&lt;li&gt;Both &lt;code&gt;p,q&lt;/code&gt; &amp;gt; &lt;code&gt;root.val&lt;/code&gt; → go right.&lt;/li&gt;
+&lt;li&gt;Otherwise → &lt;code&gt;root&lt;/code&gt; IS the LCA (split point).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;LC 236: General Binary Tree — Post-order Search&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;lc-236-general-binary-tree--post-order-search&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#lc-236-general-binary-tree--post-order-search&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;If &lt;code&gt;root == null || root == p || root == q&lt;/code&gt; → return &lt;code&gt;root&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Recurse left and right.&lt;/li&gt;
+&lt;li&gt;If &lt;strong&gt;both&lt;/strong&gt; return non-null → &lt;code&gt;root&lt;/code&gt; is LCA.&lt;/li&gt;
+&lt;li&gt;If &lt;strong&gt;only one&lt;/strong&gt; returns non-null → pass it up.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;For a general tree, post-order recursion finds the LCA at the node where the two search paths converge: left finds one target, right finds the other. For a BST, the BST property lets us navigate in $O(H)$ without touching most of the tree.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;BST (LC 235)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;bst-lc-235&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#bst-lc-235&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; TreeNode &lt;span style=&#34;color:#a6e22e&#34;&gt;lowestCommonAncestor&lt;/span&gt;(TreeNode root, TreeNode p, TreeNode q) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (p.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; root.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; root.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; lowestCommonAncestor(root.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, p, q);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (p.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; root.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; root.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; lowestCommonAncestor(root.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;, p, q);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; root;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;h3&gt;General Tree (LC 236)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;general-tree-lc-236&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#general-tree-lc-236&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; TreeNode &lt;span style=&#34;color:#a6e22e&#34;&gt;lowestCommonAncestor&lt;/span&gt;(TreeNode root, TreeNode p, TreeNode q) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (root &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; root &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; p &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; root &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; q) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; root;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    TreeNode left  &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; lowestCommonAncestor(root.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;, p, q);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    TreeNode right &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; lowestCommonAncestor(root.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;, p, q);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (left &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; right &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; root;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; left &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; left : right;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;If nodes might not exist?&lt;/strong&gt; (Need a wrapper return type — e.g., &lt;code&gt;{found_p, found_q, lca}&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;N-ary tree LCA?&lt;/strong&gt; (Same post-order logic, but iterate all children.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ general tree, $O(H)$ BST.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 543: Diameter of Binary Tree</title>
+      <link>http://localhost:1313/leetcode/trees/diameter-of-binary-tree/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/trees/diameter-of-binary-tree/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 543: Diameter of Binary Tree (Easy)&lt;/h1&gt;&lt;p&gt;Return the length of the longest path between any two nodes in a binary tree (may not pass through root).&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Post-order traversal with global state update.&lt;/li&gt;
+&lt;li&gt;The &amp;ldquo;path peaks at a node&amp;rdquo; insight.&lt;/li&gt;
+&lt;li&gt;Avoiding $O(N^2)$ height recomputation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Key Insight:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;key-insight&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#key-insight&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The longest path &lt;strong&gt;through node N&lt;/strong&gt; = &lt;code&gt;height(N.left) + height(N.right)&lt;/code&gt;.
+The diameter might peak at any node, not just the root.&lt;/p&gt;
+&lt;h3&gt;Optimal — Single Post-Order DFS:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;optimal--single-post-order-dfs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#optimal--single-post-order-dfs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Recurse to get &lt;code&gt;leftH&lt;/code&gt; and &lt;code&gt;rightH&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Update &lt;code&gt;globalMax = max(globalMax, leftH + rightH)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Return &lt;code&gt;1 + max(leftH, rightH)&lt;/code&gt; to parent.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This avoids recomputing height separately ($O(N)$ total instead of $O(N^2)$).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;By combining height computation and diameter tracking in a single post-order DFS, we visit each node exactly once. At each node we consider it as the &amp;ldquo;peak&amp;rdquo; of a horizontal path and update the global max accordingly.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; max &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;diameterOfBinaryTree&lt;/span&gt;(TreeNode root) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        height(root);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; max;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;height&lt;/span&gt;(TreeNode node) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; left &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; height(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;left&lt;/span&gt;), right &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; height(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;right&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        max &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(max, left &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; right);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; 1 &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(left, right);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Diameter of N-ary tree?&lt;/strong&gt; (Sum of top-2 child heights at each node as the candidate.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Diameter in a weighted tree?&lt;/strong&gt; (Replace &lt;code&gt;1 +&lt;/code&gt; with &lt;code&gt;edge_weight +&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time, $O(H)$ recursion stack.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
     
   </channel>
 </rss>

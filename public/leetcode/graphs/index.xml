@@ -1,0 +1,714 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Graphs</title>
+    <link>http://localhost:1313/leetcode/graphs/</link>
+    <description>Recent content in Graphs on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/leetcode/graphs/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>LeetCode 200: Number of Islands</title>
+      <link>http://localhost:1313/leetcode/graphs/number-of-islands/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/number-of-islands/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Number of Islands (LeetCode 200)&lt;/h1&gt;&lt;p&gt;Given an &lt;code&gt;m x n&lt;/code&gt; 2D binary grid where &amp;lsquo;1&amp;rsquo; = land and &amp;lsquo;0&amp;rsquo; = water, return the number of islands.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Basic graph traversal (DFS/BFS).&lt;/li&gt;
+&lt;li&gt;In-place state marking.&lt;/li&gt;
+&lt;li&gt;Union-Find alternative approach.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;DFS Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;dfs-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#dfs-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;When we hit land (&amp;lsquo;1&amp;rsquo;), start a DFS to visit all connected land and mark it as &amp;lsquo;0&amp;rsquo; (sunk). Each DFS initiation = one island.&lt;/p&gt;
+&lt;h3&gt;Union-Find Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;union-find-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#union-find-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Every land cell is its own component. Union adjacent land cells. Result = number of distinct components.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;We iterate the grid. On finding a &amp;lsquo;1&amp;rsquo;, we increment the island count and use DFS to sink (mark &amp;lsquo;0&amp;rsquo;) all connected land, preventing re-counting. Time: $O(M \cdot N)$. Space: $O(M \cdot N)$ recursion stack in worst case.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;numIslands&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; grid) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; grid.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; j &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; grid&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;; j&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (grid&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;) { count&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;; sink(grid, i, j); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; count;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;sink&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; grid, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; 0 &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; 0 &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; grid.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; grid&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; grid&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        grid&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        sink(grid, i&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;1, j); sink(grid, i&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1, j);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        sink(grid, i, j&lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt;1); sink(grid, i, j&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Space complexity?&lt;/strong&gt; ($O(M \cdot N)$ worst-case recursion for a single huge island.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Number of distinct islands?&lt;/strong&gt; (LeetCode 694: Store island &amp;ldquo;shape&amp;rdquo; as a path string in a Set.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Island Perimeter?&lt;/strong&gt; (Each &amp;lsquo;1&amp;rsquo; has 4 sides; subtract 2 for each adjacent pair.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 207: Course Schedule</title>
+      <link>http://localhost:1313/leetcode/graphs/course-schedule/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/course-schedule/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Course Schedule (LeetCode 207)&lt;/h1&gt;&lt;p&gt;There are &lt;code&gt;numCourses&lt;/code&gt; courses. Given prerequisites &lt;code&gt;[a, b]&lt;/code&gt; meaning &amp;ldquo;take b before a&amp;rdquo;, return &lt;code&gt;true&lt;/code&gt; if you can finish all courses.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Directed Acyclic Graph (DAG) properties.&lt;/li&gt;
+&lt;li&gt;Topological Sort (Kahn&amp;rsquo;s Algorithm).&lt;/li&gt;
+&lt;li&gt;Cycle detection in a directed graph.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Logic:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-logic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-logic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We can finish all courses ONLY if the dependency graph has &lt;strong&gt;no cycles&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3&gt;Kahn&amp;rsquo;s Algorithm (BFS):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;kahns-algorithm-bfs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#kahns-algorithm-bfs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Compute the &lt;strong&gt;indegree&lt;/strong&gt; for each node.&lt;/li&gt;
+&lt;li&gt;Put all nodes with &lt;strong&gt;indegree 0&lt;/strong&gt; into a Queue.&lt;/li&gt;
+&lt;li&gt;Pop a node, increment visited count, decrement neighbors&amp;rsquo; indegrees. If neighbor reaches 0 → enqueue it.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;visited == numCourses&lt;/code&gt; → no cycle → return true.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The problem reduces to DAG cycle detection. Kahn&amp;rsquo;s algorithm iteratively removes nodes with no prerequisites. If all nodes can be removed, the graph is a DAG and all courses can be completed.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;canFinish&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; numCourses, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; prerequisites) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; indegree &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;numCourses&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;[]&lt;/span&gt; adj &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; List&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;numCourses&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; numCourses; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) adj&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; p : prerequisites) { adj&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;p&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(p&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;); indegree&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;p&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]]++&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; q &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; numCourses; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (indegree&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; 0) q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(i);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;q.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;(); count&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; next : adj&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;curr&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;--&lt;/span&gt;indegree&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;next&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; 0) q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(next);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; count &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; numCourses;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;DFS alternative?&lt;/strong&gt; (Use a 3-state visited array: 0=unvisited, 1=visiting, 2=done. A back-edge to 1 means cycle.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Course Schedule II?&lt;/strong&gt; (LeetCode 210: Return the actual topological ordering.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(V + E)$ where V=courses, E=prerequisites.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 127: Word Ladder</title>
+      <link>http://localhost:1313/leetcode/graphs/word-ladder/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/word-ladder/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Word Ladder (LeetCode 127)&lt;/h1&gt;&lt;p&gt;Given &lt;code&gt;beginWord&lt;/code&gt;, &lt;code&gt;endWord&lt;/code&gt;, and a &lt;code&gt;wordList&lt;/code&gt;, find the length of the shortest transformation sequence where each step differs by exactly one letter and is in the dictionary.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Shortest path in an unweighted graph → BFS.&lt;/li&gt;
+&lt;li&gt;Efficient neighbor generation ($O(L \cdot 26)$ vs $O(N)$).&lt;/li&gt;
+&lt;li&gt;Bidirectional BFS optimization.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Why BFS?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;why-bfs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#why-bfs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;All edges have weight 1 (differ by one letter), so BFS guarantees the shortest path.&lt;/p&gt;
+&lt;h3&gt;Generating Neighbors Efficiently:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;generating-neighbors-efficiently&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#generating-neighbors-efficiently&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;For each position in the word, try all 26 letters. If the resulting word is in the dictionary → it&amp;rsquo;s a neighbor. This is $O(L \cdot 26)$ per word vs $O(N \cdot L)$ for comparing every word in the list.&lt;/p&gt;
+&lt;h3&gt;Key: Remove visited words from the set immediately to prevent cycles.&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;key-remove-visited-words-from-the-set-immediately-to-prevent-cycles&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#key-remove-visited-words-from-the-set-immediately-to-prevent-cycles&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The problem maps to shortest path in an implicit word graph. BFS guarantees optimality. The key optimization is generating neighbors by mutation ($O(26L)$ per word) rather than scanning the whole dictionary.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;ladderLength&lt;/span&gt;(String beginWord, String endWord, List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; wordList) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Set&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; dict &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; HashSet&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;(wordList);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;dict.&lt;span style=&#34;color:#a6e22e&#34;&gt;contains&lt;/span&gt;(endWord)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; queue &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(beginWord);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; level &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; size &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; size; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                String curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;equals&lt;/span&gt;(endWord)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; level;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; chars &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;toCharArray&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; j &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; chars.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;; j&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; orig &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; chars&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;a&amp;#39;&lt;/span&gt;; c &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;z&amp;#39;&lt;/span&gt;; c&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (c &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; orig) &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        chars&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; c;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        String next &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; String(chars);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (dict.&lt;span style=&#34;color:#a6e22e&#34;&gt;contains&lt;/span&gt;(next)) { queue.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(next); dict.&lt;span style=&#34;color:#a6e22e&#34;&gt;remove&lt;/span&gt;(next); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    chars&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; orig;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            level&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Bidirectional BFS?&lt;/strong&gt; (Search from both ends simultaneously, expanding the smaller frontier — dramatically faster in practice.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;All shortest paths?&lt;/strong&gt; (Word Ladder II: Store a parent map and backtrack with DFS.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N \cdot L^2)$ where N = dict size, L = word length.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 785: Is Graph Bipartite?</title>
+      <link>http://localhost:1313/leetcode/graphs/bipartite-graph/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/bipartite-graph/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Is Graph Bipartite? (LeetCode 785)&lt;/h1&gt;&lt;p&gt;Return &lt;code&gt;true&lt;/code&gt; if the graph can be colored with exactly 2 colors such that no two adjacent nodes share the same color.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Graph coloring via BFS/DFS.&lt;/li&gt;
+&lt;li&gt;Detecting odd-length cycles (the root cause of non-bipartiteness).&lt;/li&gt;
+&lt;li&gt;Handling disconnected components.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Algorithm:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;algorithm&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#algorithm&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Use a &lt;code&gt;color&lt;/code&gt; array: &lt;code&gt;0&lt;/code&gt; = uncolored, &lt;code&gt;1&lt;/code&gt; = color A, &lt;code&gt;-1&lt;/code&gt; = color B.&lt;/li&gt;
+&lt;li&gt;For each uncolored node, start a DFS.&lt;/li&gt;
+&lt;li&gt;Color starting node &lt;code&gt;1&lt;/code&gt;. For each neighbor: if uncolored → assign opposite color; if same color as current → &lt;strong&gt;NOT bipartite&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Key fact&lt;/strong&gt;: A graph is bipartite ↔ it has &lt;strong&gt;no odd-length cycles&lt;/strong&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;We attempt a 2-coloring of the graph via DFS. If we ever find two adjacent nodes with the same color, the graph cannot be bipartitioned. We must also ensure all components are checked (disconnected nodes start their own DFS).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;isBipartite&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; graph) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; colors &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;graph.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; graph.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (colors&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; 0 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;dfs(graph, colors, i, 1)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;dfs&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; graph, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; colors, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; node, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; color) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (colors&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;node&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; 0) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; colors&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;node&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; color;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        colors&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;node&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; color;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; neighbor : graph&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;node&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;dfs(graph, colors, neighbor, &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;color)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;BFS version?&lt;/strong&gt; (Use a Queue; assign color to each dequeued node&amp;rsquo;s uncolored neighbors.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Union-Find approach?&lt;/strong&gt; (For each node, union all its neighbors together; if a node ends up in the same component as itself, it&amp;rsquo;s not bipartite.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(V + E)$.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 332: Reconstruct Itinerary</title>
+      <link>http://localhost:1313/leetcode/graphs/reconstruct-itinerary/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/reconstruct-itinerary/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Reconstruct Itinerary (LeetCode 332)&lt;/h1&gt;&lt;p&gt;Given airline tickets &lt;code&gt;[from, to]&lt;/code&gt;, reconstruct itinerary starting from &amp;ldquo;JFK&amp;rdquo;, visiting every ticket exactly once, with lexicographically smallest result.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Eulerian Path (Hierholzer&amp;rsquo;s Algorithm).&lt;/li&gt;
+&lt;li&gt;Post-order DFS — building result backwards.&lt;/li&gt;
+&lt;li&gt;PriorityQueue for lexical ordering.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Problem Type: Eulerian Path&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;problem-type-eulerian-path&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#problem-type-eulerian-path&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Visit every &lt;strong&gt;edge&lt;/strong&gt; exactly once. This is Hierholzer&amp;rsquo;s Algorithm.&lt;/p&gt;
+&lt;h3&gt;Algorithm:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;algorithm&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#algorithm&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Build adjacency list using &lt;code&gt;PriorityQueue&amp;lt;String&amp;gt;&lt;/code&gt; per departure airport (lexical order automatic).&lt;/li&gt;
+&lt;li&gt;Start DFS from &amp;ldquo;JFK&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;For each node, recursively visit all neighbors (consuming edges).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Post-order&lt;/strong&gt;: Add the node to the front of the result &lt;strong&gt;after&lt;/strong&gt; all its edges are consumed.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The &amp;ldquo;add last&amp;rdquo; trick works because dead-ends (no outgoing edges) must appear at the end of the itinerary.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Hierholzer&amp;rsquo;s algorithm finds an Eulerian path via post-order DFS. A PriorityQueue guarantees we always pick the lexicographically smaller destination first. Nodes are added to the front of the result list as they &amp;ldquo;exhaust&amp;rdquo; their edges.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String, PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; adj &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; HashMap&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;findItinerary&lt;/span&gt;(List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; tickets) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; t : tickets)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            adj.&lt;span style=&#34;color:#a6e22e&#34;&gt;computeIfAbsent&lt;/span&gt;(t.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(0), k &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;()).&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(t.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(1));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        dfs(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;JFK&amp;#34;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;dfs&lt;/span&gt;(String node) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;String&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; pq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; adj.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(node);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (pq &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) dfs(pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        result.&lt;span style=&#34;color:#a6e22e&#34;&gt;addFirst&lt;/span&gt;(node);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Eulerian Path vs Hamiltonian Path?&lt;/strong&gt; (Eulerian: every edge once; Hamiltonian: every vertex once — NP-complete.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Is a valid itinerary always guaranteed?&lt;/strong&gt; (Yes, the problem guarantees it.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(E \log E)$ due to PriorityQueue operations.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 417: Pacific Atlantic Water Flow</title>
+      <link>http://localhost:1313/leetcode/graphs/pacific-atlantic-water-flow/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/pacific-atlantic-water-flow/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 417: Pacific Atlantic Water Flow (Medium)&lt;/h1&gt;&lt;p&gt;Find all cells from which water can flow to &lt;strong&gt;both&lt;/strong&gt; the Pacific and Atlantic oceans. Water flows from high to equal or lower height.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Multi-source BFS/DFS.&lt;/li&gt;
+&lt;li&gt;Reverse thinking (flow from ocean inward instead of outward).&lt;/li&gt;
+&lt;li&gt;Intersection of two reachability sets.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Naive Approach: $O((M \cdot N)^2)$&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;naive-approach-om-cdot-n2&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#naive-approach-om-cdot-n2&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;For each cell, run DFS outward to check if both oceans are reachable.&lt;/p&gt;
+&lt;h3&gt;Optimal: Reverse BFS from Oceans — $O(M \cdot N)$&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;optimal-reverse-bfs-from-oceans--om-cdot-n&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#optimal-reverse-bfs-from-oceans--om-cdot-n&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;Key insight&lt;/strong&gt;: Instead of checking if water flows FROM cell TO ocean, ask: can water flow FROM ocean TO cell (going uphill)?&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Multi-source BFS from all &lt;strong&gt;Pacific border&lt;/strong&gt; cells → mark all cells reachable from Pacific.&lt;/li&gt;
+&lt;li&gt;Multi-source BFS from all &lt;strong&gt;Atlantic border&lt;/strong&gt; cells → mark all cells reachable from Atlantic.&lt;/li&gt;
+&lt;li&gt;Return intersection: cells reachable from &lt;strong&gt;both&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;BFS moves to neighbors with height &lt;code&gt;&amp;gt;=&lt;/code&gt; current (going uphill, since we reversed direction).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;By reversing the direction — starting BFS from the ocean borders and traveling uphill — we convert what was an $O(N^2)$ multi-source problem into two $O(M \cdot N)$ BFS runs. The intersection gives us all valid cells in linear time.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;pacificAtlantic&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; heights) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; m &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; heights.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; heights&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; pac &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;m&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;n&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, atl &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;m&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;n&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&amp;gt;&lt;/span&gt; pq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;(), aq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; LinkedList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; m; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) { pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{i,0}); pac&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; aq.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{i,n&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1}); atl&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;n&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; j &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; n; j&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) { pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{0,j}); pac&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; aq.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{m&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1,j}); atl&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;m&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]=&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        bfs(heights, pq, pac); bfs(heights, aq, atl);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&lt;/span&gt; res &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayList&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; m; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; j &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; n; j&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (pac&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; atl&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) res.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(List.&lt;span style=&#34;color:#a6e22e&#34;&gt;of&lt;/span&gt;(i, j));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; res;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;bfs&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; h, Queue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&amp;gt;&lt;/span&gt; q, &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; vis) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; dirs &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; {{0,1},{0,&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1},{1,0},{&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1,0}};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;q.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; d : dirs) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; r &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; c&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]+&lt;/span&gt;d&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, col &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; c&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]+&lt;/span&gt;d&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (r&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt;r&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt;h.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt;col&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt;col&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt;h&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt;vis&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;r&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;col&lt;span style=&#34;color:#f92672&#34;&gt;]||&lt;/span&gt;h&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;r&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;col&lt;span style=&#34;color:#f92672&#34;&gt;]&amp;lt;&lt;/span&gt;h&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]][&lt;/span&gt;c&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]]&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                vis&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;r&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;col&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;; q.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{r, col});
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Why BFS over DFS here?&lt;/strong&gt; (Both work — BFS is often more predictable for multi-source patterns.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if we add a third ocean?&lt;/strong&gt; (Add a third &lt;code&gt;visited&lt;/code&gt; array — same pattern extends naturally.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(M \cdot N)$ time and space.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 684 &amp; 685: Redundant Connection</title>
+      <link>http://localhost:1313/leetcode/graphs/redundant-connection/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/redundant-connection/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 684: Redundant Connection (Medium)&lt;/h1&gt;&lt;p&gt;Given a tree with &lt;code&gt;n&lt;/code&gt; nodes plus one extra edge, return the redundant edge that creates a cycle.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Union-Find (Disjoint Set Union) pattern.&lt;/li&gt;
+&lt;li&gt;Detecting when two nodes are already connected.&lt;/li&gt;
+&lt;li&gt;Path compression + Union by Rank for efficiency.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Union-Find:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;union-find&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#union-find&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Initialize each node as its own parent.&lt;/li&gt;
+&lt;li&gt;For each edge &lt;code&gt;(u, v)&lt;/code&gt;:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;find(u)&lt;/code&gt; and &lt;code&gt;find(v)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;If they have the same root → &lt;strong&gt;this edge creates a cycle&lt;/strong&gt; → return it.&lt;/li&gt;
+&lt;li&gt;Otherwise, &lt;code&gt;union(u, v)&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Path Compression + Union by Rank:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;path-compression--union-by-rank&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#path-compression--union-by-rank&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;find()&lt;/code&gt; with path compression: &lt;code&gt;parent[x] = find(parent[x])&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;union()&lt;/code&gt; by rank: attach smaller tree under larger root.&lt;/li&gt;
+&lt;li&gt;Both operations become nearly $O(1)$ amortized.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Union-Find is the ideal data structure for detecting when adding an edge would create a cycle. Processing edges one at a time, we check connectivity before merging — if two nodes are already in the same component, the current edge is redundant.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; parent, rank;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;findRedundantConnection&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; edges) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; edges.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        parent &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;n &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;; rank &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;n &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 1; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; n; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) parent&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; e : edges) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (find(e&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; find(e&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; e;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            union(e&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, e&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{};
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;find&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; x) { &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; parent&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; x &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; x : (parent&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; find(parent&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;x&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;)); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;union&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; x, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; y) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; px &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; find(x), py &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; find(y);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (rank&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;px&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; rank&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;py&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) parent&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;px&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; py;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (rank&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;px&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; rank&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;py&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) parent&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;py&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; px;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; { parent&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;py&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; px; rank&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;px&lt;span style=&#34;color:#f92672&#34;&gt;]++&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Redundant Connection II (Directed Graph)?&lt;/strong&gt; (LeetCode 685: Must detect both &amp;ldquo;two parents&amp;rdquo; AND &amp;ldquo;cycle&amp;rdquo; cases — significantly more complex.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Union-Find vs DFS for cycle detection?&lt;/strong&gt; (Union-Find: $O(\alpha(N))$ per edge — faster. DFS: $O(V+E)$ — easier to implement.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What other problems use Union-Find?&lt;/strong&gt; (Number of Islands, Accounts Merge, Making a Large Island.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Dijkstra&#39;s Shortest Path Algorithm</title>
+      <link>http://localhost:1313/leetcode/graphs/dijkstra-algorithm/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/dijkstra-algorithm/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Dijkstra&amp;rsquo;s Algorithm: Single-Source Shortest Path ⭐&lt;/h1&gt;&lt;p&gt;Find the shortest path from a source node to all other nodes in a weighted directed graph with &lt;strong&gt;non-negative&lt;/strong&gt; edges.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Min-Heap priority queue for greedy selection.&lt;/li&gt;
+&lt;li&gt;Relaxation: updating shortest known distance.&lt;/li&gt;
+&lt;li&gt;Why it fails for negative edges.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Algorithm:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-algorithm&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-algorithm&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;dist[source] = 0&lt;/code&gt;, all others = &lt;code&gt;∞&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Min-Heap stores &lt;code&gt;(distance, nodeId)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Poll the smallest distance node &lt;code&gt;u&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Skip if &lt;code&gt;polled dist &amp;gt; dist[u]&lt;/code&gt; (stale entry).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Relax&lt;/strong&gt;: for each neighbor &lt;code&gt;v&lt;/code&gt;: if &lt;code&gt;dist[u] + w &amp;lt; dist[v]&lt;/code&gt;, update and push to heap.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Why greedy works&lt;/strong&gt;: With non-negative weights, once a node is popped with the minimum distance, that distance is finalized.&lt;/p&gt;
+&lt;h3&gt;Complexity: $O((V + E) \log V)$&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;complexity-ov--e-log-v&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#complexity-ov--e-log-v&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Dijkstra works by greedily visiting the nearest node first. The &amp;ldquo;stale check&amp;rdquo; (&lt;code&gt;polled &amp;gt; dist[u]&lt;/code&gt;) is critical for performance — without it we&amp;rsquo;d reprocess outdated heap entries. It cannot handle negative edges because a later-found negative path might improve an already-finalized distance.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;dijkstra&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; n, List&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&amp;gt;[]&lt;/span&gt; adj, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; src) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; dist &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;n&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Arrays.&lt;span style=&#34;color:#a6e22e&#34;&gt;fill&lt;/span&gt;(dist, Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;MAX_VALUE&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    dist&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;src&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&amp;gt;&lt;/span&gt; pq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;(Comparator.&lt;span style=&#34;color:#a6e22e&#34;&gt;comparingInt&lt;/span&gt;(a &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; a&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{0, src});
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; d &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, u &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (d &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; dist&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;u&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;continue&lt;/span&gt;; &lt;span style=&#34;color:#75715e&#34;&gt;// stale&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; edge : adj&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;u&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; v &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; edge&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, w &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; edge&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (dist&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;u&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; w &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; dist&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;v&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                dist&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;v&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dist&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;u&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; w;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                pq.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt;{dist&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;v&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, v});
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; dist;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Negative edges?&lt;/strong&gt; (Use Bellman-Ford — $O(V \cdot E)$.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Negative cycles?&lt;/strong&gt; (Detect with Bellman-Ford by checking if any distance keeps decreasing after V-1 passes.)&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;&lt;em&gt;A&lt;/em&gt; vs Dijkstra?&lt;/em&gt;* (A* adds a heuristic to guide toward the target — faster but not always optimal without admissible heuristics.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 133: Clone Graph</title>
+      <link>http://localhost:1313/leetcode/graphs/clone-graph/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/graphs/clone-graph/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 133: Clone Graph (Medium)&lt;/h1&gt;&lt;p&gt;Deep copy a connected undirected graph. Each node has a &lt;code&gt;val&lt;/code&gt; and a list of &lt;code&gt;neighbors&lt;/code&gt;.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;HashMap as both a &amp;ldquo;visited&amp;rdquo; set and node mapping.&lt;/li&gt;
+&lt;li&gt;Cycle-safe DFS/BFS on graphs.&lt;/li&gt;
+&lt;li&gt;Difference between shallow and deep copy.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Problem with Naive Recursion:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-problem-with-naive-recursion&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-problem-with-naive-recursion&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Graph &lt;code&gt;A → B → A&lt;/code&gt; creates infinite recursion if you don&amp;rsquo;t track visited nodes.&lt;/p&gt;
+&lt;h3&gt;HashMap Strategy:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;hashmap-strategy&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#hashmap-strategy&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;code&gt;orig → clone&lt;/code&gt; map serves dual purpose:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Visited guard&lt;/strong&gt;: If already in map, return existing clone (no re-processing).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Node registry&lt;/strong&gt;: Stores the cloned node reference for neighbor linking.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Algorithm (DFS):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;algorithm-dfs&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#algorithm-dfs&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;If &lt;code&gt;node == null&lt;/code&gt; → return null.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;map.contains(node)&lt;/code&gt; → return &lt;code&gt;map.get(node)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Create &lt;code&gt;clone = new Node(node.val)&lt;/code&gt;, add to map.&lt;/li&gt;
+&lt;li&gt;Recursively clone each neighbor and add to &lt;code&gt;clone.neighbors&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The HashMap prevents cycle-induced infinite loops by ensuring each node is cloned exactly once. Subsequent references to the same original node return the pre-existing clone, correctly wiring up cycles in the new graph.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Node, Node&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; map &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; HashMap&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Node &lt;span style=&#34;color:#a6e22e&#34;&gt;cloneGraph&lt;/span&gt;(Node node) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (map.&lt;span style=&#34;color:#a6e22e&#34;&gt;containsKey&lt;/span&gt;(node)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; map.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(node);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Node clone &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Node(node.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        map.&lt;span style=&#34;color:#a6e22e&#34;&gt;put&lt;/span&gt;(node, clone);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (Node neighbor : node.&lt;span style=&#34;color:#a6e22e&#34;&gt;neighbors&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            clone.&lt;span style=&#34;color:#a6e22e&#34;&gt;neighbors&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;add&lt;/span&gt;(cloneGraph(neighbor));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; clone;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;BFS version?&lt;/strong&gt; (Use a Queue; poll and clone neighbors iteratively.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Directed graph?&lt;/strong&gt; (Same algorithm — direction is just followed, not duplicated.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(V + E)$ time and space.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

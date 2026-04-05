@@ -1,0 +1,253 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Binary Search</title>
+    <link>http://localhost:1313/leetcode/binary-search/</link>
+    <description>Recent content in Binary Search on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/leetcode/binary-search/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>LeetCode 33: Search in Rotated Sorted Array</title>
+      <link>http://localhost:1313/leetcode/binary-search/search-rotated-array/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/binary-search/search-rotated-array/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Search in Rotated Sorted Array (LeetCode 33)&lt;/h1&gt;&lt;p&gt;A sorted array has been rotated at an unknown pivot. Find &lt;code&gt;target&lt;/code&gt; in $O(\log n)$.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Binary search on non-standard sorted structures.&lt;/li&gt;
+&lt;li&gt;Logic for identifying which half is &amp;ldquo;sorted&amp;rdquo;.&lt;/li&gt;
+&lt;li&gt;Boundary condition handling.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Key Insight:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-key-insight&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-key-insight&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;In a rotated sorted array, &lt;strong&gt;one of the two halves split by &lt;code&gt;mid&lt;/code&gt; is always sorted&lt;/strong&gt;. We check which half is sorted, then decide if the target is in that range.&lt;/p&gt;
+&lt;h3&gt;Algorithm:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;algorithm&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#algorithm&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Calculate &lt;code&gt;mid&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;nums[low] &amp;lt;= nums[mid]&lt;/code&gt; → left half is sorted.
+&lt;ul&gt;
+&lt;li&gt;If &lt;code&gt;target&lt;/code&gt; in &lt;code&gt;[nums[low], nums[mid])&lt;/code&gt; → shrink right.&lt;/li&gt;
+&lt;li&gt;Else → shrink left.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Else → right half is sorted.
+&lt;ul&gt;
+&lt;li&gt;If &lt;code&gt;target&lt;/code&gt; in &lt;code&gt;(nums[mid], nums[high]]&lt;/code&gt; → shrink left.&lt;/li&gt;
+&lt;li&gt;Else → shrink right.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Even a rotated array has at least one monotonically sorted half. We identify it on each iteration and check if the target fits within it, discarding the half where it cannot be.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;search&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; nums, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; target) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; low &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0, high &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nums.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (low &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; high) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; low &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; (high &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; low) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; 2;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (nums&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mid&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; target) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; mid;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (nums&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;low&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; nums&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mid&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) { &lt;span style=&#34;color:#75715e&#34;&gt;// Left sorted&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (target &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;=&lt;/span&gt; nums&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;low&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; target &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; nums&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mid&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) high &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; low &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; { &lt;span style=&#34;color:#75715e&#34;&gt;// Right sorted&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (target &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; nums&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mid&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; target &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; nums&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;high&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) low &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; high &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Array with duplicates?&lt;/strong&gt; (LeetCode 81: Worst case degrades to $O(N)$ when &lt;code&gt;nums[low] == nums[mid] == nums[high]&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Find the rotation pivot?&lt;/strong&gt; (LeetCode 153: Binary search comparing &lt;code&gt;nums[mid]&lt;/code&gt; vs &lt;code&gt;nums[high]&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(\log N)$ time, $O(1)$ space.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 4: Median of Two Sorted Arrays</title>
+      <link>http://localhost:1313/leetcode/binary-search/median-two-sorted-arrays/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/binary-search/median-two-sorted-arrays/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 4: Median of Two Sorted Arrays ⭐ (Hard)&lt;/h1&gt;&lt;p&gt;Find the median of two sorted arrays in $O(\log(m+n))$ time.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Binary search on the shorter array.&lt;/li&gt;
+&lt;li&gt;Partition-based thinking.&lt;/li&gt;
+&lt;li&gt;Handling edge cases (empty arrays, odd/even total length).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Key Insight: Partitioning&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;key-insight-partitioning&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#key-insight-partitioning&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We binary search on the smaller array to find a partition point &lt;code&gt;i&lt;/code&gt; such that:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Left partition has &lt;code&gt;(m+n+1)/2&lt;/code&gt; elements combined.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;maxLeft1 &amp;lt;= minRight2&lt;/code&gt; AND &lt;code&gt;maxLeft2 &amp;lt;= minRight1&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If all 4 boundary conditions are satisfied, we&amp;rsquo;ve found the correct median.&lt;/p&gt;
+&lt;h3&gt;The Binary Search:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-binary-search&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-binary-search&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;On smaller array&amp;rsquo;s partition: &lt;code&gt;i = (lo + hi) / 2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;j = half - i&lt;/code&gt; where &lt;code&gt;half = (m+n+1)/2&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Check: &lt;code&gt;A[i-1] &amp;lt;= B[j]&lt;/code&gt; AND &lt;code&gt;B[j-1] &amp;lt;= A[i]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Adjust &lt;code&gt;lo&lt;/code&gt;/&lt;code&gt;hi&lt;/code&gt; based on violations.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Instead of merging both arrays ($O(m+n)$), we binary search for the ideal partition that splits both arrays into equal-sized halves. The median is determined by the boundary elements of these partitions.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;findMedianSortedArrays&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; nums1, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; nums2) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (nums1.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; nums2.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; findMedianSortedArrays(nums2, nums1);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; m &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nums1.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nums2.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; lo &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0, hi &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; m, half &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (m &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; n &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; 2;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (lo &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; hi) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (lo &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; hi) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; 2, j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; half &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; i;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; maxL1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; 0 &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;MIN_VALUE&lt;/span&gt; : nums1&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; minR1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; m &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;MAX_VALUE&lt;/span&gt; : nums1&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; maxL2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; 0 &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;MIN_VALUE&lt;/span&gt; : nums2&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; minR2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; n &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; Integer.&lt;span style=&#34;color:#a6e22e&#34;&gt;MAX_VALUE&lt;/span&gt; : nums2&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (maxL1 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; minR2 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; maxL2 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; minR1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; ((m &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; n) &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; 2 &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; 1) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(maxL1, maxL2);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; (Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(maxL1, maxL2) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;min&lt;/span&gt;(minR1, minR2)) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; 2.&lt;span style=&#34;color:#a6e22e&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            } &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (maxL1 &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; minR2) hi &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; lo &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Why binary search on the smaller array?&lt;/strong&gt; (Ensures &lt;code&gt;j &amp;gt;= 0&lt;/code&gt; always, preventing negative partition index.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if arrays are equal length?&lt;/strong&gt; (Works the same — just processes both arrays equally.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;K-th element of two sorted arrays?&lt;/strong&gt; (Generalize: binary search for K-th position instead of median.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 74: Search a 2D Matrix</title>
+      <link>http://localhost:1313/leetcode/binary-search/search-2d-matrix/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/binary-search/search-2d-matrix/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 74: Search a 2D Matrix (Medium)&lt;/h1&gt;&lt;p&gt;An &lt;code&gt;m x n&lt;/code&gt; matrix where each row is sorted and the first integer of each row &amp;gt; last integer of the previous row. Search for a target in $O(\log(m \cdot n))$.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Virtualizing 2D as 1D binary search.&lt;/li&gt;
+&lt;li&gt;Index conversion: &lt;code&gt;mid → (mid/n, mid%n)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Differentiating from LC 240 (weaker constraint).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Key Unification:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-key-unification&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-key-unification&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Because the matrix is &lt;strong&gt;globally sorted&lt;/strong&gt; (rows are consecutive), we treat it as a flattened 1D array of length &lt;code&gt;m*n&lt;/code&gt;.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;lo = 0&lt;/code&gt;, &lt;code&gt;hi = m*n - 1&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;mid&lt;/code&gt; index → row &lt;code&gt;mid/n&lt;/code&gt;, col &lt;code&gt;mid%n&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Standard binary search from here.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The global monotonicity of the matrix allows us to treat it as a single sorted array. By mapping 1D index to 2D coordinates, standard binary search gives $O(\log(m \cdot n))$ without any modifications.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;searchMatrix&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[][]&lt;/span&gt; matrix, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; target) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; m &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; matrix.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; matrix&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;0&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; lo &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0, hi &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; m &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; n &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (lo &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; hi) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; lo &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; (hi &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; lo) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; 2;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; val &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; matrix&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mid &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; n&lt;span style=&#34;color:#f92672&#34;&gt;][&lt;/span&gt;mid &lt;span style=&#34;color:#f92672&#34;&gt;%&lt;/span&gt; n&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (val &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; target) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (val &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; target) lo &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; hi &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; mid &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Search a 2D Matrix II (LC 240)?&lt;/strong&gt; (Weaker guarantee: only row-sorted and column-sorted. Use &amp;ldquo;Staircase&amp;rdquo; search from top-right in $O(m+n)$.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Find the row without target?&lt;/strong&gt; (Binary search on just first column values.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(\log(m \cdot n))$ time, $O(1)$ space.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,428 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Linked List</title>
+    <link>http://localhost:1313/leetcode/linked-list/</link>
+    <description>Recent content in Linked List on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/leetcode/linked-list/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>LeetCode 138: Copy List with Random Pointer</title>
+      <link>http://localhost:1313/leetcode/linked-list/copy-list-random-pointer/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/linked-list/copy-list-random-pointer/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Copy List with Random Pointer (LeetCode 138)&lt;/h1&gt;&lt;p&gt;A linked list where each node has a &lt;code&gt;random&lt;/code&gt; pointer to any node or null. Construct a deep copy.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Handling non-linear object relationships.&lt;/li&gt;
+&lt;li&gt;Mapping old nodes to new nodes.&lt;/li&gt;
+&lt;li&gt;Optimizing from $O(N)$ space (Map) to $O(1)$ (Interweaving).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;1. HashMap Approach ($O(N)$ space):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-hashmap-approach-on-space&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-hashmap-approach-on-space&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Pass 1: Create all new nodes, store &lt;code&gt;Map&amp;lt;OldNode, NewNode&amp;gt;&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Pass 2: Map &lt;code&gt;next&lt;/code&gt; and &lt;code&gt;random&lt;/code&gt; pointers using the map.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;2. Interweaving Approach ($O(1)$ space):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-interweaving-approach-o1-space&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-interweaving-approach-o1-space&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Duplicate&lt;/strong&gt;: Insert clone between each node: &lt;code&gt;A -&amp;gt; A&#39; -&amp;gt; B -&amp;gt; B&#39;&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Assign Random&lt;/strong&gt;: &lt;code&gt;A&#39;.random = A.random.next&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Split&lt;/strong&gt;: Detach the two interleaved lists.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Interweaving nodes eliminates the need for an external dictionary by using the structure of the original list itself as the mapping. The key insight is that &lt;code&gt;A&#39;.random = A.random.next&lt;/code&gt; works because the clone of any node is always immediately after its original.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (Interweaving)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-interweaving&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-interweaving&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; Node &lt;span style=&#34;color:#a6e22e&#34;&gt;copyRandomList&lt;/span&gt;(Node head) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (head &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Node curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Step 1: Weave clones&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (curr &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            Node next &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Node(curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; next;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; next;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Step 2: Set randoms&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (curr &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;random&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;random&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;random&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Step 3: Split&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Node dummy &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Node(0), copyIter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dummy;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (curr &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            copyIter.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            copyIter &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; copyIter.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; dummy.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Cycle in the list?&lt;/strong&gt; (Both HashMap and interweaving handle cycles naturally.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Deep vs Shallow copy?&lt;/strong&gt; (Deep = new objects for all members; Shallow = copies references.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time, $O(1)$ space for interweaving.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 146: LRU Cache</title>
+      <link>http://localhost:1313/leetcode/linked-list/lru-cache/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/linked-list/lru-cache/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: LRU Cache (LeetCode 146)&lt;/h1&gt;&lt;p&gt;Implement an LRU Cache with &lt;code&gt;get&lt;/code&gt; and &lt;code&gt;put&lt;/code&gt; in $O(1)$ time.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;HashMap for $O(1)$ lookup.&lt;/li&gt;
+&lt;li&gt;Doubly Linked List for $O(1)$ insertion/deletion.&lt;/li&gt;
+&lt;li&gt;Combining two data structures for a hybrid cache.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Design:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-design&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-design&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;HashMap&lt;/strong&gt;: &lt;code&gt;key → Node&lt;/code&gt; for $O(1)$ lookup.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Doubly Linked List&lt;/strong&gt;: Maintains access order; head = most recent, tail = least recent.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Operations:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;operations&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#operations&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;get(key)&lt;/code&gt;: Move accessed node to head → return value.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;put(key, val)&lt;/code&gt;: Insert at head. If full → evict tail node.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A HashMap alone lacks ordering. A DLL alone lacks $O(1)$ lookup. Combined, they give us both: the map finds the node instantly, and the DLL lets us move/remove it in $O(1)$ via pointer rewiring.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;LRUCache&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Node&lt;/span&gt; { &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; key, val; Node prev, next; Node(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; k, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; v) { key&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;k; val&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;v; } }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Map&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer, Node&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; map &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; HashMap&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; capacity;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Node head &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Node(0,0), tail &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Node(0,0);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;LRUCache&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; cap) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        capacity &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; cap; head.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; tail; tail.&lt;span style=&#34;color:#a6e22e&#34;&gt;prev&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; key) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;map.&lt;span style=&#34;color:#a6e22e&#34;&gt;containsKey&lt;/span&gt;(key)) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Node n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; map.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(key); remove(n); insert(n); &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; n.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;put&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; key, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; value) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (map.&lt;span style=&#34;color:#a6e22e&#34;&gt;containsKey&lt;/span&gt;(key)) remove(map.&lt;span style=&#34;color:#a6e22e&#34;&gt;get&lt;/span&gt;(key));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (map.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; capacity) remove(tail.&lt;span style=&#34;color:#a6e22e&#34;&gt;prev&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        insert(&lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Node(key, value));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;remove&lt;/span&gt;(Node n) { map.&lt;span style=&#34;color:#a6e22e&#34;&gt;remove&lt;/span&gt;(n.&lt;span style=&#34;color:#a6e22e&#34;&gt;key&lt;/span&gt;); n.&lt;span style=&#34;color:#a6e22e&#34;&gt;prev&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; n.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; n.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;prev&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; n.&lt;span style=&#34;color:#a6e22e&#34;&gt;prev&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;insert&lt;/span&gt;(Node n) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        map.&lt;span style=&#34;color:#a6e22e&#34;&gt;put&lt;/span&gt;(n.&lt;span style=&#34;color:#a6e22e&#34;&gt;key&lt;/span&gt;, n); n.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; n.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;prev&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; n; head.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; n; n.&lt;span style=&#34;color:#a6e22e&#34;&gt;prev&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Thread-safe?&lt;/strong&gt; (Use &lt;code&gt;ConcurrentHashMap&lt;/code&gt; + &lt;code&gt;ReentrantReadWriteLock&lt;/code&gt;, or &lt;code&gt;LinkedHashMap&lt;/code&gt; with synchronized block.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LFU (Least Frequently Used)?&lt;/strong&gt; (Requires frequency tracking with nested maps — harder to implement in $O(1)$.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java built-in?&lt;/strong&gt; (&lt;code&gt;LinkedHashMap&lt;/code&gt; with &lt;code&gt;accessOrder=true&lt;/code&gt; and &lt;code&gt;removeEldestEntry&lt;/code&gt; can simulate LRU in a few lines.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 21: Merge Two Sorted Lists</title>
+      <link>http://localhost:1313/leetcode/linked-list/merge-two-sorted-lists/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/linked-list/merge-two-sorted-lists/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 21: Merge Two Sorted Lists (Easy)&lt;/h1&gt;&lt;p&gt;Merge two sorted linked lists and return the merged list in sorted order.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Dummy node technique.&lt;/li&gt;
+&lt;li&gt;Pointer management in linked lists.&lt;/li&gt;
+&lt;li&gt;Recursive vs iterative approach.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Iterative (Preferred):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;iterative-preferred&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#iterative-preferred&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Use a &lt;code&gt;dummy&lt;/code&gt; node as a handle. Maintain a &lt;code&gt;curr&lt;/code&gt; pointer.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Compare &lt;code&gt;l1.val&lt;/code&gt; vs &lt;code&gt;l2.val&lt;/code&gt;, attach the smaller one to &lt;code&gt;curr.next&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Advance the chosen pointer and &lt;code&gt;curr&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Attach the remaining non-empty list at the end.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Recursive:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;recursive&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#recursive&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The problem has optimal substructure: &lt;code&gt;merge(l1, l2) = smaller + merge(rest, other)&lt;/code&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The dummy node eliminates the special case for head initialization. By always picking the smaller of the two current heads and advancing that pointer, we produce the merged sorted list in a single pass.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (Iterative)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-iterative&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-iterative&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ListNode &lt;span style=&#34;color:#a6e22e&#34;&gt;mergeTwoLists&lt;/span&gt;(ListNode l1, ListNode l2) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ListNode dummy &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ListNode(0), curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dummy;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (l1 &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; l2 &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (l1.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; l2.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;) { curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; l1; l1 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; l1.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; { curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; l2; l2 &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; l2.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (l1 &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; l1 : l2;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; dummy.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Merge K sorted lists?&lt;/strong&gt; (LeetCode 23: Use a Min-Heap or divide &amp;amp; conquer.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;In-place merge?&lt;/strong&gt; (Yes, this IS in-place — we reuse existing nodes without allocating new ones.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Recursive version?&lt;/strong&gt; (Elegant but $O(N)$ stack depth — risk of StackOverflow for very large lists.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 141 &amp; 142: Linked List Cycle</title>
+      <link>http://localhost:1313/leetcode/linked-list/linked-list-cycle/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/linked-list/linked-list-cycle/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 141 &amp;amp; 142: Linked List Cycle (Easy/Medium)&lt;/h1&gt;&lt;p&gt;Detect if a linked list has a cycle (141). If yes, find the cycle start (142).&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Floyd&amp;rsquo;s Cycle Detection (Tortoise and Hare).&lt;/li&gt;
+&lt;li&gt;Mathematical proof for finding the cycle entry point.&lt;/li&gt;
+&lt;li&gt;$O(1)$ space cycle detection.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Floyd&amp;rsquo;s Algorithm — Cycle Detection (LC 141):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;floyds-algorithm--cycle-detection-lc-141&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#floyds-algorithm--cycle-detection-lc-141&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;slow&lt;/code&gt; moves 1 step, &lt;code&gt;fast&lt;/code&gt; moves 2 steps.&lt;/li&gt;
+&lt;li&gt;If they meet → cycle exists.&lt;/li&gt;
+&lt;li&gt;If &lt;code&gt;fast&lt;/code&gt; reaches null → no cycle.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Finding Cycle Start (LC 142):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;finding-cycle-start-lc-142&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#finding-cycle-start-lc-142&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Once &lt;code&gt;slow == fast&lt;/code&gt; (meeting point):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Reset &lt;code&gt;slow&lt;/code&gt; to &lt;code&gt;head&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Move &lt;strong&gt;both&lt;/strong&gt; &lt;code&gt;slow&lt;/code&gt; and &lt;code&gt;fast&lt;/code&gt; one step at a time.&lt;/li&gt;
+&lt;li&gt;They meet at the &lt;strong&gt;cycle start&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Why does the math work?&lt;/strong&gt; Let &lt;code&gt;L&lt;/code&gt; = distance to cycle start, &lt;code&gt;C&lt;/code&gt; = cycle length, &lt;code&gt;k&lt;/code&gt; = intersection offset within cycle. When they first meet: &lt;code&gt;slow&lt;/code&gt; traveled &lt;code&gt;L+k&lt;/code&gt;, &lt;code&gt;fast&lt;/code&gt; traveled &lt;code&gt;2(L+k)&lt;/code&gt;. Resetting one pointer to head and advancing both at speed 1 makes them converge at &lt;code&gt;L&lt;/code&gt; steps later — exactly the cycle start.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Floyd&amp;rsquo;s algorithm detects cycles in $O(N)$ time and $O(1)$ space. The mathematical relationship between the meeting point and the cycle entry is elegant — resetting one pointer to the head and advancing both at equal speed reveals the exact start.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// LC 141&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;hasCycle&lt;/span&gt;(ListNode head) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ListNode slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head, fast &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (fast &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; fast.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; slow.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; fast &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fast.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (slow &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; fast) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;true&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#75715e&#34;&gt;// LC 142&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ListNode &lt;span style=&#34;color:#a6e22e&#34;&gt;detectCycle&lt;/span&gt;(ListNode head) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ListNode slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head, fast &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (fast &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; fast.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; slow.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; fast &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fast.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (slow &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; fast) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (slow &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; fast) { slow &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; slow.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; fast &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; fast.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; slow;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Find cycle length?&lt;/strong&gt; (After detection: keep &lt;code&gt;fast&lt;/code&gt; fixed, move &lt;code&gt;slow&lt;/code&gt; one step at a time until it returns to &lt;code&gt;fast&lt;/code&gt; — count steps.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Remove the cycle?&lt;/strong&gt; (Find the node just before the cycle start and set its &lt;code&gt;next = null&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Multiple cycles?&lt;/strong&gt; (Floyd&amp;rsquo;s only handles a single-cycle linear list — a more complex structure isn&amp;rsquo;t represented as a standard linked list.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 25: Reverse Nodes in K-Group</title>
+      <link>http://localhost:1313/leetcode/linked-list/reverse-nodes-k-group/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/linked-list/reverse-nodes-k-group/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 25: Reverse Nodes in K-Group ⭐ (Hard)&lt;/h1&gt;&lt;p&gt;Reverse the nodes of a linked list &lt;code&gt;k&lt;/code&gt; at a time and return the modified list.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Linked list pointer surgery.&lt;/li&gt;
+&lt;li&gt;Group-wise processing with boundary checks.&lt;/li&gt;
+&lt;li&gt;Recursion vs iteration for elegance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Algorithm (Iterative):&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;algorithm-iterative&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#algorithm-iterative&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Count &lt;code&gt;k&lt;/code&gt; nodes ahead — if fewer than &lt;code&gt;k&lt;/code&gt; remain, leave as-is.&lt;/li&gt;
+&lt;li&gt;Reverse the next &lt;code&gt;k&lt;/code&gt; nodes using standard reversal.&lt;/li&gt;
+&lt;li&gt;Connect the reversed group&amp;rsquo;s tail to the result of &lt;code&gt;reverseKGroup(next node, k)&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Advance &lt;code&gt;prevGroupTail&lt;/code&gt; to the tail of the newly reversed group.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;Key Pointers:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;key-pointers&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#key-pointers&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;groupStart&lt;/code&gt;: first node of current group.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;groupEnd&lt;/code&gt;: k-th node of group (found by walking k steps).&lt;/li&gt;
+&lt;li&gt;After reversing, &lt;code&gt;groupStart&lt;/code&gt; becomes the tail and &lt;code&gt;groupEnd&lt;/code&gt; becomes the head.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;K-group reversal is a clean extension of standard list reversal, applied to fixed-length segments. The challenge is correctly reconnecting each reversed segment to the next one. A dummy head node simplifies handling of the first group&amp;rsquo;s predecessor.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ListNode &lt;span style=&#34;color:#a6e22e&#34;&gt;reverseKGroup&lt;/span&gt;(ListNode head, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; k) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ListNode curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; count &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (curr &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; count &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; k) { curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;; count&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (count &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; k) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; head; &lt;span style=&#34;color:#75715e&#34;&gt;// Less than k nodes remain&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// Reverse k nodes&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ListNode prev &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;, node &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; head;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; k; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            ListNode next &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; node.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            node.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; prev;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            prev &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; node;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            node &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; next;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#75715e&#34;&gt;// head is now the tail of reversed group&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        head.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; reverseKGroup(curr, k);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; prev; &lt;span style=&#34;color:#75715e&#34;&gt;// prev is now the head of reversed group&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Reverse in groups of 2?&lt;/strong&gt; (Same algorithm with &lt;code&gt;k=2&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Constant space iterative?&lt;/strong&gt; (Yes, manage multiple pointer variables across iterations — no recursion stack.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time — each node is reversed once; $O(N/k)$ recursion stack.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

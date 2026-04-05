@@ -1,0 +1,403 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Stacks &amp; Monotonic Stack</title>
+    <link>http://localhost:1313/leetcode/stacks/</link>
+    <description>Recent content in Stacks &amp; Monotonic Stack on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/leetcode/stacks/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>LeetCode 20: Valid Parentheses</title>
+      <link>http://localhost:1313/leetcode/stacks/valid-parentheses/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/stacks/valid-parentheses/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 Question: Valid Parentheses (LeetCode 20)&lt;/h1&gt;&lt;p&gt;Given a string with &lt;code&gt;(&lt;/code&gt;, &lt;code&gt;)&lt;/code&gt;, &lt;code&gt;{&lt;/code&gt;, &lt;code&gt;}&lt;/code&gt;, &lt;code&gt;[&lt;/code&gt;, &lt;code&gt;]&lt;/code&gt; — determine if the input string is valid.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Fundamental Stack (LIFO) usage.&lt;/li&gt;
+&lt;li&gt;Complementary symbol matching.&lt;/li&gt;
+&lt;li&gt;Handling edge cases (empty stack, unmatched closers).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Logic:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-logic&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-logic&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;We need a structure that remembers the &lt;strong&gt;last&lt;/strong&gt; opened bracket and expects it to be closed &lt;strong&gt;first&lt;/strong&gt; — that&amp;rsquo;s exactly what a Stack does.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Iterate each character.&lt;/li&gt;
+&lt;li&gt;If opening bracket → push expected closer.&lt;/li&gt;
+&lt;li&gt;If closing bracket → check if stack is empty or top doesn&amp;rsquo;t match → invalid.&lt;/li&gt;
+&lt;li&gt;At end → stack must be empty.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Trick&lt;/strong&gt;: Push the expected &lt;strong&gt;closer&lt;/strong&gt; (not the opener), so the match check is a simple &lt;code&gt;pop() != c&lt;/code&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;We push the expected close bracket every time we see an open bracket. When we encounter a close bracket, we simply check if it matches the top of the stack. This way the matching logic is a single comparison.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;boolean&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;isValid&lt;/span&gt;(String s) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Deque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Character&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; stack &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayDeque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; c : s.&lt;span style=&#34;color:#a6e22e&#34;&gt;toCharArray&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (c &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;(&amp;#39;&lt;/span&gt;) stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;)&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (c &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;{&amp;#39;&lt;/span&gt;) stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;}&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (c &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;[&amp;#39;&lt;/span&gt;) stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;]&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; c) &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;false&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Space complexity?&lt;/strong&gt; ($O(N)$ for the stack.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Only one type of bracket?&lt;/strong&gt; (Just a counter: increment for open, decrement for close, check it stays ≥ 0.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;Stack&lt;/code&gt; vs &lt;code&gt;Deque&lt;/code&gt;?&lt;/strong&gt; (&lt;code&gt;java.util.Stack&lt;/code&gt; is legacy/synchronized; prefer &lt;code&gt;ArrayDeque&lt;/code&gt; for O(1) push/pop.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 84: Largest Rectangle in Histogram</title>
+      <link>http://localhost:1313/leetcode/stacks/largest-rectangle-histogram/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/stacks/largest-rectangle-histogram/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 84: Largest Rectangle in Histogram ⭐ (Hard)&lt;/h1&gt;&lt;p&gt;Find the area of the largest rectangle that can be formed in a histogram.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Monotonic Stack (increasing).&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Extend left and right&amp;rdquo; logic.&lt;/li&gt;
+&lt;li&gt;Foundation for Maximal Rectangle (LC 85).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Key Insight:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-key-insight&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-key-insight&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;For each bar at index &lt;code&gt;i&lt;/code&gt;, the rectangle extends left and right as long as bars are &lt;strong&gt;≥ height[i]&lt;/strong&gt;.&lt;/p&gt;
+&lt;h3&gt;Monotonic Stack Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;monotonic-stack-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#monotonic-stack-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Maintain an &lt;strong&gt;increasing monotonic stack&lt;/strong&gt; of indices.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;When we encounter a bar shorter than &lt;code&gt;stack.top&lt;/code&gt;, pop and calculate area:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;height = heights[popped]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;width = i - stack.top - 1&lt;/code&gt; (or &lt;code&gt;i&lt;/code&gt; if stack is empty — extends to the start)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Process remaining stack items using &lt;code&gt;n&lt;/code&gt; as the right boundary.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Each bar is pushed and popped from the stack exactly once. When a bar is popped, it acts as the height of a maximal rectangle that is bounded by the shorter bar that triggered the pop on the right, and whatever is now on top of the stack on the left.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;largestRectangleArea&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; heights) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Deque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; stack &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayDeque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; maxArea &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0, n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; heights.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;=&lt;/span&gt; n; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; h &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; (i &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; n) &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; 0 : heights&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; heights&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;()&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; h) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; height &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; heights&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;()&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; width &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; i : i &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                maxArea &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(maxArea, height &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; width);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(i);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; maxArea;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Maximal Rectangle (LC 85)?&lt;/strong&gt; (Apply this histogram problem to each row of a binary matrix — create a running height array.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Brute Force?&lt;/strong&gt; ($O(N^2)$: for each pair of bars, compute possible area.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time, $O(N)$ stack space.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 155: Min Stack</title>
+      <link>http://localhost:1313/leetcode/stacks/min-stack/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/stacks/min-stack/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 155: Min Stack (Medium)&lt;/h1&gt;&lt;p&gt;Design a stack that supports &lt;code&gt;push&lt;/code&gt;, &lt;code&gt;pop&lt;/code&gt;, &lt;code&gt;top&lt;/code&gt;, and &lt;code&gt;getMin&lt;/code&gt; — all in $O(1)$.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Auxiliary data structure design.&lt;/li&gt;
+&lt;li&gt;Maintaining state across operations.&lt;/li&gt;
+&lt;li&gt;$O(1)$ minimum lookup without sorting.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;The Problem:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;the-problem&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#the-problem&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;After popping, how do we know the new minimum without scanning?&lt;/p&gt;
+&lt;h3&gt;Two-Stack Approach:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;two-stack-approach&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#two-stack-approach&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;stack&lt;/code&gt;: main data stack.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;minStack&lt;/code&gt;: tracks the current minimum at each level.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When pushing &lt;code&gt;x&lt;/code&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Push &lt;code&gt;x&lt;/code&gt; to &lt;code&gt;stack&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Push &lt;code&gt;min(x, minStack.peek())&lt;/code&gt; to &lt;code&gt;minStack&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;When popping from &lt;code&gt;stack&lt;/code&gt;, also pop from &lt;code&gt;minStack&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;getMin()&lt;/code&gt; always peeks the top of &lt;code&gt;minStack&lt;/code&gt;.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;By maintaining a parallel &amp;ldquo;min stack&amp;rdquo; that always holds the current minimum at each depth, we capture the minimum after every push and restore it correctly after every pop. This ensures $O(1)$ for all operations.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MinStack&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Deque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; stack &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayDeque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    Deque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; minStack &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayDeque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; val) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(val);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        minStack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(minStack.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; val : Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;min&lt;/span&gt;(val, minStack.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;()));
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;() { stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;(); minStack.&lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;(); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;top&lt;/span&gt;() { &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;(); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;getMin&lt;/span&gt;() { &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; minStack.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;(); }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Single-stack approach?&lt;/strong&gt; (Store pairs &lt;code&gt;(value, minAtThisPoint)&lt;/code&gt; as custom objects — same idea, one stack.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Max Stack?&lt;/strong&gt; (Symmetric design with a &lt;code&gt;maxStack&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if we need K-th minimum?&lt;/strong&gt; (Two stacks won&amp;rsquo;t work — need a different data structure like an Order Statistics Tree.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 739: Daily Temperatures</title>
+      <link>http://localhost:1313/leetcode/stacks/daily-temperatures/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/stacks/daily-temperatures/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 739: Daily Temperatures (Medium)&lt;/h1&gt;&lt;p&gt;Given daily temperatures, for each day return how many days until a warmer temperature. Return 0 if no such day exists.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Monotonic Stack (decreasing).&lt;/li&gt;
+&lt;li&gt;&amp;ldquo;Next Greater Element&amp;rdquo; pattern.&lt;/li&gt;
+&lt;li&gt;Index arithmetic for distance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Pattern: Next Greater Element&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;pattern-next-greater-element&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#pattern-next-greater-element&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;This is the classic &amp;ldquo;Next Greater Element&amp;rdquo; problem. We use a &lt;strong&gt;decreasing monotonic stack&lt;/strong&gt; of indices.&lt;/p&gt;
+&lt;p&gt;Algorithm:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;For each temperature &lt;code&gt;T[i]&lt;/code&gt;:&lt;/li&gt;
+&lt;li&gt;While stack is not empty AND &lt;code&gt;T[i] &amp;gt; T[stack.top]&lt;/code&gt;:
+&lt;ul&gt;
+&lt;li&gt;Pop &lt;code&gt;j&lt;/code&gt; from stack.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;result[j] = i - j&lt;/code&gt; (days to wait).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Push &lt;code&gt;i&lt;/code&gt; onto the stack.&lt;/li&gt;
+&lt;li&gt;Remaining indices in stack → wait 0 days.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;We maintain a stack of &amp;ldquo;unsatisfied&amp;rdquo; cold days. When we find a warmer day, we retroactively fill in the wait time for all previous days in the stack that are colder than today.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;dailyTemperatures&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; temperatures) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; n &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; temperatures.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;n&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Deque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; stack &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayDeque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; n; i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; temperatures&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;i&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; temperatures&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;()&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; j &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                result&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;j&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; j;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(i);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; result;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Next Greater Element I &amp;amp; II (circular)?&lt;/strong&gt; (LeetCode 496, 503: Extend the input by iterating twice for circular.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Nearest Smaller to the Left?&lt;/strong&gt; (Same pattern, monotonic increasing stack, traversing left to right.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N)$ time — each element pushed and popped at most once.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 227: Basic Calculator II</title>
+      <link>http://localhost:1313/leetcode/stacks/basic-calculator/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/stacks/basic-calculator/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 227: Basic Calculator II (Medium)&lt;/h1&gt;&lt;p&gt;Evaluate a string expression with &lt;code&gt;+&lt;/code&gt;, &lt;code&gt;-&lt;/code&gt;, &lt;code&gt;*&lt;/code&gt;, &lt;code&gt;/&lt;/code&gt; and non-negative integers.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Operator precedence via stack deferral.&lt;/li&gt;
+&lt;li&gt;Parsing multi-digit numbers from string.&lt;/li&gt;
+&lt;li&gt;Executing high-precedence ops immediately.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Key Insight: Operator Precedence&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;key-insight-operator-precedence&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#key-insight-operator-precedence&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;*&lt;/code&gt; and &lt;code&gt;/&lt;/code&gt; must execute immediately (higher precedence).&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;+&lt;/code&gt; and &lt;code&gt;-&lt;/code&gt; are deferred by pushing signed numbers onto the stack.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Algorithm:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;algorithm&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#algorithm&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Track &lt;code&gt;curNum&lt;/code&gt; and &lt;code&gt;lastOp&lt;/code&gt; (previous operator, init &lt;code&gt;+&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;At each operator or end-of-string:
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;+&lt;/code&gt;: push &lt;code&gt;curNum&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;-&lt;/code&gt;: push &lt;code&gt;-curNum&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;*&lt;/code&gt;: push &lt;code&gt;stack.pop() * curNum&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;/&lt;/code&gt;: push &lt;code&gt;stack.pop() / curNum&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Sum everything in the stack.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;By deferring additions and subtractions to the stack (as signed values) and executing multiplications and divisions immediately via &lt;code&gt;pop → compute → push&lt;/code&gt;, we naturally respect operator precedence without building an AST.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;calculate&lt;/span&gt;(String s) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        Deque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; stack &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ArrayDeque&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; curNum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; lastOp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;+&amp;#39;&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0; i &lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt; s.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;(); i&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; c &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; s.&lt;span style=&#34;color:#a6e22e&#34;&gt;charAt&lt;/span&gt;(i);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (Character.&lt;span style=&#34;color:#a6e22e&#34;&gt;isDigit&lt;/span&gt;(c)) curNum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curNum &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; 10 &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; (c &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; ((&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;Character.&lt;span style=&#34;color:#a6e22e&#34;&gt;isDigit&lt;/span&gt;(c) &lt;span style=&#34;color:#f92672&#34;&gt;&amp;amp;&amp;amp;&lt;/span&gt; c &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39; &amp;#39;&lt;/span&gt;) &lt;span style=&#34;color:#f92672&#34;&gt;||&lt;/span&gt; i &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; s.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (lastOp &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;+&amp;#39;&lt;/span&gt;) stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(curNum);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (lastOp &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;-&amp;#39;&lt;/span&gt;) stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(&lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt;curNum);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (lastOp &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;*&amp;#39;&lt;/span&gt;) stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; curNum);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;else&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (lastOp &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;/&amp;#39;&lt;/span&gt;) stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;push&lt;/span&gt;(stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;pop&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; curNum);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                lastOp &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; c;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                curNum &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; stack.&lt;span style=&#34;color:#a6e22e&#34;&gt;stream&lt;/span&gt;().&lt;span style=&#34;color:#a6e22e&#34;&gt;mapToInt&lt;/span&gt;(x &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; x).&lt;span style=&#34;color:#a6e22e&#34;&gt;sum&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;With parentheses (LC 224)?&lt;/strong&gt; (Need recursion or parenthesis-aware stack to handle nested scopes.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;$O(1)$ space?&lt;/strong&gt; (Replace stack with &lt;code&gt;lastNum&lt;/code&gt; variable — only feasible without &lt;code&gt;*&lt;/code&gt;/&lt;code&gt;/&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;RPN evaluation?&lt;/strong&gt; (Much simpler: only a value stack, no operator state needed.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

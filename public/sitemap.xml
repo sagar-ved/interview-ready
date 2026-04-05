@@ -8,6 +8,36 @@
     <loc>http://localhost:1313/dsa/binary-search-patterns/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/linked-list/copy-list-random-pointer/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/stacks/valid-parentheses/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/number-of-islands/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/heaps/median-from-data-stream/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/binary-search/search-rotated-array/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/strings/longest-palindromic-substring/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/climbing-stairs/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/backtracking/subsets/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/stacks/largest-rectangle-histogram/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/trees/validate-bst/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/leetcode/arrays/two-sum/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -32,6 +62,33 @@
     <loc>http://localhost:1313/networks/https-tls/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/trees/level-order-traversal/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/strings/kmp-algorithm/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/linked-list/lru-cache/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/stacks/min-stack/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/course-schedule/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/heaps/merge-k-sorted-lists/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/coin-change/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/backtracking/combination-sum/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/binary-search/median-two-sorted-arrays/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/leetcode/arrays/three-sum/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -42,11 +99,39 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/leetcode/trees/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/os/cpu-scheduling/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/dsa/graph-algorithms/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/word-ladder/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/house-robber/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/linked-list/merge-two-sorted-lists/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/backtracking/permutations/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/trees/subtree-of-another-tree/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/heaps/task-scheduler/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/stacks/daily-temperatures/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/binary-search/search-2d-matrix/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/leetcode/arrays/product-except-self/</loc>
@@ -76,6 +161,27 @@
     <loc>http://localhost:1313/java/java-memory-model/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/word-break/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/linked-list/linked-list-cycle/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/trees/right-side-view/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/stacks/basic-calculator/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/backtracking/n-queens/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/bipartite-graph/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/linked-list/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/os/semaphores-mutexes/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -94,6 +200,27 @@
     <loc>http://localhost:1313/database/sql-window-functions/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/container-with-most-water/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/backtracking/word-search-ii/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/linked-list/reverse-nodes-k-group/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/trees/serialize-deserialize-tree/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/reconstruct-itinerary/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/jump-game/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/dsa/linked-list/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -109,18 +236,31 @@
     <loc>http://localhost:1313/system-design/distributed-cache/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/leetcode/dynamic-programming/</loc>
-  </url><url>
     <loc>http://localhost:1313/database/replication-read-replicas/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/hashmap-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/trees/max-path-sum/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/pacific-atlantic-water-flow/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/subarray-sum-equals-k/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/decode-ways/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/os/file-system-io/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/spring/bean-scopes-detailed/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/stacks/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/system-design/library-management-lld/</loc>
@@ -135,6 +275,9 @@
     <loc>http://localhost:1313/networks/websockets/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/backtracking/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/database/b-plus-tree-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -142,6 +285,18 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/generics-type-erasure/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/buy-sell-stock/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/trees/lowest-common-ancestor/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/merge-intervals/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/redundant-connection/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/api-security/</loc>
@@ -159,10 +314,25 @@
     <loc>http://localhost:1313/system-design/news-feed-twitter/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/binary-search/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/database/row-vs-columnar/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/dijkstra-algorithm/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/java/java-streams/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/meeting-rooms-ii/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/longest-increasing-subsequence/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/trees/diameter-of-binary-tree/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/grpc-vs-rest/</loc>
@@ -186,6 +356,18 @@
     <loc>http://localhost:1313/java/deadlocks/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/heaps/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/graphs/clone-graph/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/coin-change-2/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/top-k-frequent/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/networks/bgp-anycast/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -207,6 +389,12 @@
     <loc>http://localhost:1313/java/classloader-reflection/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/burst-balloons/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/minimum-window-substring/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/networks/quic-protocol/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -219,6 +407,9 @@
     <loc>http://localhost:1313/spring/global-exception-handling/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/strings/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/system-design/web-crawler/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -226,6 +417,12 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/design-patterns/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/trapping-rain-water/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/edit-distance/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/keep-alive-vs-websockets/</loc>
@@ -247,6 +444,12 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/database/wide-column-stores/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/longest-common-subsequence/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/longest-consecutive-sequence/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/dns-resolution-detailed/</loc>
@@ -273,6 +476,12 @@
     <loc>http://localhost:1313/java/java-optional/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/dynamic-programming/buy-sell-stock-cooldown/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/rotate-image/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/networks/cdn-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -291,6 +500,9 @@
     <loc>http://localhost:1313/java/java-modern-features/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/leetcode/arrays/spiral-matrix/</loc>
+    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/networks/dot-vs-doh/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -303,7 +515,7 @@
     <loc>http://localhost:1313/database/sparse-vs-dense-indexes/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/search-rotated-array/</loc>
+    <loc>http://localhost:1313/leetcode/arrays/sliding-window-maximum/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/tcp-congestion-control/</loc>
@@ -324,7 +536,7 @@
     <loc>http://localhost:1313/database/views-vs-materialized/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/longest-increasing-subsequence/</loc>
+    <loc>http://localhost:1313/leetcode/arrays/maximum-product-subarray/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/socket-programming-lifecycle/</loc>
@@ -339,7 +551,7 @@
     <loc>http://localhost:1313/database/graph-databases-neo4j/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/top-k-frequent/</loc>
+    <loc>http://localhost:1313/leetcode/arrays/find-all-anagrams/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/http-versions-evolution/</loc>
@@ -360,7 +572,7 @@
     <loc>http://localhost:1313/database/isolation-levels-detailed/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/word-search-ii/</loc>
+    <loc>http://localhost:1313/leetcode/arrays/longest-substring-k-distinct/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/anycast-vs-unicast/</loc>
@@ -378,7 +590,7 @@
     <loc>http://localhost:1313/database/normalization-denormalization/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/task-scheduler/</loc>
+    <loc>http://localhost:1313/leetcode/arrays/count-smaller-numbers/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/etags-and-caching/</loc>
@@ -405,7 +617,7 @@
     <loc>http://localhost:1313/database/partial-indexes-detailed/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/serialize-deserialize-bst/</loc>
+    <loc>http://localhost:1313/leetcode/arrays/minimum-window-subsequence/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/cors-preflight/</loc>
@@ -427,9 +639,6 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/database/write-ahead-logging/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/meeting-rooms-ii/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/doh-vs-dot-detailed/</loc>
@@ -471,9 +680,6 @@
     <loc>http://localhost:1313/database/database-partitioning-detailed/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/bipartite-graph/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/reference-types/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -499,9 +705,6 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/database/consistent-hashing-vnodes/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/dijkstra-algorithm/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/hpack-compression-detailed/</loc>
@@ -567,9 +770,6 @@
     <loc>http://localhost:1313/system-design/metrics-monitoring-prometheus/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/subarray-sum-equals-k/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/spi-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -588,9 +788,6 @@
     <loc>http://localhost:1313/system-design/recommendation-system-basics/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/jump-game-ii/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/os/deadlock-conditions/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -598,9 +795,6 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/system-design/distributed-wallet-saga/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-palindromic-substring/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/annotation-processors/</loc>
@@ -612,9 +806,6 @@
     <loc>http://localhost:1313/spring/application-events/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/minimum-window-substring/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/method-handles/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -624,16 +815,10 @@
     <loc>http://localhost:1313/spring/oauth2-oidc-security/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/reconstruct-itinerary/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/completable-future-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/os/context-switch-detailed/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/word-ladder/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/fork-join-pool/</loc>
@@ -645,22 +830,13 @@
     <loc>http://localhost:1313/os/user-vs-kernel-mode/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/number-of-islands/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/threadlocal-leaks/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/os/page-table-bits/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/median-from-stream/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/os/disk-scheduling-detailed/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/course-schedule/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/weak-hashmap/</loc>
@@ -669,13 +845,7 @@
     <loc>http://localhost:1313/java/reference-queue/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/edit-distance/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/enum-internals/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/merge-intervals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/class-forname-vs-loadclass/</loc>
@@ -691,9 +861,6 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/inheritable-threadlocal/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/serialize-deserialize-binary-tree/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/binarysearch-negatives/</loc>
@@ -738,9 +905,6 @@
     <loc>http://localhost:1313/java/string-deduplication-interning/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/copy-list-with-random-pointer/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/abstract-vs-interface-modern/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -753,16 +917,10 @@
     <loc>http://localhost:1313/java/transient-vs-volatile/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/reverse-nodes-in-k-group/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/processbuilder-vs-runtime/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/volatile-vs-atomic/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-valid-parentheses/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/enumset-enummap-performance/</loc>
@@ -774,16 +932,10 @@
     <loc>http://localhost:1313/java/thread-yield-vs-sleep/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/basic-calculator/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/spliterators-detailed/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/thread-interruption/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/find-all-anagrams/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/forkjoinpool-vs-threadpool/</loc>
@@ -792,202 +944,37 @@
     <loc>http://localhost:1313/java/threadlocalrandom-performance/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/validate-bst/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/stampedlock-optimistic-read/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/valid-parentheses/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/thread-onspinwait-optimization/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/level-order-traversal/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/methodhandles-vs-reflection/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/word-break/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/atomic-field-updaters/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/buy-sell-stock-variations/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/unsafe-and-varhandles/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/3sum-optimized/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/parallel-sort-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/longest-increasing-subsequence-optimized/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/g1gc-latency-tuning/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/coin-change/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/jfr-flight-recorder-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/container-with-most-water/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/java/virtual-threads-loom/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/decode-ways/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/varhandle-internals/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/dsa/climbing-stairs/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/house-robber/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/binary-tree-postorder/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/jump-game/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/subsets-backtracking/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-palindromic-subsequence/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/minimum-path-sum/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/search-2d-matrix/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/palindromic-substrings-count/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-substring-k-distinct/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/minimum-window-subsequence/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/leetcode/arrays/rotate-image/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-happy-prefix-kmp/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/leetcode/arrays/spiral-matrix/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-consecutive-sequence/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/trapping-rain-water/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/buy-sell-stock-cooldown/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/path-sum-variations/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/binary-tree-right-view/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/maximum-product-subarray/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/word-search-trie/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/manachers-algorithm/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/sliding-window-maximum/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/merge-k-sorted-lists/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/reverse-k-group/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/binary-tree-zigzag/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/clone-graph/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/serialize-deserialize-tree/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/diameter-binary-tree/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/lowest-common-ancestor/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/boundary-traversal-tree/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/smallest-range-k-lists/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/min-knight-moves/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/burst-balloons-dp/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/search-2d-matrix-variations/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/median-two-sorted-arrays/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/largest-rectangle-histogram/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/edit-distance-dp/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-common-subsequence/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/max-frequency-stack/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/regex-matching-dp/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/maximal-rectangle-2d/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/longest-increasing-path/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/count-smaller-numbers/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://localhost:1313/leetcode/arrays/four-sum/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/top-k-elements-stream/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/</loc>
@@ -1018,9 +1005,6 @@
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/java/jvm-internals/</loc>
-    <lastmod>2024-04-04T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/dsa/lru-cache/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/os/</loc>

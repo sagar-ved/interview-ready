@@ -1,0 +1,246 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Heaps &amp; Priority Queues</title>
+    <link>http://localhost:1313/leetcode/heaps/</link>
+    <description>Recent content in Heaps &amp; Priority Queues on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/leetcode/heaps/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>LeetCode 295: Find Median from Data Stream</title>
+      <link>http://localhost:1313/leetcode/heaps/median-from-data-stream/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/heaps/median-from-data-stream/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 295: Find Median from Data Stream ⭐ (Hard)&lt;/h1&gt;&lt;p&gt;Design a data structure that supports &lt;code&gt;addNum(int num)&lt;/code&gt; and &lt;code&gt;findMedian()&lt;/code&gt; in $O(\log N)$ and $O(1)$ respectively.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Two-heap design pattern.&lt;/li&gt;
+&lt;li&gt;Keeping heaps balanced (size difference ≤ 1).&lt;/li&gt;
+&lt;li&gt;Lower half Max-Heap + Upper half Min-Heap.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Design: Two Heaps&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;design-two-heaps&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#design-two-heaps&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;smallHeap&lt;/code&gt;&lt;/strong&gt; (Max-Heap): stores the smaller half.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;largeHeap&lt;/code&gt;&lt;/strong&gt; (Min-Heap): stores the larger half.&lt;/li&gt;
+&lt;li&gt;Invariant: &lt;code&gt;smallHeap.size() == largeHeap.size()&lt;/code&gt; OR &lt;code&gt;smallHeap.size() == largeHeap.size() + 1&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;addNum:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;addnum&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#addnum&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Always add to &lt;code&gt;smallHeap&lt;/code&gt; first.&lt;/li&gt;
+&lt;li&gt;Rebalance: if &lt;code&gt;smallHeap.peek() &amp;gt; largeHeap.peek()&lt;/code&gt;, move top of small to large.&lt;/li&gt;
+&lt;li&gt;Balance sizes: if &lt;code&gt;largeHeap.size() &amp;gt; smallHeap.size()&lt;/code&gt;, move top of large to small.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;findMedian:&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;findmedian&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#findmedian&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;Odd total: return &lt;code&gt;smallHeap.peek()&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Even total: return average of both tops.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;By partitioning the stream into two heaps—a max-heap for the lower half and a min-heap for the upper half—we can always access the median in $O(1)$ from the tops of the heaps. Rebalancing on each insertion is $O(\log N)$.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;MedianFinder&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; small &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;(Collections.&lt;span style=&#34;color:#a6e22e&#34;&gt;reverseOrder&lt;/span&gt;()); &lt;span style=&#34;color:#75715e&#34;&gt;// max-heap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;Integer&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; large &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;(); &lt;span style=&#34;color:#75715e&#34;&gt;// min-heap&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;void&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;addNum&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; num) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        small.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(num);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        large.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(small.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (large.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; small.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;()) small.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(large.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;());
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;double&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;findMedian&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; small.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; large.&lt;span style=&#34;color:#a6e22e&#34;&gt;size&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#f92672&#34;&gt;?&lt;/span&gt; small.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;()
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            : (small.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;() &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; large.&lt;span style=&#34;color:#a6e22e&#34;&gt;peek&lt;/span&gt;()) &lt;span style=&#34;color:#f92672&#34;&gt;/&lt;/span&gt; 2.&lt;span style=&#34;color:#a6e22e&#34;&gt;0&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What if the stream is huge?&lt;/strong&gt; (Use reservoir sampling or quantile sketches like t-digest.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;What if all numbers &amp;lt;= 100?&lt;/strong&gt; (Bucket sort / counting array approach — $O(1)$ add.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Thread-safe version?&lt;/strong&gt; (Use &lt;code&gt;PriorityBlockingQueue&lt;/code&gt; with locks.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 23: Merge K Sorted Lists</title>
+      <link>http://localhost:1313/leetcode/heaps/merge-k-sorted-lists/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/heaps/merge-k-sorted-lists/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 23: Merge K Sorted Lists ⭐ (Hard)&lt;/h1&gt;&lt;p&gt;Merge &lt;code&gt;k&lt;/code&gt; sorted linked lists and return one sorted linked list.&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Min-Heap for priority-based merging.&lt;/li&gt;
+&lt;li&gt;Divide and Conquer alternative.&lt;/li&gt;
+&lt;li&gt;Complexity analysis: naive $O(NK)$ vs heap $O(N \log K)$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Naive: Sequential merge — $O(N \cdot K)$&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;naive-sequential-merge--on-cdot-k&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#naive-sequential-merge--on-cdot-k&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Merge lists one by one. Each merge takes $O(N)$ and we do it $K-1$ times.&lt;/p&gt;
+&lt;h3&gt;Min-Heap: $O(N \log K)$&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;min-heap-on-log-k&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#min-heap-on-log-k&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Push the &lt;strong&gt;head&lt;/strong&gt; of each list into a Min-Heap.&lt;/li&gt;
+&lt;li&gt;Poll the smallest node, add it to result.&lt;/li&gt;
+&lt;li&gt;If the polled node has a &lt;code&gt;next&lt;/code&gt;, push it into the heap.&lt;/li&gt;
+&lt;li&gt;Repeat until heap is empty.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Why $O(N \log K)$?&lt;/strong&gt; We process $N$ nodes total; each heap operation is $O(\log K)$.&lt;/p&gt;
+&lt;h3&gt;Divide and Conquer: $O(N \log K)$&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;divide-and-conquer-on-log-k&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#divide-and-conquer-on-log-k&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Merge lists in pairs, halving the number each round. $\log K$ rounds × $O(N)$ per round.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The Min-Heap approach processes nodes in globally sorted order without pre-sorting. At any moment, the heap holds exactly one candidate from each list, making it highly memory efficient while achieving the theoretically optimal $O(N \log K)$.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (Min-Heap)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-min-heap&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-min-heap&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; ListNode &lt;span style=&#34;color:#a6e22e&#34;&gt;mergeKLists&lt;/span&gt;(ListNode&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; lists) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;ListNode&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&lt;/span&gt; heap &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; PriorityQueue&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&amp;gt;&lt;/span&gt;((a, b) &lt;span style=&#34;color:#f92672&#34;&gt;-&amp;gt;&lt;/span&gt; a.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; b.&lt;span style=&#34;color:#a6e22e&#34;&gt;val&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (ListNode node : lists) &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (node &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) heap.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(node);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        ListNode dummy &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; ListNode(0), curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; dummy;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;while&lt;/span&gt; (&lt;span style=&#34;color:#f92672&#34;&gt;!&lt;/span&gt;heap.&lt;span style=&#34;color:#a6e22e&#34;&gt;isEmpty&lt;/span&gt;()) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; heap.&lt;span style=&#34;color:#a6e22e&#34;&gt;poll&lt;/span&gt;();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            curr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt; &lt;span style=&#34;color:#f92672&#34;&gt;!=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) heap.&lt;span style=&#34;color:#a6e22e&#34;&gt;offer&lt;/span&gt;(curr.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; dummy.&lt;span style=&#34;color:#a6e22e&#34;&gt;next&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What if K is very large?&lt;/strong&gt; (Min-Heap still works; $O(\log K)$ per node.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Divide &amp;amp; Conquer code?&lt;/strong&gt; (Recursively merge &lt;code&gt;lists[0..mid]&lt;/code&gt; and &lt;code&gt;lists[mid+1..end]&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Complexity?&lt;/strong&gt; ($O(N \log K)$ time, $O(K)$ heap space.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>LeetCode 621: Task Scheduler</title>
+      <link>http://localhost:1313/leetcode/heaps/task-scheduler/</link>
+      <pubDate>Thu, 04 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/leetcode/heaps/task-scheduler/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🧩 LeetCode 621: Task Scheduler (Medium)&lt;/h1&gt;&lt;p&gt;Given tasks and a cooldown &lt;code&gt;n&lt;/code&gt;, find the minimum CPU intervals needed to execute all tasks (with cooldown between same tasks).&lt;/p&gt;
+&lt;h2&gt;🎯 What the interviewer is testing&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-what-the-interviewer-is-testing&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-what-the-interviewer-is-testing&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Greedy frequency-based scheduling.&lt;/li&gt;
+&lt;li&gt;Math formula vs simulation approach.&lt;/li&gt;
+&lt;li&gt;Max-Heap for most frequent task tracking.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;🧠 Deep Explanation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-deep-explanation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-deep-explanation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3&gt;Key Insight: Math Formula&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;key-insight-math-formula&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#key-insight-math-formula&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The most frequent task determines the minimum length.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Let &lt;code&gt;maxFreq&lt;/code&gt; = frequency of the most frequent task.&lt;/li&gt;
+&lt;li&gt;Let &lt;code&gt;maxCount&lt;/code&gt; = number of tasks with &lt;code&gt;maxFreq&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;Formula: &lt;code&gt;result = max(tasks.length, (maxFreq - 1) * (n + 1) + maxCount)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Why?&lt;/strong&gt; We create &amp;ldquo;slots&amp;rdquo; of size &lt;code&gt;n+1&lt;/code&gt; around the most frequent task. Each slot can be filled with other tasks or idle. If total tasks &amp;gt; slots needed, we just use &lt;code&gt;tasks.length&lt;/code&gt;.&lt;/p&gt;
+&lt;h3&gt;Alternative: Max-Heap Simulation&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;alternative-max-heap-simulation&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#alternative-max-heap-simulation&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Use a Max-Heap (by frequency). Each &amp;ldquo;round&amp;rdquo; of &lt;code&gt;n+1&lt;/code&gt; slots:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Pick the top &lt;code&gt;n+1&lt;/code&gt; most frequent tasks, reduce their counts.&lt;/li&gt;
+&lt;li&gt;Push non-zero counts back.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;h2&gt;✅ Ideal Answer&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-ideal-answer&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-ideal-answer&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The mathematical approach is elegant: the most frequent task creates a frame of minimum required intervals. If other tasks and idle slots can fill the gaps, no extra idle time is needed. If tasks overflow the frame, every task executes with no idle time.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2&gt;💻 Java Code (Math)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-java-code-math&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-java-code-math&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Solution&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;leastInterval&lt;/span&gt;(&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; tasks, &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; n) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[]&lt;/span&gt; freq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;26&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;char&lt;/span&gt; t : tasks) freq&lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;t &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;A&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;]++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; maxFreq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; f : freq) maxFreq &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(maxFreq, f);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; maxCount &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; 0;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; (&lt;span style=&#34;color:#66d9ef&#34;&gt;int&lt;/span&gt; f : freq) &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (f &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; maxFreq) maxCount&lt;span style=&#34;color:#f92672&#34;&gt;++&lt;/span&gt;;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; Math.&lt;span style=&#34;color:#a6e22e&#34;&gt;max&lt;/span&gt;(tasks.&lt;span style=&#34;color:#a6e22e&#34;&gt;length&lt;/span&gt;, (maxFreq &lt;span style=&#34;color:#f92672&#34;&gt;-&lt;/span&gt; 1) &lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; (n &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; 1) &lt;span style=&#34;color:#f92672&#34;&gt;+&lt;/span&gt; maxCount);
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;hr&gt;
+&lt;h2&gt;🔄 Follow-up Questions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;-follow-up-questions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#-follow-up-questions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;What if &lt;code&gt;n=0&lt;/code&gt;?&lt;/strong&gt; (No cooldown — result is simply &lt;code&gt;tasks.length&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;How many idle slots?&lt;/strong&gt; (&lt;code&gt;result - tasks.length&lt;/code&gt;.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Order the actual schedule?&lt;/strong&gt; (Need the Heap simulation approach to produce the task sequence.)&lt;/li&gt;
+&lt;/ol&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>
