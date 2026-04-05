@@ -1,69 +1,50 @@
 ---
-title: "DSA: Spiral Matrix"
+title: "LeetCode 54: Spiral Matrix"
 date: 2024-04-04
 draft: false
-weight: 71
+weight: 14
 ---
 
-# 🧩 Question: Spiral Matrix (LeetCode 54)
-Given an `m x n` matrix, return all elements of the matrix in spiral order.
+# 🧩 LeetCode 54: Spiral Matrix (Medium)
+Return all elements of an `m x n` matrix in spiral order.
 
 ## 🎯 What the interviewer is testing
-- Precise index tracking.
-- Boundary condition management.
-- Traversing a 2D grid in layers.
+- Simulation with boundary tracking.
+- Managing 4 directional pointers.
+- Clean termination without extra data structures.
 
 ---
 
 ## 🧠 Deep Explanation
 
-### The Logic (Layer-by-Layer):
-1. Define four boundaries: `top`, `bottom`, `left`, `right`.
-2. **While** the boundaries haven't crossed:
-   - Move **Right**: Across `top`, then increment `top`.
-   - Move **Down**: Down `right`, then decrement `right`.
-   - Move **Left**: Across `bottom`, then decrement `bottom`. (**Check if still within bounds**).
-   - Move **Up**: Up `left`, then increment `left`. (**Check if still within bounds**).
+### Boundary Shrinking Approach:
+Maintain 4 boundaries: `top`, `bottom`, `left`, `right`.
+1. Traverse `left → right` (top row), then `top++`.
+2. Traverse `top → bottom` (right col), then `right--`.
+3. If `top <= bottom`: traverse `right → left` (bottom row), then `bottom--`.
+4. If `left <= right`: traverse `bottom → top` (left col), then `left++`.
+5. Repeat while `top <= bottom && left <= right`.
+
+The boundary guards on steps 3 and 4 prevent double-counting when the matrix has a single row or column remaining.
 
 ---
 
 ## ✅ Ideal Answer
-Spiral traversal requires maintaining four pointer boundaries that contract toward the center. By strictly iterating along each edge and adjusting our range after every pass, we can visit every element in a specific order. The key challenge is adding a simple boundary check before the "return" and "upward" passes to avoid double-processing elements in uneven matrices.
+We simulate the spiral by shrinking boundaries after processing each edge. The critical detail is checking boundary validity before the inward and upward passes to handle non-square matrices correctly.
 
 ---
 
 ## 💻 Java Code
 ```java
-import java.util.*;
-
 public class Solution {
     public List<Integer> spiralOrder(int[][] matrix) {
         List<Integer> res = new ArrayList<>();
-        if (matrix.length == 0) return res;
-        
-        int top = 0, bottom = matrix.length - 1;
-        int left = 0, right = matrix[0].length - 1;
-        
+        int top = 0, bottom = matrix.length-1, left = 0, right = matrix[0].length-1;
         while (top <= bottom && left <= right) {
-            // Right
-            for (int i = left; i <= right; i++) res.add(matrix[top][i]);
-            top++;
-            
-            // Down
-            for (int i = top; i <= bottom; i++) res.add(matrix[i][right]);
-            right--;
-            
-            if (top <= bottom) {
-                // Left
-                for (int i = right; i >= left; i--) res.add(matrix[bottom][i]);
-            }
-            bottom--;
-            
-            if (left <= right) {
-                // Up
-                for (int i = bottom; i >= top; i--) res.add(matrix[i][left]);
-            }
-            left++;
+            for (int i = left; i <= right; i++) res.add(matrix[top][i]); top++;
+            for (int i = top; i <= bottom; i++) res.add(matrix[i][right]); right--;
+            if (top <= bottom) { for (int i = right; i >= left; i--) res.add(matrix[bottom][i]); bottom--; }
+            if (left <= right) { for (int i = bottom; i >= top; i--) res.add(matrix[i][left]); left++; }
         }
         return res;
     }
@@ -73,6 +54,6 @@ public class Solution {
 ---
 
 ## 🔄 Follow-up Questions
-1. **Spiral Matrix II?** (Generate the matrix with numbers 1 to $N^2$ — same logic.)
-2. **Complexity?** ($O(M \cdot N)$ time and $O(1)$ space beyond result storage.)
-3. **How to do it with directions?** (Maintain a direction vector `(dr, dc)` and rotate every time you hit a boundary or a visited cell.)
+1. **Spiral Matrix II?** (LeetCode 59: Fill the matrix with 1..N² in spiral order — same logic, reverse.)
+2. **Direction-array approach?** (Use `int[][] dirs = {{0,1},{1,0},{0,-1},{-1,0}}` and rotate direction when hitting a boundary.)
+3. **Complexity?** ($O(M \cdot N)$ time, $O(1)$ extra space.)
