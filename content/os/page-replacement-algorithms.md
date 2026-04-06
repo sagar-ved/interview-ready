@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Page Replacement - LRU vs. Clock"
 date: 2024-04-04
 draft: false

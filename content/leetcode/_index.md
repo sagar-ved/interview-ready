@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode Prep"
 description: "Mastering LeetCode patterns for Top-Tier Interviews."
 weight: 25

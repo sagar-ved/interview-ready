@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Binary Search"
 weight: 8
 ---

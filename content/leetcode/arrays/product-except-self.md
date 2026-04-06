@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode: Product of Array Except Self"
 date: 2024-04-04
 draft: false

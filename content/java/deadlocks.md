@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Deadlocks: Detection, Prevention, and Avoidance"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 84: Largest Rectangle in Histogram"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 5: Longest Palindromic Substring"
 date: 2024-04-04
 draft: false

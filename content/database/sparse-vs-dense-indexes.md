@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Databases: Sparse vs. Dense Indexes"
 date: 2024-04-04
 draft: false

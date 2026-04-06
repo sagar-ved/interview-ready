@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Sorting Algorithms Internals and Merge Sort"
 date: 2024-04-04
 draft: false

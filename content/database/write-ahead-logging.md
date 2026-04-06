@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: Write-Ahead Logging (WAL) Internals"
 date: 2024-04-04
 draft: false

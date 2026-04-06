@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 33: Search in Rotated Sorted Array"
 date: 2024-04-04
 draft: false

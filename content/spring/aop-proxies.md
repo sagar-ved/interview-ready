@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Spring: AOP Proxies (JDK vs. CGLIB)"
 date: 2024-04-04
 draft: false

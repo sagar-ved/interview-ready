@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 55 & 45: Jump Game I & II"
 date: 2024-04-04
 draft: false

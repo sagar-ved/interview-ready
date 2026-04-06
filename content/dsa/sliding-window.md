@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Sliding Window and Two Pointer Patterns"
 date: 2024-04-04
 draft: false

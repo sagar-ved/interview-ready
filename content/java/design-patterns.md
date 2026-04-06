@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Design Patterns in Java: Builder, Factory, Singleton, Observer"
 date: 2024-04-04
 draft: false

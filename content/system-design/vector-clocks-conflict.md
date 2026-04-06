@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "System Design: Design Vector Clocks (Conflict Resolution)"
 date: 2024-04-04
 draft: false

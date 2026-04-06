@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Dynamic Programming: Patterns and Thinking"
 date: 2024-04-04
 draft: false

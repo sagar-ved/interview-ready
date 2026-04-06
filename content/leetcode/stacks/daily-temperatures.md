@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 739: Daily Temperatures"
 date: 2024-04-04
 draft: false

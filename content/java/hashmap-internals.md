@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "HashMap Internals and Resizing"
 date: 2024-04-04
 draft: false

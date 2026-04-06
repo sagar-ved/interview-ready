@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Java: Enum Internals and Performance"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Trees: Binary Trees, BSTs, and Traversals"
 date: 2024-04-04
 draft: false

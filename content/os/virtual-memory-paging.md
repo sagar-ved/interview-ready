@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Memory Management: Paging, Virtual Memory, and Page Faults"
 date: 2024-04-04
 draft: false

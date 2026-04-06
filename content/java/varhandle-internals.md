@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Java: VarHandle Internals (Expert)"
 date: 2024-04-04
 draft: false

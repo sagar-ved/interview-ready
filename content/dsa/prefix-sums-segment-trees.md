@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Prefix Sums and Difference Arrays"
 date: 2024-04-04
 draft: false

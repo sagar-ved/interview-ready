@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Binary Search Patterns and Variants"
 date: 2024-04-04
 draft: false

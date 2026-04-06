@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Thrashing and the Working Set Model"
 date: 2024-04-04
 draft: false

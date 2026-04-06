@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: Horizontal vs. Vertical Partitioning"
 date: 2024-04-04
 draft: false

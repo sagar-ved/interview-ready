@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Disk Scheduling (SCAN vs. C-SCAN)"
 date: 2024-04-04
 draft: false

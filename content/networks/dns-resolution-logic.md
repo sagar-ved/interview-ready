@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Networks: DNS Resolution (Recursive vs. Iterative)"
 date: 2024-04-04
 draft: false

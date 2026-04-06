@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Thrashing and Inverted Page Tables"
 date: 2024-04-04
 draft: false

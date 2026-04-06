@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Networks: WebSocket Handshake Internals"
 date: 2024-04-04
 draft: false

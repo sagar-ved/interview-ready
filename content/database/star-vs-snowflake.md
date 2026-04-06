@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: Star Schema vs. Snowflake Schema"
 date: 2024-04-04
 draft: false

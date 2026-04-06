@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Dynamic Programming"
 weight: 5
 ---

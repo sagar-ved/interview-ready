@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Graph Algorithms: BFS, DFS, Dijkstra, Topological Sort"
 date: 2024-04-04
 draft: false

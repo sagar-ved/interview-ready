@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 309: Stock with Cooldown"
 date: 2024-04-04
 draft: false

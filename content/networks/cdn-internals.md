@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Networks: CDN and Edge Side Includes (ESI)"
 date: 2024-04-04
 draft: false

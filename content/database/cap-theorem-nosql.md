@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "CAP Theorem and NoSQL Database Trade-offs"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Java: Marker Interfaces vs. Annotations"
 date: 2024-04-04
 draft: false

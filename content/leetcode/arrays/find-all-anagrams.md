@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 438: Find All Anagrams in a String"
 date: 2024-04-04
 draft: false

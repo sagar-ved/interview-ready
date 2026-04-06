@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Amdahl's Law (Parallel Limits)"
 date: 2024-04-04
 draft: false

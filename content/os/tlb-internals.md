@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Translation Lookaside Buffer (TLB)"
 date: 2024-04-04
 draft: false

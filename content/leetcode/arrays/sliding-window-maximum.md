@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 239: Sliding Window Maximum"
 date: 2024-04-04
 draft: false

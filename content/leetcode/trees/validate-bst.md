@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 98: Validate Binary Search Tree"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "SOLID Principles with Real-World Java"
 date: 2024-04-04
 draft: false

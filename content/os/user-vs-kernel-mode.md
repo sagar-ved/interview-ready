@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: User Mode vs. Kernel Mode"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Spring Security: OAuth2 and OIDC"
 date: 2024-04-04
 draft: false

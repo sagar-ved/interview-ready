@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Java Memory Model and Happens-Before"
 date: 2024-04-04
 draft: false

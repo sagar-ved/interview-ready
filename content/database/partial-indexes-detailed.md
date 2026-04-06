@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: Partial Indexes (SQL Optimization)"
 date: 2024-04-04
 draft: false

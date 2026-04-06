@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Arrays & Hashing"
 weight: 1
 ---

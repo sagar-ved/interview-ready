@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: Database Sharding Patterns"
 date: 2024-04-04
 draft: false

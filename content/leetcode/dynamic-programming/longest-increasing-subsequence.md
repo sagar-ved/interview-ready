@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 300: Longest Increasing Subsequence"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Semaphores, Mutexes, and Monitors"
 date: 2024-04-04
 draft: false

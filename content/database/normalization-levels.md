@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: 4 Normal Forms of Database Design"
 date: 2024-04-04
 draft: false

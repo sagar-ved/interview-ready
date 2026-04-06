@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: NoSQL: Wide-Column Stores (Cassandra Internals)"
 date: 2024-04-04
 draft: false

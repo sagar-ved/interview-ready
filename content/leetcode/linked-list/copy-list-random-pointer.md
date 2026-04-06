@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 138: Copy List with Random Pointer"
 date: 2024-04-04
 draft: false

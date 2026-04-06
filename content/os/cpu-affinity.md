@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: CPU Affinity and Pinning"
 date: 2024-04-04
 draft: false

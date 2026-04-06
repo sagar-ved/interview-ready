@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Linked List"
 weight: 4
 ---

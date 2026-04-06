@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Java: Weak, Soft, and Phantom References"
 date: 2024-04-04
 draft: false

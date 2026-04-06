@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "JPA: Optimistic vs. Pessimistic Locking"
 date: 2024-04-04
 draft: false

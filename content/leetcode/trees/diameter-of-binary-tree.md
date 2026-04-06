@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 543: Diameter of Binary Tree"
 date: 2024-04-04
 draft: false

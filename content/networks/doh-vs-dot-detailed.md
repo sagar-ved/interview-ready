@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Networks: DNS over HTTPS vs. DNS over TLS"
 date: 2024-04-04
 draft: false

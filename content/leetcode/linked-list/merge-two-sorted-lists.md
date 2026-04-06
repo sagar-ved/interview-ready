@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 21: Merge Two Sorted Lists"
 date: 2024-04-04
 draft: false

@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 785: Is Graph Bipartite?"
 date: 2024-04-04
 draft: false

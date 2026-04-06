@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "System Design: Consistency Levels (Strong vs. Eventual)"
 date: 2024-04-04
 draft: false

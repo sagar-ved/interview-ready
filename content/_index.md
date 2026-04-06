@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Technical Interview Preparation Wiki"
 date: 2024-04-04
 draft: false

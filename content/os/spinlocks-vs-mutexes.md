@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Spinlocks vs. Mutexes"
 date: 2024-04-04
 draft: false

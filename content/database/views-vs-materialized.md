@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Database: Database View vs. Materialized View"
 date: 2024-04-04
 draft: false

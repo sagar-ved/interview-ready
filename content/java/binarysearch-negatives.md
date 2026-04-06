@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Java: Arrays.binarySearch() Negative Results"
 date: 2024-04-04
 draft: false

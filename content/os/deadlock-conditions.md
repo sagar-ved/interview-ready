@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "OS: Deadlock (The 4 Conditions)"
 date: 2024-04-04
 draft: false

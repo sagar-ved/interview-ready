@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Stacks & Monotonic Stack"
 weight: 6
 ---

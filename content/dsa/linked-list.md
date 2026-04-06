@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Linked List: Cycle Detection, Reversal, and Merging"
 date: 2024-04-04
 draft: false

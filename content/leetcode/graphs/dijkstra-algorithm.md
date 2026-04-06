@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Dijkstra's Shortest Path Algorithm"
 date: 2024-04-04
 draft: false

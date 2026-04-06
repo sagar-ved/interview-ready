@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "LeetCode 152: Maximum Product Subarray"
 date: 2024-04-04
 draft: false

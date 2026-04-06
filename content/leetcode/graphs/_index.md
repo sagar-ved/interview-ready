@@ -1,4 +1,5 @@
 ---
+author: "sagar ved"
 title: "Graphs"
 weight: 3
 ---
