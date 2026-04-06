@@ -13,7 +13,7 @@
 
   <title>Operating Systems – Tech Interview Wiki</title>
   <meta name="description" content="Operating Systems Interview PrepDeep dives into OS fundamentals for SDE-2 interviews at top product companies.
-📚 Topic Index Category Topics Covered Difficulty Level Processes &amp; Threads Lifecycle, scheduling, context switching ⭐⭐ Medium Memory Management Paging, segmentation, virtual memory, page replacement ⭐⭐⭐ Hard Concurrency &amp; Synchronization Mutexes, semaphores, deadlocks, monitors ⭐⭐⭐ Hard Inter-Process Communication Pipes, message queues, shared memory, sockets ⭐⭐ Medium File Systems &amp; I/O Disk scheduling, caching, journaling ⭐⭐ Medium Scheduling Algorithms FCFS, SJF, Round Robin, Priority, CFS ⭐⭐ Medium " />
+📚 Topic Visualization mindmap root((Operating Systems)) Processes &amp; Threads Lifecycle Context Switching Process vs Thread Memory Paging Segmentation Virtual Memory Page Replacement Concurrency Mutexes Semaphores Deadlocks Monitors I/O &amp; IPC File Systems Message Queues Sockets Disk Scheduling📚 Topic Index Category Topics Covered Difficulty Level Processes &amp; Threads Lifecycle, scheduling, context switching ⭐⭐ Medium Memory Management Paging, segmentation, virtual memory, page replacement ⭐⭐⭐ Hard Concurrency &amp; Synchronization Mutexes, semaphores, deadlocks, monitors ⭐⭐⭐ Hard Inter-Process Communication Pipes, message queues, shared memory, sockets ⭐⭐ Medium File Systems &amp; I/O Disk scheduling, caching, journaling ⭐⭐ Medium Scheduling Algorithms FCFS, SJF, Round Robin, Priority, CFS ⭐⭐ Medium " />
 
   
     <link rel="canonical" href="http://localhost:1313/os/" itemprop="url" />
@@ -5731,6 +5731,10 @@
 <nav class="hextra-toc hx-order-last hx-hidden hx-w-64 hx-shrink-0 xl:hx-block print:hx-hidden hx-px-4" aria-label="table of contents">
     <div class="hextra-scrollbar hx-sticky hx-top-16 hx-overflow-y-auto hx-pr-4 hx-pt-6 hx-text-sm [hyphens:auto] hx-max-h-[calc(100vh-var(--navbar-height)-env(safe-area-inset-bottom))] ltr:hx--mr-4 rtl:hx--ml-4"><p class="hx-mb-4 hx-font-semibold hx-tracking-tight">On this page</p><ul>
       <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
+        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-visualization">📚 Topic Visualization
+        </a>
+      </li>
+      <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
         <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-index">📚 Topic Index
         </a>
       </li></ul>
@@ -5751,7 +5755,28 @@
         <div class="content">
           <h1>Operating Systems</h1>
           <h1>Operating Systems Interview Prep</h1><p>Deep dives into OS fundamentals for SDE-2 interviews at top product companies.</p>
-<h3>📚 Topic Index<span class="hx-absolute -hx-mt-20" id="-topic-index"></span>
+<h3>📚 Topic Visualization<span class="hx-absolute -hx-mt-20" id="-topic-visualization"></span>
+    <a href="#-topic-visualization" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><pre class="mermaid hx-mt-6">mindmap
+  root((Operating Systems))
+    Processes & Threads
+      Lifecycle
+      Context Switching
+      Process vs Thread
+    Memory
+      Paging
+      Segmentation
+      Virtual Memory
+      Page Replacement
+    Concurrency
+      Mutexes
+      Semaphores
+      Deadlocks
+      Monitors
+    I/O & IPC
+      File Systems
+      Message Queues
+      Sockets
+      Disk Scheduling</pre><h3>📚 Topic Index<span class="hx-absolute -hx-mt-20" id="-topic-index"></span>
     <a href="#-topic-index" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><table>
 <thead>
 <tr>
@@ -5817,7 +5842,13 @@
 
 <script defer src="/lib/flexsearch/flexsearch.bundle.min.0425860527cc9968f9f049421c7a56b39327d475e2e3a8f550416be3a9134327.js" integrity="sha256-BCWGBSfMmWj58ElCHHpWs5Mn1HXi46j1UEFr46kTQyc="></script>
     <script defer src="/en.search.js" integrity=""></script>
-
+<script defer src="/lib/mermaid/mermaid.min.0d2b6f2361e7e0ce466a6ed458e03daa5584b42ef6926c3beb62eb64670ca261.js" integrity="sha256-DStvI2Hn4M5Gam7UWOA9qlWEtC72kmw762LrZGcMomE="></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const theme = document.documentElement.classList.contains("dark") ? "dark" : "default";
+      mermaid.initialize({ startOnLoad: true, theme: theme });
+    });
+  </script>
 
   </body>
 </html>

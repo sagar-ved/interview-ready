@@ -8,6 +8,32 @@ draft: false
 
 Deep dives into networking fundamentals for SDE-2 interviews at top product companies.
 
+### 📚 Topic Visualization
+
+```mermaid
+mindmap
+  root((Networks))
+    Models
+      OSI Model
+      TCP/IP Model
+    Application Layer
+      HTTP/HTTPS
+      DNS
+      WebSockets
+    Transport Layer
+      TCP vs UDP
+      3-Way Handshake
+      Congestion Control
+    Network Layer
+      IP Addressing
+      Routing
+      NAT & Subnetting
+    Security & Infra
+      TLS/SSL & HTTPS
+      Load Balancers
+      API Gateways
+```
+
 ### 📚 Topic Index
 
 | Category | Topics Covered | Difficulty Level |

@@ -8,8 +8,33 @@ draft: false
 
 Deep dives into Data Structures and Algorithms for SDE-2 interviews at top product companies.
 
-### 📚 Topic Index
+### 📚 Topic Visualization
 
+```mermaid
+mindmap
+  root((DSA Topics))
+    Arrays & Strings
+      Sliding Window
+      Prefix Sums
+    Linked Lists
+      Reversal
+      Cycle Detection
+    Trees & Graphs
+      Trees & BST
+      Graph Algorithms
+      Tries
+      Union Find
+    Sorting & Heaps
+      Priority Queues
+      Merge Sort
+      Quick Sort
+    Advanced
+      Binary Search
+      Dynamic Programming
+      Backtracking
+```
+
+### 📚 Topic Index
 | Topic / Pattern | Description | Difficulty Level |
 | :--- | :--- | :--- |
 | [Array & String: Sliding Window](sliding-window) | Sliding window techniques, variable and fixed size | ⭐⭐ Medium |

@@ -8,6 +8,32 @@ draft: false
 
 Deep dives into Java Core, Advanced, Concurrency, and JVM internals for SDE-2 interviews.
 
+### 📚 Topic Visualization
+
+```mermaid
+mindmap
+  root((Java Track))
+    Core
+      Collections Framework
+      Generics
+      Lambdas & Streams
+      Optional
+    Concurrency
+      Threads & Synchronization
+      ReentrantLock
+      ExecutorService
+      CompletableFuture
+    JVM Internals
+      ClassLoader
+      JIT Compiler
+      Garbage Collection
+      Memory Model
+    Advanced
+      Design Patterns
+      Reflection
+      Annotations
+```
+
 ### 📚 Topic Index
 
 | Category | Topics Covered | Difficulty Level |

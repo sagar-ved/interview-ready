@@ -8,6 +8,30 @@ draft: false
 
 Deep dives into SQL, NoSQL, and Database Performance Tuning for SDE-2 interviews.
 
+### 📚 Topic Visualization
+
+```mermaid
+mindmap
+  root((Database))
+    SQL
+      Joins
+      Indexes
+      Execution Plans
+      Window Functions
+    NoSQL
+      CAP Theorem
+      Cassandra & MongoDB
+      Redis & DynamoDB
+    Architecture
+      ACID
+      Isolation Levels
+      Sharding
+      Replication
+    Tuning
+      Slow query analysis
+      Connection Pooling
+```
+
 ### 📚 Topic Index
 
 | Category | Topics Covered | Difficulty Level |

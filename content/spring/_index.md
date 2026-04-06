@@ -8,6 +8,29 @@ draft: false
 
 Deep dives into Spring Boot, IoC, AOP, and Data for SDE-2 interviews.
 
+### 📚 Topic Visualization
+
+```mermaid
+mindmap
+  root((Spring Framework))
+    Core & IoC
+      Bean Lifecycle
+      Scopes
+      Conditionals
+    Aspects
+      AOP Proxies
+      Interceptors
+      Exception Handling
+    Boot & Web
+      Auto Configuration
+      Starters
+      Async Tasks
+    Data & Security
+      JPA Locking
+      Soft Delete
+      Security Filter Chain
+```
+
 ### 📚 Topic Index
 
 | Category | Topics Covered | Difficulty Level |

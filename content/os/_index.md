@@ -8,6 +8,32 @@ draft: false
 
 Deep dives into OS fundamentals for SDE-2 interviews at top product companies.
 
+### 📚 Topic Visualization
+
+```mermaid
+mindmap
+  root((Operating Systems))
+    Processes & Threads
+      Lifecycle
+      Context Switching
+      Process vs Thread
+    Memory
+      Paging
+      Segmentation
+      Virtual Memory
+      Page Replacement
+    Concurrency
+      Mutexes
+      Semaphores
+      Deadlocks
+      Monitors
+    I/O & IPC
+      File Systems
+      Message Queues
+      Sockets
+      Disk Scheduling
+```
+
 ### 📚 Topic Index
 
 | Category | Topics Covered | Difficulty Level |

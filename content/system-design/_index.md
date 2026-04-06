@@ -8,6 +8,33 @@ draft: false
 
 Deep dives into High-Level Design (HLD) and Low-Level Design (LLD) for SDE-2 interviews.
 
+### 📚 Topic Visualization
+
+```mermaid
+mindmap
+  root((System Design))
+    High-Level Design
+      Data & Storage
+        Distributed Cache
+        Message Queues
+      Scalability
+        Rate Limiters
+        Load Balancing
+      Real-World
+        URL Shortener
+        Search Autocomplete
+        Newsfeed
+    Low-Level Design
+      Management Systems
+        Library Management
+        Hotel Booking
+        Parking Lot
+      Games & Services
+        Chess Game
+        Vending Machine
+        Elevator System
+```
+
 ### 📚 Topic Index
 
 | Category | Topics Covered | Difficulty Level |
