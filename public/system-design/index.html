@@ -13,7 +13,7 @@
 
   <title>System Design – Tech Interview Wiki</title>
   <meta name="description" content="System Design Interview PrepDeep dives into High-Level Design (HLD) and Low-Level Design (LLD) for SDE-2 interviews.
-📚 Topic Visualization mindmap root((System Design)) High-Level Design Data &amp; Storage Distributed Cache Message Queues Scalability Rate Limiters Load Balancing Real-World URL Shortener Search Autocomplete Newsfeed Low-Level Design Management Systems Library Management Hotel Booking Parking Lot Games &amp; Services Chess Game Vending Machine Elevator System📚 Topic Index Category Topics Covered Difficulty Level High-Level Design (HLD) Part 1 URL Shortener, Rate Limiter, Notification System, Logging System ⭐⭐ Medium High-Level Design (HLD) Part 2 Search Autocomplete, Newsfeed, Ride-Sharing, Payment Gateway ⭐⭐⭐ Hard High-Level Design (HLD) Part 3 Distributed Cache, Message Queue, Video Streaming ⭐⭐⭐ Hard Low-Level Design (LLD) Part 1 Parking Lot, Library Management, Hotel Booking, Movie Ticket Booking ⭐⭐⭐ Hard Low-Level Design (LLD) Part 2 Elevator System, Chess Game, Snake and Ladder, ATM Machine ⭐⭐⭐ Hard Low-Level Design (LLD) Part 3 File System, Vending Machine, LinkedIn &#43; Twitter Feed Design ⭐⭐⭐ Hard " />
+📚 Topic Visualization mindmap root((System Design)) High-Level Design Data &amp; Storage Distributed Cache Message Queues Scalability Rate Limiters Load Balancing Real-World URL Shortener Search Autocomplete Newsfeed Low-Level Design Management Systems Library Management Hotel Booking Parking Lot Games &amp; Services Chess Game Vending Machine Elevator System📚 Topic Master Index Topic / Question Read Document Difficulty Level Cache Penetration, Breakdown, and Avalanche Open ↗ ⭐⭐⭐ Hard Consistency Levels (Strong vs." />
 
   
     <link rel="canonical" href="http://localhost:1313/system-design/" itemprop="url" />
@@ -105,7 +105,7 @@
             title="System Design"
             href="/system-design"
             
-            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-font-medium"
+            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200"
           >
             <span class="hx-text-center">System Design</span>
           </a><a
@@ -5735,7 +5735,7 @@
         </a>
       </li>
       <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
-        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-index">📚 Topic Index
+        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-master-index">📚 Topic Master Index
         </a>
       </li></ul>
       <div class="hx-mt-8 hx-border-t hx-bg-white hx-pt-8 hx-shadow-[0_-12px_16px_white] dark:hx-bg-dark dark:hx-shadow-[0_-12px_16px_#111] hx-sticky hx-bottom-0 hx-flex hx-flex-col hx-items-start hx-gap-2 hx-pb-8 dark:hx-border-neutral-800 contrast-more:hx-border-t contrast-more:hx-border-neutral-400 contrast-more:hx-shadow-none contrast-more:dark:hx-border-neutral-400">
@@ -5777,44 +5777,219 @@
       Games & Services
         Chess Game
         Vending Machine
-        Elevator System</pre><h3>📚 Topic Index<span class="hx-absolute -hx-mt-20" id="-topic-index"></span>
-    <a href="#-topic-index" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><table>
+        Elevator System</pre><h3>📚 Topic Master Index<span class="hx-absolute -hx-mt-20" id="-topic-master-index"></span>
+    <a href="#-topic-master-index" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><table>
 <thead>
 <tr>
-<th style="text-align:left">Category</th>
-<th style="text-align:left">Topics Covered</th>
+<th style="text-align:left">Topic / Question</th>
+<th style="text-align:left">Read Document</th>
 <th style="text-align:left">Difficulty Level</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><strong>High-Level Design (HLD) Part 1</strong></td>
-<td style="text-align:left">URL Shortener, Rate Limiter, Notification System, Logging System</td>
+<td style="text-align:left">Cache Penetration, Breakdown, and Avalanche</td>
+<td style="text-align:left"><a href="/system-design/cache-failure-scenarios/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Consistency Levels (Strong vs. Eventual)</td>
+<td style="text-align:left"><a href="/system-design/consistency-levels-detailed/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐ Medium</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>High-Level Design (HLD) Part 2</strong></td>
-<td style="text-align:left">Search Autocomplete, Newsfeed, Ride-Sharing, Payment Gateway</td>
+<td style="text-align:left">Design Reverse Proxy (Nginx Internals)</td>
+<td style="text-align:left"><a href="/system-design/reverse-proxy-nginx/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design TinyURL (Distributed)</td>
+<td style="text-align:left"><a href="/system-design/tinyurl-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design Twitter (The Feed)</td>
+<td style="text-align:left"><a href="/system-design/twitter-feed-architectures/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design Twitter/News Feed (HLD)</td>
+<td style="text-align:left"><a href="/system-design/news-feed-twitter/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>High-Level Design (HLD) Part 3</strong></td>
-<td style="text-align:left">Distributed Cache, Message Queue, Video Streaming</td>
+<td style="text-align:left">Design Vector Clocks (Conflict Resolution)</td>
+<td style="text-align:left"><a href="/system-design/vector-clocks-conflict/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a CDN (Content Delivery Network)</td>
+<td style="text-align:left"><a href="/system-design/cdn-detailed-routing/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Distributed Chat App (WhatsApp)</td>
+<td style="text-align:left"><a href="/system-design/chat-app-whatsapp/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Distributed Lock</td>
+<td style="text-align:left"><a href="/system-design/distributed-lock-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Distributed Lock</td>
+<td style="text-align:left"><a href="/system-design/distributed-lock/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Distributed Metrics System</td>
+<td style="text-align:left"><a href="/system-design/metrics-system/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Global Rate Limiter</td>
+<td style="text-align:left"><a href="/system-design/rate-limiter/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Key-Value Store (Consistent Hashing)</td>
+<td style="text-align:left"><a href="/system-design/key-value-store/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Key-Value Store (LSM Trees)</td>
+<td style="text-align:left"><a href="/system-design/lsm-key-value-store/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Low-Level Design (LLD) Part 1</strong></td>
-<td style="text-align:left">Parking Lot, Library Management, Hotel Booking, Movie Ticket Booking</td>
+<td style="text-align:left">Design a Key-Value Store (Partitioning)</td>
+<td style="text-align:left"><a href="/system-design/key-value-partitioning/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Notification System</td>
+<td style="text-align:left"><a href="/system-design/notification-system-detailed/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Low-Level Design (LLD) Part 2</strong></td>
-<td style="text-align:left">Elevator System, Chess Game, Snake and Ladder, ATM Machine</td>
+<td style="text-align:left">Design a Rate Limiter</td>
+<td style="text-align:left"><a href="/system-design/rate-limiter-algorithms/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Low-Level Design (LLD) Part 3</strong></td>
-<td style="text-align:left">File System, Vending Machine, LinkedIn + Twitter Feed Design</td>
+<td style="text-align:left">Design a Ride-Sharing System (Uber/Ola)</td>
+<td style="text-align:left"><a href="/system-design/ride-sharing/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Search Autocomplete System</td>
+<td style="text-align:left"><a href="/system-design/search-autocomplete/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Search Typeahead (Autocomplete)</td>
+<td style="text-align:left"><a href="/system-design/search-autocomplete-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Web Crawler</td>
+<td style="text-align:left"><a href="/system-design/web-crawler/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design a Web Crawler</td>
+<td style="text-align:left"><a href="/system-design/web-crawler-logic/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design an API Gateway</td>
+<td style="text-align:left"><a href="/system-design/api-gateway-responsibilities/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Design an Ad Click Counter</td>
+<td style="text-align:left"><a href="/system-design/ad-click-counter/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Design an Image Hosting Backend (S3 + CDN)</td>
+<td style="text-align:left"><a href="/system-design/image-hosting-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Distributed Cache (Redis Deep Dive)</td>
+<td style="text-align:left"><a href="/system-design/distributed-cache/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Distributed ID Generator (Snowflake)</td>
+<td style="text-align:left"><a href="/system-design/distributed-id-snowflake/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Distributed Message Queue (Kafka vs SQS)</td>
+<td style="text-align:left"><a href="/system-design/message-queue-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Distributed Rate Limiter</td>
+<td style="text-align:left"><a href="/system-design/distributed-rate-limiter/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Distributed Scheduler (Cron)</td>
+<td style="text-align:left"><a href="/system-design/distributed-scheduler/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Distributed Wallet (2PC vs. Saga)</td>
+<td style="text-align:left"><a href="/system-design/distributed-wallet-saga/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Hotel Booking System (LLD)</td>
+<td style="text-align:left"><a href="/system-design/hotel-booking-lld/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Library Management System (LLD)</td>
+<td style="text-align:left"><a href="/system-design/library-management-lld/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Message Queue and Event-Driven Architecture</td>
+<td style="text-align:left"><a href="/system-design/message-queue-kafka/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Metrics &amp; Monitoring (Prometheus)</td>
+<td style="text-align:left"><a href="/system-design/metrics-monitoring-prometheus/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Notification System</td>
+<td style="text-align:left"><a href="/system-design/notification-system-design/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Parking Lot LLD</td>
+<td style="text-align:left"><a href="/system-design/parking-lot-lld/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Recommendation Systems</td>
+<td style="text-align:left"><a href="/system-design/recommendation-system-basics/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Scalable Notification System (HLD)</td>
+<td style="text-align:left"><a href="/system-design/notification-system-hld/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">URL Shortener (HLD)</td>
+<td style="text-align:left"><a href="/system-design/url-shortener/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 </tbody>

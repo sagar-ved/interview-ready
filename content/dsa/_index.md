@@ -34,18 +34,19 @@ mindmap
       Backtracking
 ```
 
-### 📚 Topic Index
-| Topic / Pattern | Description | Difficulty Level |
+### 📚 Topic Master Index
+
+| Topic / Question | Read Document | Difficulty Level |
 | :--- | :--- | :--- |
-| [Array & String: Sliding Window](sliding-window) | Sliding window techniques, variable and fixed size | ⭐⭐ Medium |
-| [Binary Search Patterns](binary-search-patterns) | Searching in rotated arrays, monotonic search | ⭐⭐⭐ Hard |
-| [Linked List](linked-list) | Reversal, cycle detection, fast & slow pointers | ⭐ Easy |
-| [Trees & BST](trees-bst) | DFS, BFS, Lowest Common Ancestor, Traversals | ⭐⭐ Medium |
-| [Graph Algorithms](graph-algorithms) | Dijkstra's, spanning trees, topological sort | ⭐⭐⭐ Hard |
-| [Heaps & Priority Queues](heaps-priority-queues) | Top K elements, max/min heaps, K-way merge | ⭐⭐ Medium |
-| [Dynamic Programming](dynamic-programming) | Memoization, tabulation, 1D/2D DP arrays | ⭐⭐⭐ Hard |
-| [Sorting Algorithms](sorting-algorithms) | Merge sort, quick sort, cyclic sort, bucket sort | ⭐⭐ Medium |
-| [Backtracking](backtracking) | Permutations, combinations, N-Queens problem | ⭐⭐⭐ Hard |
-| [Prefix Sums & Segment Trees](prefix-sums-segment-trees) | Range queries, cumulative sum patterns | ⭐⭐⭐ Hard |
-| [Tries](tries) | Prefix matching, autocomplete, string dictionaries | ⭐⭐ Medium |
-| [Union Find (Disjoint Set)](union-find) | Connected components, Kruskal's algorithm | ⭐⭐ Medium |
+| Backtracking: N-Queens, Permutations, Sudoku | [Open ↗](/dsa/backtracking/) | ⭐⭐ Medium |
+| Binary Search Patterns and Variants | [Open ↗](/dsa/binary-search-patterns/) | ⭐⭐ Medium |
+| Dynamic Programming: Patterns and Thinking | [Open ↗](/dsa/dynamic-programming/) | ⭐⭐ Medium |
+| Graph Algorithms: BFS, DFS, Dijkstra, Topological Sort | [Open ↗](/dsa/graph-algorithms/) | ⭐⭐⭐ Hard |
+| Heaps and Priority Queues | [Open ↗](/dsa/heaps-priority-queues/) | ⭐⭐⭐ Hard |
+| Linked List: Cycle Detection, Reversal, and Merging | [Open ↗](/dsa/linked-list/) | ⭐⭐⭐ Hard |
+| Prefix Sums and Difference Arrays | [Open ↗](/dsa/prefix-sums-segment-trees/) | ⭐ Easy |
+| Sliding Window and Two Pointer Patterns | [Open ↗](/dsa/sliding-window/) | ⭐⭐⭐ Hard |
+| Sorting Algorithms Internals and Merge Sort | [Open ↗](/dsa/sorting-algorithms/) | ⭐⭐⭐ Hard |
+| Trees: Binary Trees, BSTs, and Traversals | [Open ↗](/dsa/trees-bst/) | ⭐⭐ Medium |
+| Tries: Prefix Trees | [Open ↗](/dsa/tries/) | ⭐⭐ Medium |
+| Union-Find (Disjoint Set Union) | [Open ↗](/dsa/union-find/) | ⭐⭐ Medium |

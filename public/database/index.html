@@ -13,7 +13,7 @@
 
   <title>Database – Tech Interview Wiki</title>
   <meta name="description" content="Database Interview PrepDeep dives into SQL, NoSQL, and Database Performance Tuning for SDE-2 interviews.
-📚 Topic Visualization mindmap root((Database)) SQL Joins Indexes Execution Plans Window Functions NoSQL CAP Theorem Cassandra &amp; MongoDB Redis &amp; DynamoDB Architecture ACID Isolation Levels Sharding Replication Tuning Slow query analysis Connection Pooling📚 Topic Index Category Topics Covered Difficulty Level SQL Deep Dives Joins, Indexes, Execution Plans, Window Functions ⭐⭐ Medium ACID &amp; Transactions Isolation levels, Anomalies (Dirty Read, Phantom Read) ⭐⭐⭐ Hard Scalability Sharding, Partitioning, Replication, Read Replicas ⭐⭐⭐ Hard NoSQL CAP Theorem, Cassandra, MongoDB, Redis, DynamoDB ⭐⭐ Medium Performance Tuning Slow query analysis, Connection Pooling, Caching ⭐⭐⭐ Hard " />
+📚 Topic Visualization mindmap root((Database)) SQL Joins Indexes Execution Plans Window Functions NoSQL CAP Theorem Cassandra &amp; MongoDB Redis &amp; DynamoDB Architecture ACID Isolation Levels Sharding Replication Tuning Slow query analysis Connection Pooling📚 Topic Master Index Topic / Question Read Document Difficulty Level 4 Normal Forms of Database Design Open ↗ ⭐⭐⭐ Hard ACID vs. BASE Open ↗ ⭐⭐⭐ Hard B-Tree vs." />
 
   
     <link rel="canonical" href="http://localhost:1313/database/" itemprop="url" />
@@ -112,7 +112,7 @@
             title="Database"
             href="/database"
             
-            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-font-medium"
+            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200"
           >
             <span class="hx-text-center">Database</span>
           </a><a
@@ -5735,7 +5735,7 @@
         </a>
       </li>
       <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
-        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-index">📚 Topic Index
+        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-master-index">📚 Topic Master Index
         </a>
       </li></ul>
       <div class="hx-mt-8 hx-border-t hx-bg-white hx-pt-8 hx-shadow-[0_-12px_16px_white] dark:hx-bg-dark dark:hx-shadow-[0_-12px_16px_#111] hx-sticky hx-bottom-0 hx-flex hx-flex-col hx-items-start hx-gap-2 hx-pb-8 dark:hx-border-neutral-800 contrast-more:hx-border-t contrast-more:hx-border-neutral-400 contrast-more:hx-shadow-none contrast-more:dark:hx-border-neutral-400">
@@ -5774,39 +5774,159 @@
       Replication
     Tuning
       Slow query analysis
-      Connection Pooling</pre><h3>📚 Topic Index<span class="hx-absolute -hx-mt-20" id="-topic-index"></span>
-    <a href="#-topic-index" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><table>
+      Connection Pooling</pre><h3>📚 Topic Master Index<span class="hx-absolute -hx-mt-20" id="-topic-master-index"></span>
+    <a href="#-topic-master-index" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><table>
 <thead>
 <tr>
-<th style="text-align:left">Category</th>
-<th style="text-align:left">Topics Covered</th>
+<th style="text-align:left">Topic / Question</th>
+<th style="text-align:left">Read Document</th>
 <th style="text-align:left">Difficulty Level</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><strong>SQL Deep Dives</strong></td>
-<td style="text-align:left">Joins, Indexes, Execution Plans, Window Functions</td>
-<td style="text-align:left">⭐⭐ Medium</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>ACID &amp; Transactions</strong></td>
-<td style="text-align:left">Isolation levels, Anomalies (Dirty Read, Phantom Read)</td>
+<td style="text-align:left">4 Normal Forms of Database Design</td>
+<td style="text-align:left"><a href="/database/normalization-levels/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Scalability</strong></td>
-<td style="text-align:left">Sharding, Partitioning, Replication, Read Replicas</td>
+<td style="text-align:left">ACID vs. BASE</td>
+<td style="text-align:left"><a href="/database/acid-vs-base/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>NoSQL</strong></td>
-<td style="text-align:left">CAP Theorem, Cassandra, MongoDB, Redis, DynamoDB</td>
+<td style="text-align:left">B-Tree vs. B+ Tree Internals</td>
+<td style="text-align:left"><a href="/database/b-tree-vs-b-plus-tree/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐ Medium</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Performance Tuning</strong></td>
-<td style="text-align:left">Slow query analysis, Connection Pooling, Caching</td>
+<td style="text-align:left">CAP Theorem and NoSQL Database Trade-offs</td>
+<td style="text-align:left"><a href="/database/cap-theorem-nosql/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Clustered vs. Non-Clustered Indexes</td>
+<td style="text-align:left"><a href="/database/clustered-vs-non-clustered/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Columnar vs. Row-Oriented Storage</td>
+<td style="text-align:left"><a href="/database/columnar-vs-row-storage/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Consistent Hashing (Detailed)</td>
+<td style="text-align:left"><a href="/database/consistent-hashing-vnodes/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Database Indexing Deep-Dive</td>
+<td style="text-align:left"><a href="/database/indexing-deep-dive/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Database Isolation Levels and Anomalies</td>
+<td style="text-align:left"><a href="/database/isolation-levels/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Database Replication Strategies</td>
+<td style="text-align:left"><a href="/database/database-replication-strategies/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Database Replication and Read Replicas</td>
+<td style="text-align:left"><a href="/database/replication-read-replicas/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Database SQL: Window Functions and Advanced Queries</td>
+<td style="text-align:left"><a href="/database/sql-window-functions/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Database Sharding Patterns</td>
+<td style="text-align:left"><a href="/database/database-sharding-patterns/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Database View vs. Materialized View</td>
+<td style="text-align:left"><a href="/database/views-vs-materialized/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Databases: B-Tree vs B+ Tree Internals</td>
+<td style="text-align:left"><a href="/database/b-plus-tree-internals/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Databases: Columnar vs. Row Storage</td>
+<td style="text-align:left"><a href="/database/row-vs-columnar/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Databases: Sparse vs. Dense Indexes</td>
+<td style="text-align:left"><a href="/database/sparse-vs-dense-indexes/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Horizontal vs. Vertical Partitioning</td>
+<td style="text-align:left"><a href="/database/database-partitioning-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Indexing and Optimization</td>
+<td style="text-align:left"><a href="/database/database-indexing-optimization/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">MVCC (Multi-Version Concurrency Control)</td>
+<td style="text-align:left"><a href="/database/mvcc-internals/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">NoSQL: Graph Databases (Neo4j)</td>
+<td style="text-align:left"><a href="/database/graph-databases-neo4j/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">NoSQL: Time-Series Databases (InfluxDB)</td>
+<td style="text-align:left"><a href="/database/time-series-databases/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">NoSQL: Wide-Column Stores (Cassandra Internals)</td>
+<td style="text-align:left"><a href="/database/wide-column-stores/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Normalization vs. Denormalization Rules</td>
+<td style="text-align:left"><a href="/database/normalization-denormalization/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Partial Indexes (SQL Optimization)</td>
+<td style="text-align:left"><a href="/database/partial-indexes-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Sharding vs Partitioning</td>
+<td style="text-align:left"><a href="/database/sharding-partitioning/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">Star Schema vs. Snowflake Schema</td>
+<td style="text-align:left"><a href="/database/star-vs-snowflake/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Transaction Isolation Levels</td>
+<td style="text-align:left"><a href="/database/isolation-levels-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Write-Ahead Logging (WAL) Internals</td>
+<td style="text-align:left"><a href="/database/write-ahead-logging/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 </tbody>

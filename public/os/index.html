@@ -13,7 +13,7 @@
 
   <title>Operating Systems – Tech Interview Wiki</title>
   <meta name="description" content="Operating Systems Interview PrepDeep dives into OS fundamentals for SDE-2 interviews at top product companies.
-📚 Topic Visualization mindmap root((Operating Systems)) Processes &amp; Threads Lifecycle Context Switching Process vs Thread Memory Paging Segmentation Virtual Memory Page Replacement Concurrency Mutexes Semaphores Deadlocks Monitors I/O &amp; IPC File Systems Message Queues Sockets Disk Scheduling📚 Topic Index Category Topics Covered Difficulty Level Processes &amp; Threads Lifecycle, scheduling, context switching ⭐⭐ Medium Memory Management Paging, segmentation, virtual memory, page replacement ⭐⭐⭐ Hard Concurrency &amp; Synchronization Mutexes, semaphores, deadlocks, monitors ⭐⭐⭐ Hard Inter-Process Communication Pipes, message queues, shared memory, sockets ⭐⭐ Medium File Systems &amp; I/O Disk scheduling, caching, journaling ⭐⭐ Medium Scheduling Algorithms FCFS, SJF, Round Robin, Priority, CFS ⭐⭐ Medium " />
+📚 Topic Visualization mindmap root((Operating Systems)) Processes &amp; Threads Lifecycle Context Switching Process vs Thread Memory Paging Segmentation Virtual Memory Page Replacement Concurrency Mutexes Semaphores Deadlocks Monitors I/O &amp; IPC File Systems Message Queues Sockets Disk Scheduling📚 Topic Master Index Topic / Question Read Document Difficulty Level CPU Scheduling Algorithms Open ↗ ⭐⭐⭐ Hard Memory Management: Paging, Virtual Memory, and Page Faults Open ↗ ⭐⭐ Medium OS: Amdahl’s Law (Parallel Limits) Open ↗ ⭐⭐ Medium OS: CPU Affinity and Pinning Open ↗ ⭐⭐ Medium OS: Context Switch Internals Open ↗ ⭐⭐⭐ Hard OS: Context Switching Overhead Open ↗ ⭐⭐⭐ Hard OS: Deadlock (The 4 Conditions) Open ↗ ⭐ Easy OS: Disk Scheduling (SCAN vs." />
 
   
     <link rel="canonical" href="http://localhost:1313/os/" itemprop="url" />
@@ -119,7 +119,7 @@
             title="OS"
             href="/os"
             
-            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-font-medium"
+            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200"
           >
             <span class="hx-text-center">OS</span>
           </a><a
@@ -5735,7 +5735,7 @@
         </a>
       </li>
       <li class="hx-my-2 hx-scroll-my-6 hx-scroll-py-6">
-        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-index">📚 Topic Index
+        <a class="ltr:hx-pl-4 rtl:hx-pr-4 hx-inline-block hx-text-gray-500 hover:hx-text-gray-900 dark:hx-text-gray-400 dark:hover:hx-text-gray-300 contrast-more:hx-text-gray-900 contrast-more:hx-underline contrast-more:dark:hx-text-gray-50 hx-w-full hx-break-words" href="#-topic-master-index">📚 Topic Master Index
         </a>
       </li></ul>
       <div class="hx-mt-8 hx-border-t hx-bg-white hx-pt-8 hx-shadow-[0_-12px_16px_white] dark:hx-bg-dark dark:hx-shadow-[0_-12px_16px_#111] hx-sticky hx-bottom-0 hx-flex hx-flex-col hx-items-start hx-gap-2 hx-pb-8 dark:hx-border-neutral-800 contrast-more:hx-border-t contrast-more:hx-border-neutral-400 contrast-more:hx-shadow-none contrast-more:dark:hx-border-neutral-400">
@@ -5776,44 +5776,184 @@
       File Systems
       Message Queues
       Sockets
-      Disk Scheduling</pre><h3>📚 Topic Index<span class="hx-absolute -hx-mt-20" id="-topic-index"></span>
-    <a href="#-topic-index" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><table>
+      Disk Scheduling</pre><h3>📚 Topic Master Index<span class="hx-absolute -hx-mt-20" id="-topic-master-index"></span>
+    <a href="#-topic-master-index" class="subheading-anchor" aria-label="Permalink for this section"></a></h3><table>
 <thead>
 <tr>
-<th style="text-align:left">Category</th>
-<th style="text-align:left">Topics Covered</th>
+<th style="text-align:left">Topic / Question</th>
+<th style="text-align:left">Read Document</th>
 <th style="text-align:left">Difficulty Level</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left"><strong>Processes &amp; Threads</strong></td>
-<td style="text-align:left">Lifecycle, scheduling, context switching</td>
-<td style="text-align:left">⭐⭐ Medium</td>
-</tr>
-<tr>
-<td style="text-align:left"><strong>Memory Management</strong></td>
-<td style="text-align:left">Paging, segmentation, virtual memory, page replacement</td>
+<td style="text-align:left">CPU Scheduling Algorithms</td>
+<td style="text-align:left"><a href="/os/cpu-scheduling/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Concurrency &amp; Synchronization</strong></td>
-<td style="text-align:left">Mutexes, semaphores, deadlocks, monitors</td>
+<td style="text-align:left">Memory Management: Paging, Virtual Memory, and Page Faults</td>
+<td style="text-align:left"><a href="/os/virtual-memory-paging/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Amdahl&rsquo;s Law (Parallel Limits)</td>
+<td style="text-align:left"><a href="/os/amdahls-law/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: CPU Affinity and Pinning</td>
+<td style="text-align:left"><a href="/os/cpu-affinity/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Context Switch Internals</td>
+<td style="text-align:left"><a href="/os/context-switch-detailed/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐⭐ Hard</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Inter-Process Communication</strong></td>
-<td style="text-align:left">Pipes, message queues, shared memory, sockets</td>
+<td style="text-align:left">OS: Context Switching Overhead</td>
+<td style="text-align:left"><a href="/os/context-switching-internals/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Deadlock (The 4 Conditions)</td>
+<td style="text-align:left"><a href="/os/deadlock-conditions/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Disk Scheduling (SCAN vs. C-SCAN)</td>
+<td style="text-align:left"><a href="/os/disk-scheduling-algorithms/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐ Medium</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>File Systems &amp; I/O</strong></td>
-<td style="text-align:left">Disk scheduling, caching, journaling</td>
+<td style="text-align:left">OS: Disk Scheduling (SCAN vs. C-SCAN)</td>
+<td style="text-align:left"><a href="/os/disk-scheduling-detailed/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐ Medium</td>
 </tr>
 <tr>
-<td style="text-align:left"><strong>Scheduling Algorithms</strong></td>
-<td style="text-align:left">FCFS, SJF, Round Robin, Priority, CFS</td>
+<td style="text-align:left">OS: File System Internals and I/O Scheduling</td>
+<td style="text-align:left"><a href="/os/file-system-io/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Fork vs. Exec (Copy-on-Write)</td>
+<td style="text-align:left"><a href="/os/fork-vs-exec/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Hard Links vs. Soft Links</td>
+<td style="text-align:left"><a href="/os/hard-vs-soft-links/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Inter-Process Communication (IPC)</td>
+<td style="text-align:left"><a href="/os/inter-process-communication/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Internal vs. External Fragmentation</td>
+<td style="text-align:left"><a href="/os/memory-fragmentation/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Inverted Page Table</td>
+<td style="text-align:left"><a href="/os/inverted-page-tables/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Multilevel Paging</td>
+<td style="text-align:left"><a href="/os/multilevel-paging/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Page Replacement - LRU vs. Clock</td>
+<td style="text-align:left"><a href="/os/page-replacement-algorithms/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Page Table Entry (PTE) Bits</td>
+<td style="text-align:left"><a href="/os/page-table-entry-bits/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Segments vs. Pages</td>
+<td style="text-align:left"><a href="/os/paging-vs-segmentation/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Semaphores vs. Mutexes</td>
+<td style="text-align:left"><a href="/os/semaphores-vs-mutexes/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Spinlocks vs. Mutexes</td>
+<td style="text-align:left"><a href="/os/spinlocks-vs-mutexes/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Stepping through a Page Fault</td>
+<td style="text-align:left"><a href="/os/page-fault-lifecycle/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: System Calls and User Space vs Kernel Space</td>
+<td style="text-align:left"><a href="/os/system-calls/" >Open ↗</a></td>
+<td style="text-align:left">⭐ Easy</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Thrashing and Inverted Page Tables</td>
+<td style="text-align:left"><a href="/os/thrashing-and-page-tables/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Thrashing and the Working Set Model</td>
+<td style="text-align:left"><a href="/os/thrashing-working-set/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Translation Lookaside Buffer (TLB)</td>
+<td style="text-align:left"><a href="/os/tlb-internals/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: User Mode vs. Kernel Mode</td>
+<td style="text-align:left"><a href="/os/user-vs-kernel-mode/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Virtual Memory - Dirty and Reference Bits</td>
+<td style="text-align:left"><a href="/os/page-table-bits/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Virtual Memory and Swapping</td>
+<td style="text-align:left"><a href="/os/virtual-memory-detailed/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Virtualization vs. Containerization</td>
+<td style="text-align:left"><a href="/os/virtualization-vs-containers/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">OS: Zombie vs. Orphan Processes</td>
+<td style="text-align:left"><a href="/os/zombie-orphan/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐⭐ Hard</td>
+</tr>
+<tr>
+<td style="text-align:left">Operating Systems: I/O Models (Blocking, Non-Blocking, Async)</td>
+<td style="text-align:left"><a href="/os/io-models/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Processes vs Threads in OS</td>
+<td style="text-align:left"><a href="/os/processes-vs-threads/" >Open ↗</a></td>
+<td style="text-align:left">⭐⭐ Medium</td>
+</tr>
+<tr>
+<td style="text-align:left">Semaphores, Mutexes, and Monitors</td>
+<td style="text-align:left"><a href="/os/semaphores-mutexes/" >Open ↗</a></td>
 <td style="text-align:left">⭐⭐ Medium</td>
 </tr>
 </tbody>
