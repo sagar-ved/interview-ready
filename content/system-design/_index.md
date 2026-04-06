@@ -8,14 +8,13 @@ draft: false
 
 Deep dives into High-Level Design (HLD) and Low-Level Design (LLD) for SDE-2 interviews.
 
-### 📚 Topics Covered
+### 📚 Topic Index
 
-**High-Level Design (HLD)**
-- URL Shortener, Rate Limiter, Notification System, Logging System
-- Search Autocomplete, Newsfeed, Ride-Sharing, Payment Gateway
-- Distributed Cache, Message Queue, Video Streaming
-
-**Low-Level Design (LLD)**
-- Parking Lot, Library Management, Hotel Booking, Movie Ticket Booking
-- Elevator System, Chess Game, Snake and Ladder, ATM Machine
-- File System, Vending Machine, LinkedIn + Twitter Feed Design
+| Category | Topics Covered | Difficulty Level |
+| :--- | :--- | :--- |
+| **High-Level Design (HLD) Part 1** | URL Shortener, Rate Limiter, Notification System, Logging System | ⭐⭐ Medium |
+| **High-Level Design (HLD) Part 2** | Search Autocomplete, Newsfeed, Ride-Sharing, Payment Gateway | ⭐⭐⭐ Hard |
+| **High-Level Design (HLD) Part 3** | Distributed Cache, Message Queue, Video Streaming | ⭐⭐⭐ Hard |
+| **Low-Level Design (LLD) Part 1** | Parking Lot, Library Management, Hotel Booking, Movie Ticket Booking | ⭐⭐⭐ Hard |
+| **Low-Level Design (LLD) Part 2** | Elevator System, Chess Game, Snake and Ladder, ATM Machine | ⭐⭐⭐ Hard |
+| **Low-Level Design (LLD) Part 3** | File System, Vending Machine, LinkedIn + Twitter Feed Design | ⭐⭐⭐ Hard |

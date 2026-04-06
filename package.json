@@ -1,0 +1,10 @@
+{
+  "name": "dsa-wiki",
+  "version": "1.0.0",
+  "scripts": {},
+  "dependencies": {
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "postcss-cli": "^11.0.0"
+  }
+}

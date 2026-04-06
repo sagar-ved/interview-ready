@@ -8,10 +8,12 @@ draft: false
 
 Deep dives into SQL, NoSQL, and Database Performance Tuning for SDE-2 interviews.
 
-### 📚 Topics Covered
+### 📚 Topic Index
 
-- **SQL Deep Dives**: Joins, Indexes, Execution Plans, Window Functions
-- **ACID & Transactions**: Isolation levels, Anomalies (Dirty Read, Phantom Read)
-- **Scalability**: Sharding, Partitioning, Replication, Read Replicas
-- **NoSQL**: CAP Theorem, Cassandra, MongoDB, Redis, DynamoDB
-- **Performance Tuning**: Slow query analysis, Connection Pooling, Caching
+| Category | Topics Covered | Difficulty Level |
+| :--- | :--- | :--- |
+| **SQL Deep Dives** | Joins, Indexes, Execution Plans, Window Functions | ⭐⭐ Medium |
+| **ACID & Transactions** | Isolation levels, Anomalies (Dirty Read, Phantom Read) | ⭐⭐⭐ Hard |
+| **Scalability** | Sharding, Partitioning, Replication, Read Replicas | ⭐⭐⭐ Hard |
+| **NoSQL** | CAP Theorem, Cassandra, MongoDB, Redis, DynamoDB | ⭐⭐ Medium |
+| **Performance Tuning** | Slow query analysis, Connection Pooling, Caching | ⭐⭐⭐ Hard |

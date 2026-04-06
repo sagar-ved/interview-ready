@@ -8,11 +8,13 @@ draft: false
 
 Deep dives into OS fundamentals for SDE-2 interviews at top product companies.
 
-### 📚 Topics Covered
+### 📚 Topic Index
 
-- **Processes & Threads**: Lifecycle, scheduling, context switching
-- **Memory Management**: Paging, segmentation, virtual memory, page replacement
-- **Concurrency & Synchronization**: Mutexes, semaphores, deadlocks, monitors
-- **Inter-Process Communication**: Pipes, message queues, shared memory, sockets
-- **File Systems & I/O**: Disk scheduling, caching, journaling
-- **Scheduling Algorithms**: FCFS, SJF, Round Robin, Priority, CFS
+| Category | Topics Covered | Difficulty Level |
+| :--- | :--- | :--- |
+| **Processes & Threads** | Lifecycle, scheduling, context switching | ⭐⭐ Medium |
+| **Memory Management** | Paging, segmentation, virtual memory, page replacement | ⭐⭐⭐ Hard |
+| **Concurrency & Synchronization** | Mutexes, semaphores, deadlocks, monitors | ⭐⭐⭐ Hard |
+| **Inter-Process Communication** | Pipes, message queues, shared memory, sockets | ⭐⭐ Medium |
+| **File Systems & I/O** | Disk scheduling, caching, journaling | ⭐⭐ Medium |
+| **Scheduling Algorithms** | FCFS, SJF, Round Robin, Priority, CFS | ⭐⭐ Medium |

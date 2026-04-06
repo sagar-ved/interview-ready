@@ -8,11 +8,13 @@ draft: false
 
 Deep dives into networking fundamentals for SDE-2 interviews at top product companies.
 
-### 📚 Topics Covered
+### 📚 Topic Index
 
-- **OSI & TCP/IP Models**: Layers, protocols, responsibilities
-- **Application Layer**: HTTP/HTTPS, REST, DNS, CDN, WebSockets
-- **Transport Layer**: TCP vs. UDP, 3-way handshake, flow/congestion control
-- **Network Layer**: IP addressing, routing, NAT, subnetting
-- **Security**: TLS/SSL, HTTPS, man-in-the-middle, certificates
-- **Real-World Systems**: Load balancers, API Gateways, proxies
+| Category | Topics Covered | Difficulty Level |
+| :--- | :--- | :--- |
+| **OSI & TCP/IP Models** | Layers, protocols, responsibilities | ⭐ Easy |
+| **Application Layer** | HTTP/HTTPS, REST, DNS, CDN, WebSockets | ⭐⭐ Medium |
+| **Transport Layer** | TCP vs. UDP, 3-way handshake, flow/congestion control | ⭐⭐⭐ Hard |
+| **Network Layer** | IP addressing, routing, NAT, subnetting | ⭐⭐ Medium |
+| **Security** | TLS/SSL, HTTPS, man-in-the-middle, certificates | ⭐⭐⭐ Hard |
+| **Real-World Systems** | Load balancers, API Gateways, proxies | ⭐⭐⭐ Hard |

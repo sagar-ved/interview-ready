@@ -8,12 +8,19 @@ draft: false
 
 Deep dives into Data Structures and Algorithms for SDE-2 interviews at top product companies.
 
-### 📚 Topics Covered
+### 📚 Topic Index
 
-- **Arrays & Strings**: Two-pointer, sliding window, prefix sums, string manipulation
-- **Linked Lists**: Cycle detection, reversal, merge, k-groups
-- **Trees & Graphs**: DFS, BFS, binary trees, BSTs, tries, topological sort
-- **Heaps & Priority Queues**: K-way merge, median of stream, Dijkstra's
-- **Dynamic Programming**: Top-Down vs Bottom-Up, Memoization, interval DP, bitmask DP
-- **Sorting & Searching**: Merge sort internals, binary search patterns, Quickselect
-- **System-Level DSA**: LRU, LFU, consistent hashing, Bloom Filters
+| Topic / Pattern | Description | Difficulty Level |
+| :--- | :--- | :--- |
+| [Array & String: Sliding Window](sliding-window) | Sliding window techniques, variable and fixed size | ⭐⭐ Medium |
+| [Binary Search Patterns](binary-search-patterns) | Searching in rotated arrays, monotonic search | ⭐⭐⭐ Hard |
+| [Linked List](linked-list) | Reversal, cycle detection, fast & slow pointers | ⭐ Easy |
+| [Trees & BST](trees-bst) | DFS, BFS, Lowest Common Ancestor, Traversals | ⭐⭐ Medium |
+| [Graph Algorithms](graph-algorithms) | Dijkstra's, spanning trees, topological sort | ⭐⭐⭐ Hard |
+| [Heaps & Priority Queues](heaps-priority-queues) | Top K elements, max/min heaps, K-way merge | ⭐⭐ Medium |
+| [Dynamic Programming](dynamic-programming) | Memoization, tabulation, 1D/2D DP arrays | ⭐⭐⭐ Hard |
+| [Sorting Algorithms](sorting-algorithms) | Merge sort, quick sort, cyclic sort, bucket sort | ⭐⭐ Medium |
+| [Backtracking](backtracking) | Permutations, combinations, N-Queens problem | ⭐⭐⭐ Hard |
+| [Prefix Sums & Segment Trees](prefix-sums-segment-trees) | Range queries, cumulative sum patterns | ⭐⭐⭐ Hard |
+| [Tries](tries) | Prefix matching, autocomplete, string dictionaries | ⭐⭐ Medium |
+| [Union Find (Disjoint Set)](union-find) | Connected components, Kruskal's algorithm | ⭐⭐ Medium |

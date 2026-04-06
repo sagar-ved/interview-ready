@@ -14,14 +14,14 @@ Problems are listed **by LeetCode problem number** within each topic. Open a top
 
 ### [Arrays & Hashing](/leetcode/arrays/)
 
-| # | Problem |
-|---|--------|
-| [1](/leetcode/arrays/two-sum/) | Two Sum |
-| [15](/leetcode/arrays/three-sum/) | 3Sum |
-| [18](/leetcode/arrays/four-sum/) | 4Sum |
-| [48](/leetcode/arrays/rotate-image/) | Rotate Image |
-| [54](/leetcode/arrays/spiral-matrix/) | Spiral Matrix |
-| [238](/leetcode/arrays/product-except-self/) | Product of Array Except Self |
+| # | Problem | Difficulty Level |
+|---|--------|----|
+| [1](/leetcode/arrays/two-sum/) | Two Sum | ⭐ Easy |
+| [15](/leetcode/arrays/three-sum/) | 3Sum | ⭐⭐ Medium |
+| [18](/leetcode/arrays/four-sum/) | 4Sum | ⭐⭐ Medium |
+| [48](/leetcode/arrays/rotate-image/) | Rotate Image | ⭐⭐ Medium |
+| [54](/leetcode/arrays/spiral-matrix/) | Spiral Matrix | ⭐⭐ Medium |
+| [238](/leetcode/arrays/product-except-self/) | Product of Array Except Self | ⭐⭐ Medium |
 
 ### [Trees & Graphs](/leetcode/trees/)
 

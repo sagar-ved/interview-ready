@@ -1,8 +1,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Tech Interview Wiki – Springs</title>
+    <title>Tech Interview Wiki – Spring Framework</title>
     <link>http://localhost:1313/spring/</link>
-    <description>Recent content in Springs on Tech Interview Wiki</description>
+    <description>Recent content in Spring Framework on Tech Interview Wiki</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 04 Apr 2024 00:00:00 +0000</lastBuildDate>
