@@ -1,33 +1,44 @@
 <style>
-html { background-color: #f1f2f6; }
-body { visibility: hidden; opacity: 0; transition: opacity 0.5s ease; }
-body.unlocked { visibility: visible; opacity: 1; }
+    html {
+        background-color: #f1f2f6;
+    }
+
+    body {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+
+    body.unlocked {
+        visibility: visible;
+        opacity: 1;
+    }
 </style>
 
 <script>
-(function() {
-    var secretCode = "janvi";
-    var inputBuffer = "";
-    if (localStorage.getItem('wiki_unlocked') === 'true') {
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.classList.add('unlocked');
-        });
-        return;
-    }
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey || e.altKey || e.metaKey) return;
-        if (e.key.length === 1) {
-            inputBuffer += e.key.toLowerCase();
-            if (inputBuffer.length > secretCode.length) {
-                inputBuffer = inputBuffer.slice(-secretCode.length);
-            }
-            if (inputBuffer === secretCode) {
-                localStorage.setItem('wiki_unlocked', 'true');
+    (function () {
+        var secretCode = "sagar";
+        var inputBuffer = "";
+        if (localStorage.getItem('wiki_unlocked') === 'true') {
+            document.addEventListener('DOMContentLoaded', function () {
                 document.body.classList.add('unlocked');
-                inputBuffer = "";
-            }
+            });
+            return;
         }
-    });
-    console.log("🔒 Wiki is locked. Type the secret passcode directly on your keyboard to reveal.");
-})();
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey || e.altKey || e.metaKey) return;
+            if (e.key.length === 1) {
+                inputBuffer += e.key.toLowerCase();
+                if (inputBuffer.length > secretCode.length) {
+                    inputBuffer = inputBuffer.slice(-secretCode.length);
+                }
+                if (inputBuffer === secretCode) {
+                    localStorage.setItem('wiki_unlocked', 'true');
+                    document.body.classList.add('unlocked');
+                    inputBuffer = "";
+                }
+            }
+        });
+        console.log("🔒 Wiki is locked. Type the secret passcode directly on your keyboard to reveal.");
+    })();
 </script>
