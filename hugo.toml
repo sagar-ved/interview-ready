@@ -1,4 +1,4 @@
-baseURL = "https://sagar-ved.github.io/interview-ready/"
+baseURL = "http://localhost:1313/"
 languageCode = "en-us"
 title = "Tech Interview Wiki"
 
