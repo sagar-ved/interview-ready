@@ -18,6 +18,7 @@ This is the centralized knowledge base for comprehensive software engineering te
 | **🚀 [DSA](/interview-ready/dsa/)** | Data Structures and Algorithms with high-yield SDE-2 patterns. |
 | **💻 [LeetCode](/interview-ready/leetcode/)** | Specific LeetCode problem breakdowns and optimal solutions. |
 | **🏗️ [System Design](/interview-ready/system-design/)** | High-Level Design (HLD) and Low-Level Design (LLD) case studies. |
+| **🧩 [Design Patterns](/interview-ready/design-patterns/)** | Creational, Structural, and Behavioral Gang of Four (GoF) patterns. |
 | **🗃️ [Database](/interview-ready/database/)** | SQL vs NoSQL, Indexing, Transactions, ACID, and Sharding. |
 | **⚙️ [OS](/interview-ready/os/)** | Operating Systems, Threads, Locks, Memory, and File Systems. |
 | **🌐 [Networks](/interview-ready/networks/)** | TCP/UDP, TLS/SSL, HTTP/2, WebSockets, and Networking protocols. |

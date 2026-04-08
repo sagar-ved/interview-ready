@@ -65,3 +65,8 @@ title = "Tech Interview Wiki"
   name = "Networks"
   pageRef = "/networks"
   weight = 60
+
+[[menu.main]]
+  name = "Design Patterns"
+  pageRef = "/design-patterns"
+  weight = 35
