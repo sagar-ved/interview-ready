@@ -1,5 +1,4 @@
 ---
-author: "sagar ved"
 title: "Technical Interview Preparation Wiki"
 date: 2024-04-04
 draft: false
@@ -8,13 +7,19 @@ type: docs
 
 # Welcome to the SDE-2 Interview Prep Wiki
 
-This-is-the-centralized-knowledge-base-for-technical-interviews.
+This is the centralized knowledge base for comprehensive software engineering technical interviews. Select a category below to explore the detailed topics.
 
-### 📚 Categories
+### 📚 Topic Domains
 
-- **[Java](/java)**: Core JVM, Concurrency, and Advanced Java patterns.
-- **[DSA](/dsa)**: Data Structures and Algorithms with common SDE-2 patterns.
-- **[System Design](/system-design)**: HLD and LLD case studies.
-- **[Database](/database)**: SQL vs NoSQL, Indexing, and ACID.
+| Category | Deep Dive Content |
+| :--- | :--- |
+| **☕ [Java](/interview-ready/java/)** | Core JVM, Concurrency, GC Tuning, and Advanced Java patterns. |
+| **🍃 [Spring](/interview-ready/spring/)** | Spring Boot, Spring Security, Internals, and Microservices. |
+| **🚀 [DSA](/interview-ready/dsa/)** | Data Structures and Algorithms with high-yield SDE-2 patterns. |
+| **💻 [LeetCode](/interview-ready/leetcode/)** | Specific LeetCode problem breakdowns and optimal solutions. |
+| **🏗️ [System Design](/interview-ready/system-design/)** | High-Level Design (HLD) and Low-Level Design (LLD) case studies. |
+| **🗃️ [Database](/interview-ready/database/)** | SQL vs NoSQL, Indexing, Transactions, ACID, and Sharding. |
+| **⚙️ [OS](/interview-ready/os/)** | Operating Systems, Threads, Locks, Memory, and File Systems. |
+| **🌐 [Networks](/interview-ready/networks/)** | TCP/UDP, TLS/SSL, HTTP/2, WebSockets, and Networking protocols. |
 
-Use the sidebar or the search bar above to navigate.
+> **Pro Tip:** Use the left sidebar to navigate across sections or the search bar at the right to find specific keywords across the wiki.
