@@ -33,24 +33,44 @@ mindmap
       State
 ```
 
-### 📚 Detailed Study & References
+## Architectural Foundation
 
-| Topic / Pattern | Description & Study Goal | Reference / External Reading |
-| :--- | :--- | :--- |
-| **Singleton** | Restricts object creation to a single instance. Focus on thread safety (Double-Checked Locking). | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/singleton) |
-| **Factory Method** | Provides an interface for creating objects in a superclass, allowing subclasses to alter creation. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/factory-method) |
-| **Abstract Factory** | Lets you produce families of related objects without specifying concrete classes. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/abstract-factory) |
-| **Builder** | Constructs complex objects step by step. Extensively used in modern Java (e.g., Lombok `@Builder`). | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/builder) |
-| **Prototype** | Cloning existing objects without making code dependent on their classes. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/prototype) |
-| **Adapter** | Allows objects with incompatible interfaces to collaborate. Think of legacy integration wrappers. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/adapter) |
-| **Decorator** | Dynamically attach new behaviors to objects. Seen heavily in Java IO (`BufferedReader`). | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/decorator) |
-| **Facade** | Provides a simplified interface to a large body of complex APIs. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/facade) |
-| **Proxy** | Provides a substitute or placeholder. Useful for caching, access control, and lazy init. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/proxy) |
-| **Composite** | Lets you compose objects into tree structures (e.g., File system hierarchies). | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/composite) |
-| **Observer** | Publish-Subscribe pattern. Critical for Message Queues and Event-driven systems. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/observer) |
-| **Strategy** | Defines a family of algorithms, encapsulating each one. Good for interchangeable business logic. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/strategy) |
-| **Command** | Turns a request into a stand-alone object. Great for undo/redo or job queues. | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/command) |
-| **State** | Lets an object alter its behavior when its internal state changes (e.g., Vending Machine). | [Refactoring.Guru ↗](https://refactoring.guru/design-patterns/state) |
+Before attacking complex structural or creational patterns, it's mandatory to understand the five foundational principles of OOP architecture. Every advanced design pattern fundamentally exists to solve violations of the SOLID principles.
+
+| Topic | Description & Study Goal | Difficulty Level | Read Document |
+|---|--------|----|:---|
+| **SOLID Principles** | SRP, OCP, LSP, ISP, and DIP. Essential object-oriented design rules. | ⭐ Easy | [Open ↗](/interview-ready/design-patterns/solid-principles/) |
+
+## Master Pattern Index
+
+### Creational Patterns
+
+| Pattern | Description & Study Goal | Difficulty Level | Read Document |
+|---|--------|----|:---|
+| **Singleton** | Restricts object creation to a single instance. Focus on thread safety. | ⭐⭐ Medium | [Open ↗](https://refactoring.guru/design-patterns/singleton) |
+| **Factory Method** | Provides an interface for creating objects in a superclass. | ⭐ Easy | [Open ↗](https://refactoring.guru/design-patterns/factory-method) |
+| **Abstract Factory** | Produce families of related objects without specifying concrete classes. | ⭐⭐⭐ Hard | [Open ↗](https://refactoring.guru/design-patterns/abstract-factory) |
+| **Builder** | Constructs complex objects step by step. | ⭐ Easy | [Open ↗](https://refactoring.guru/design-patterns/builder) |
+| **Prototype** | Cloning existing objects without coupling to their classes. | ⭐ Easy | [Open ↗](https://refactoring.guru/design-patterns/prototype) |
+
+### Structural Patterns
+
+| Pattern | Description & Study Goal | Difficulty Level | Read Document |
+|---|--------|----|:---|
+| **Adapter** | Allows objects with incompatible interfaces to collaborate. | ⭐ Easy | [Open ↗](https://refactoring.guru/design-patterns/adapter) |
+| **Decorator** | Dynamically attach new behaviors to objects without subclassing. | ⭐⭐ Medium | [Open ↗](https://refactoring.guru/design-patterns/decorator) |
+| **Facade** | Provides a simplified interface to a complex subsystem. | ⭐ Easy | [Open ↗](https://refactoring.guru/design-patterns/facade) |
+| **Proxy** | Provides a substitute or placeholder for Lazy-loading/Access control. | ⭐⭐ Medium | [Open ↗](https://refactoring.guru/design-patterns/proxy) |
+| **Composite** | Lets you compose objects into tree structures. | ⭐⭐⭐ Hard | [Open ↗](https://refactoring.guru/design-patterns/composite) |
+
+### Behavioral Patterns
+
+| Pattern | Description & Study Goal | Difficulty Level | Read Document |
+|---|--------|----|:---|
+| **Observer** | Publish-Subscribe pattern used heavily in event-driven systems. | ⭐ Easy | [Open ↗](https://refactoring.guru/design-patterns/observer) |
+| **Strategy** | Defines a family of algorithms, encapsulating each one dynamically. | ⭐ Easy | [Open ↗](https://refactoring.guru/design-patterns/strategy) |
+| **Command** | Turns a request into a stand-alone object (Undo/Redo usage). | ⭐⭐ Medium | [Open ↗](https://refactoring.guru/design-patterns/command) |
+| **State** | Lets an object alter its behavior when internal state changes. | ⭐⭐ Medium | [Open ↗](https://refactoring.guru/design-patterns/state) |
 
 > **Context:** Understanding these patterns provides tremendous clarity for building extensible software. In actual interviews, never force a pattern; use them when the code strongly necessitates avoiding tightly coupled dependencies.
 

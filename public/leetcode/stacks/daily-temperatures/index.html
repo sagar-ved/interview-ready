@@ -80,48 +80,203 @@ For each temperature T[i]: While stack is not empty AND T[i] &gt; T[stack."/>
   </script>
 
   <style>
-    html {
-        background-color: #f1f2f6;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    body {
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.5s ease;
-    }
+html {
+    background-color: #0f1115;
+}
 
-    body.unlocked {
-        visibility: visible;
-        opacity: 1;
-    }
+body {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+body.unlocked {
+    visibility: visible;
+    opacity: 1;
+}
+
+#custom-auth-overlay {
+    visibility: visible;
+    opacity: 1;
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle at center, rgba(30,33,40,0.85) 0%, rgba(15,17,21,1) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999999;
+    font-family: 'Inter', sans-serif;
+    color: white;
+}
+
+.auth-modal {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+    padding: 40px;
+    width: 320px;
+    text-align: center;
+    transform: translateY(-20px);
+    animation: auth-slide-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes auth-slide-down {
+    0% { transform: translateY(-30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.auth-modal h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.auth-modal p {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-bottom: 24px;
+}
+
+.auth-input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.auth-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s ease;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.auth-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.auth-input::placeholder {
+    color: #4b5563;
+    letter-spacing: normal;
+}
+
+.auth-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.auth-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -2px rgba(59, 130, 246, 0.4);
+}
+
+.auth-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px -2px rgba(59, 130, 246, 0.4);
+}
+
+.auth-error {
+    color: #ef4444; 
+    font-size: 13px;
+    margin-top: 12px;
+    min-height: 20px;
+    display: none;
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
 </style>
 
 <script>
-    (function () {
-        var secretCode = "sagar";
-        var inputBuffer = "";
-        if (localStorage.getItem('wiki_unlocked') === 'true') {
-            document.addEventListener('DOMContentLoaded', function () {
-                document.body.classList.add('unlocked');
-            });
-            return;
-        }
-        document.addEventListener('keydown', function (e) {
-            if (e.ctrlKey || e.altKey || e.metaKey) return;
-            if (e.key.length === 1) {
-                inputBuffer += e.key.toLowerCase();
-                if (inputBuffer.length > secretCode.length) {
-                    inputBuffer = inputBuffer.slice(-secretCode.length);
-                }
-                if (inputBuffer === secretCode) {
-                    localStorage.setItem('wiki_unlocked', 'true');
-                    document.body.classList.add('unlocked');
-                    inputBuffer = "";
-                }
-            }
+(function () {
+    var secretCode = "sagar";
+    
+    if (localStorage.getItem('wiki_unlocked') === 'true') {
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.classList.add('unlocked');
         });
-        console.log("🔒 Wiki is locked. Type the secret passcode directly on your keyboard to reveal.");
-    })();
+        return;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var overlay = document.createElement('div');
+        overlay.id = 'custom-auth-overlay';
+        overlay.innerHTML = `
+            <div class="auth-modal">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px;">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <h2>Restricted Area</h2>
+                <p>Private Documentation Access.</p>
+                <div class="auth-input-group">
+                    <input type="password" id="custom-auth-input" class="auth-input" placeholder="•••••" autocomplete="off" />
+                </div>
+                <button id="custom-auth-btn" class="auth-btn">Unlock Wiki</button>
+                <div id="custom-auth-error" class="auth-error">Incorrect credentials</div>
+            </div>
+        `;
+        
+        Array.from(document.body.children).forEach(child => child.style.display = 'none');
+        document.body.appendChild(overlay);
+        document.body.style.visibility = 'visible'; 
+        document.body.style.opacity = '1';
+
+        var input = document.getElementById('custom-auth-input');
+        var btn = document.getElementById('custom-auth-btn');
+        var error = document.getElementById('custom-auth-error');
+
+        function triggerUnlock() {
+            if (input.value.toLowerCase() === secretCode) {
+                localStorage.setItem('wiki_unlocked', 'true');
+                overlay.style.opacity = '0';
+                setTimeout(() => location.reload(), 300);
+            } else {
+                error.style.display = 'block';
+                var newError = error.cloneNode(true);
+                error.parentNode.replaceChild(newError, error);
+                error = newError;
+                input.value = "";
+                input.focus();
+            }
+        }
+
+        btn.addEventListener('click', triggerUnlock);
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') triggerUnlock();
+        });
+        
+        setTimeout(() => input.focus(), 100);
+    });
+})();
 </script>
 </head>
 <body dir="ltr"><div class="nav-container hx-sticky hx-top-0 hx-z-20 hx-w-full hx-bg-transparent print:hx-hidden">
@@ -167,6 +322,13 @@ For each temperature T[i]: While stack is not empty AND T[i] &gt; T[stack."/>
             class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200"
           >
             <span class="hx-text-center">System Design</span>
+          </a><a
+            title="Design Patterns"
+            href="/design-patterns"
+            
+            class="hx-text-sm contrast-more:hx-text-gray-700 contrast-more:dark:hx-text-gray-100 hx-relative -hx-ml-2 hx-hidden hx-whitespace-nowrap hx-p-2 md:hx-inline-block hx-text-gray-600 hover:hx-text-gray-800 dark:hx-text-gray-400 dark:hover:hx-text-gray-200"
+          >
+            <span class="hx-text-center">Design Patterns</span>
           </a><a
             title="Database"
             href="/database"
@@ -961,6 +1123,32 @@ For each temperature T[i]: While stack is not empty AND T[i] &gt; T[stack."/>
               
             </li></ul>
       </div>
+            </li></ul>
+      </div></li>
+          <li class=""><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/design-patterns/"
+    
+  >Design Patterns
+        <span class="hextra-sidebar-collapsible-button"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" class="hx-h-[18px] hx-min-w-[18px] hx-rounded-sm hx-p-0.5 hover:hx-bg-gray-800/5 dark:hover:hx-bg-gray-100/5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" class="hx-origin-center hx-transition-transform rtl:-hx-rotate-180"></path></svg></span>
+    </a><div class="ltr:hx-pr-0 hx-overflow-hidden">
+        <ul class='hx-relative hx-flex hx-flex-col hx-gap-1 before:hx-absolute before:hx-inset-y-1 before:hx-w-px before:hx-bg-gray-200 before:hx-content-[""] ltr:hx-ml-3 ltr:hx-pl-3 ltr:before:hx-left-0 rtl:hx-mr-3 rtl:hx-pr-3 rtl:before:hx-right-0 dark:before:hx-bg-neutral-800'><li class="hx-flex hx-flex-col "><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/design-patterns/solid-principles/"
+    
+  >SOLID Principles
+    </a>
+              
+            </li><li class="hx-flex hx-flex-col "><a
+    class="hx-flex hx-items-center hx-justify-between hx-gap-2 hx-cursor-pointer hx-rounded hx-px-2 hx-py-1.5 hx-text-sm hx-transition-colors [-webkit-tap-highlight-color:transparent] [-webkit-touch-callout:none] [word-break:break-word]
+      hx-text-gray-500 hover:hx-bg-gray-100 hover:hx-text-gray-900 contrast-more:hx-border contrast-more:hx-border-transparent contrast-more:hx-text-gray-900 contrast-more:hover:hx-border-gray-900 dark:hx-text-neutral-400 dark:hover:hx-bg-primary-100/5 dark:hover:hx-text-gray-50 contrast-more:dark:hx-text-gray-50 contrast-more:dark:hover:hx-border-gray-50"
+    href="/design-patterns/interview-questions/"
+    
+  >Design Patterns Interview Questions
+    </a>
+              
             </li></ul>
       </div></li>
           <li class=""><a
