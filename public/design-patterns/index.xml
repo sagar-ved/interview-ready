@@ -1,0 +1,260 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech Interview Wiki – Design Patterns</title>
+    <link>http://localhost:1313/design-patterns/</link>
+    <description>Recent content in Design Patterns on Tech Interview Wiki</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 08 Apr 2024 00:00:00 +0000</lastBuildDate>
+    
+	  <atom:link href="http://localhost:1313/design-patterns/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>SOLID Principles</title>
+      <link>http://localhost:1313/design-patterns/solid-principles/</link>
+      <pubDate>Fri, 12 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/design-patterns/solid-principles/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;🏗️ SOLID Principles of Object-Oriented Design&lt;/h1&gt;&lt;p&gt;The SOLID principles are five crucial design tenets that make software designs more understandable, flexible, and maintainable. They form the absolute foundation before learning advanced Gang of Four Design Patterns.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;&lt;strong&gt;S&lt;/strong&gt; - Single Responsibility Principle (SRP)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;s---single-responsibility-principle-srp&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#s---single-responsibility-principle-srp&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&amp;ldquo;A class should have one, and only one, reason to change.&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Meaning:&lt;/strong&gt; Every class, module, or function should have responsibility over a single part of the program&amp;rsquo;s functionality.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Real-World Analogy:&lt;/strong&gt; Think of a restaurant. The Chef cooks the food, the Waiter serves it, and the Cashier handles the money. If the Chef stopped cooking to take payments and serve tables, the whole system would become chaotic and error-prone. Each role has one distinct reason to change.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Example:&lt;/strong&gt; If you have an &lt;code&gt;Employee&lt;/code&gt; class, it should handle employee-specific logic (e.g., calculating pay). It should &lt;strong&gt;not&lt;/strong&gt; handle saving the employee to the database or rendering the employee to a UI screen. Those responsibilities belong to an &lt;code&gt;EmployeeRepository&lt;/code&gt; and an &lt;code&gt;EmployeeView&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;mermaid hx-mt-6&#34;&gt;classDiagram
+    class Employee {
+        +calculatePay()
+    }
+    class EmployeeRepository {
+        +saveToDatabase(Employee)
+    }
+    class EmployeeView {
+        +renderUI(Employee)
+    }
+    EmployeeRepository ..&gt; Employee : Uses
+    EmployeeView ..&gt; Employee : Uses&lt;/pre&gt;&lt;h3&gt;&lt;strong&gt;O&lt;/strong&gt; - Open/Closed Principle (OCP)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;o---openclosed-principle-ocp&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#o---openclosed-principle-ocp&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&amp;ldquo;Software entities should be open for extension, but closed for modification.&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Meaning:&lt;/strong&gt; You should be able to add new functionality without changing existing code.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Real-World Analogy:&lt;/strong&gt; A standard electrical outlet. If you buy a new TV, you don&amp;rsquo;t need to break open your living room wall and rewire the house to power it. The outlet is &amp;ldquo;closed for modification&amp;rdquo;, but &amp;ldquo;open for extension&amp;rdquo; because you can just plug your new TV into the standard interface.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Example:&lt;/strong&gt; Use interfaces and abstract classes. Instead of writing a massive &lt;code&gt;switch&lt;/code&gt; statement to calculate shipping costs for &lt;code&gt;Air&lt;/code&gt;, &lt;code&gt;Ground&lt;/code&gt;, and &lt;code&gt;Sea&lt;/code&gt;, define a &lt;code&gt;ShippingStrategy&lt;/code&gt; interface. Then, add new shipping methods by creating new classes that implement the interface, leaving the core calculator class completely untouched.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;mermaid hx-mt-6&#34;&gt;classDiagram
+    class ShippingCalculator {
+        +calculate(ShippingStrategy)
+    }
+    class ShippingStrategy {
+        +getCost()
+    }
+    &lt;&lt;interface&gt;&gt; ShippingStrategy
+    
+    class AirShipping {
+        +getCost()
+    }
+    class SeaShipping {
+        +getCost()
+    }
+    ShippingCalculator --&gt; ShippingStrategy : Uses
+    ShippingStrategy &lt;|.. AirShipping : Implements
+    ShippingStrategy &lt;|.. SeaShipping : Implements&lt;/pre&gt;&lt;h3&gt;&lt;strong&gt;L&lt;/strong&gt; - Liskov Substitution Principle (LSP)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;l---liskov-substitution-principle-lsp&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#l---liskov-substitution-principle-lsp&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&amp;ldquo;Subtypes must be substitutable for their base types without altering the correctness of the program.&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Meaning:&lt;/strong&gt; If class &lt;code&gt;B&lt;/code&gt; is a subclass of class &lt;code&gt;A&lt;/code&gt;, we should be able to replace &lt;code&gt;A&lt;/code&gt; with &lt;code&gt;B&lt;/code&gt; without disrupting the behavior of our program.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Real-World Analogy:&lt;/strong&gt; The classic &amp;ldquo;Duck&amp;rdquo; test. If it looks like a duck, quacks like a duck, but needs batteries to survive, you probably have a robot duck. If you drop a robot duck into an actual pond (substituting the base &lt;code&gt;Duck&lt;/code&gt; type), it will short circuit and sink, unexpectedly breaking the system.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Example:&lt;/strong&gt; A classic violation is a &lt;code&gt;Square&lt;/code&gt; inheriting from &lt;code&gt;Rectangle&lt;/code&gt;. If you set the width of a &lt;code&gt;Square&lt;/code&gt;, the height must also change to maintain the square property, violating the expected behavior of a true &lt;code&gt;Rectangle&lt;/code&gt;. Prefer composition or stricter interface segregation over forced inheritance.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;mermaid hx-mt-6&#34;&gt;classDiagram
+    class Shape {
+        +getArea()
+    }
+    &lt;&lt;interface&gt;&gt; Shape
+    
+    class Rectangle {
+        +setWidth()
+        +setHeight()
+        +getArea()
+    }
+    class Square {
+        +setSide()
+        +getArea()
+    }
+    Shape &lt;|.. Rectangle : Valid
+    Shape &lt;|.. Square : Valid
+    %% Instead of Square extending Rectangle, both implement Shape&lt;/pre&gt;&lt;h3&gt;&lt;strong&gt;I&lt;/strong&gt; - Interface Segregation Principle (ISP)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;i---interface-segregation-principle-isp&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#i---interface-segregation-principle-isp&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&amp;ldquo;Clients should not be forced to depend upon interfaces that they do not use.&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Meaning:&lt;/strong&gt; Create small, specific, client-focused interfaces rather than one large, generalized &amp;ldquo;fat&amp;rdquo; interface.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Real-World Analogy:&lt;/strong&gt; A smart Swiss Army Knife vs Individual Tools. If you just need to tighten a tiny screw, being forced to wield a heavy, 30-tool pocket knife with a saw and corkscrew dangling out is clumsy. You only want a screwdriver.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Example:&lt;/strong&gt; Instead of an &lt;code&gt;IMachine&lt;/code&gt; interface with &lt;code&gt;print()&lt;/code&gt;, &lt;code&gt;scan()&lt;/code&gt;, and &lt;code&gt;fax()&lt;/code&gt; methods (which forces a simple &lt;code&gt;Printer&lt;/code&gt; class to implement dummy &lt;code&gt;scan()&lt;/code&gt; and &lt;code&gt;fax()&lt;/code&gt; methods), split it into &lt;code&gt;IPrinter&lt;/code&gt;, &lt;code&gt;IScanner&lt;/code&gt;, and &lt;code&gt;IFax&lt;/code&gt;. Devices then implement only the behavioral interfaces they actually support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;mermaid hx-mt-6&#34;&gt;classDiagram
+    class IPrinter {
+        +print()
+    }
+    &lt;&lt;interface&gt;&gt; IPrinter
+    
+    class IScanner {
+        +scan()
+    }
+    &lt;&lt;interface&gt;&gt; IScanner
+    
+    class IFax {
+        +fax()
+    }
+    &lt;&lt;interface&gt;&gt; IFax
+    
+    class BasicPrinter {
+    }
+    class AdvancedCopier {
+    }
+    IPrinter &lt;|.. BasicPrinter : Implements
+    IPrinter &lt;|.. AdvancedCopier : Implements
+    IScanner &lt;|.. AdvancedCopier : Implements
+    IFax &lt;|.. AdvancedCopier : Implements&lt;/pre&gt;&lt;h3&gt;&lt;strong&gt;D&lt;/strong&gt; - Dependency Inversion Principle (DIP)&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;d---dependency-inversion-principle-dip&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#d---dependency-inversion-principle-dip&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;&amp;ldquo;High-level modules should not depend on low-level modules. Both should depend on abstractions. Abstractions should not depend on details. Details should depend on abstractions.&amp;rdquo;&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Meaning:&lt;/strong&gt; You should depend on interfaces or abstract classes, not concrete implementations.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Real-World Analogy:&lt;/strong&gt; Plugging in a lamp. Your lamp has a generic two-prong plug (abstraction). It doesn&amp;rsquo;t care if the wall socket is powered by a coal plant, a solar panel, or a nuclear reactor (implementation details). Because the lamp depends on the abstraction, you can swap the power source seamlessly without changing the lamp.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Example:&lt;/strong&gt; A &lt;code&gt;PaymentProcessor&lt;/code&gt; should not instantiate a concrete &lt;code&gt;StripeAPI&lt;/code&gt; class inside its methods. Instead, it should accept an &lt;code&gt;IPaymentGateway&lt;/code&gt; interface via its constructor. This allows you to easily inject a &lt;code&gt;PayPalAPI&lt;/code&gt; or a &lt;code&gt;MockAPI&lt;/code&gt; for testing without modifying the core processor logic.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;mermaid hx-mt-6&#34;&gt;classDiagram
+    class PaymentProcessor {
+        -IPaymentGateway gateway
+        +process(amount)
+    }
+    class IPaymentGateway {
+        +charge(amount)
+    }
+    &lt;&lt;interface&gt;&gt; IPaymentGateway
+    
+    class StripeAPI {
+        +charge(amount)
+    }
+    class PayPalAPI {
+        +charge(amount)
+    }
+    PaymentProcessor --&gt; IPaymentGateway : Depends on Abstraction
+    IPaymentGateway &lt;|.. StripeAPI : Implements
+    IPaymentGateway &lt;|.. PayPalAPI : Implements&lt;/pre&gt;&lt;hr&gt;
+&lt;h3&gt;Why is SOLID important for Interviews?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;why-is-solid-important-for-interviews&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#why-is-solid-important-for-interviews&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Almost all High-Level and Low-Level Design interview questions secretly test your adherence to SOLID.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If an interviewer asks to add a new requirement to your parking lot design (e.g., VIP spots), violating &lt;strong&gt;OCP&lt;/strong&gt; will force you to rewrite your entire allocation class.&lt;/li&gt;
+&lt;li&gt;Using Dependency Injection (Spring/Dagger) directly enforces &lt;strong&gt;DIP&lt;/strong&gt;, making your code easily testable.&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+    <item>
+      <title>Design Patterns Interview Questions</title>
+      <link>http://localhost:1313/design-patterns/interview-questions/</link>
+      <pubDate>Mon, 08 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/design-patterns/interview-questions/</guid>
+      <description>
+        
+        
+        &lt;h1&gt;📝 Comprehensive Design Patterns Interview Questions&lt;/h1&gt;&lt;p&gt;This document contains a very detailed list of frequently asked Design Pattern questions along with concise, high-yield answers tailored for SDE-2 interviews.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Creational Patterns&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;creational-patterns&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#creational-patterns&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;h4&gt;1. How do you implement a thread-safe Singleton in Java? Why is Double-Checked Locking necessary?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;1-how-do-you-implement-a-thread-safe-singleton-in-java-why-is-double-checked-locking-necessary&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#1-how-do-you-implement-a-thread-safe-singleton-in-java-why-is-double-checked-locking-necessary&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;
+A thread-safe Singleton uses double-checked locking accompanied by the &lt;code&gt;volatile&lt;/code&gt; keyword.&lt;/p&gt;
+&lt;div class=&#34;hextra-code-block hx-relative hx-mt-6 first:hx-mt-0 hx-group/code&#34;&gt;
+  
+
+&lt;div&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-java&#34; data-lang=&#34;java&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Singleton&lt;/span&gt; {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;volatile&lt;/span&gt; Singleton instance;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;private&lt;/span&gt; &lt;span style=&#34;color:#a6e22e&#34;&gt;Singleton&lt;/span&gt;() {}
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    &lt;span style=&#34;color:#66d9ef&#34;&gt;public&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;static&lt;/span&gt; Singleton &lt;span style=&#34;color:#a6e22e&#34;&gt;getInstance&lt;/span&gt;() {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (instance &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) { &lt;span style=&#34;color:#75715e&#34;&gt;// First check (no locking yet)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            &lt;span style=&#34;color:#66d9ef&#34;&gt;synchronized&lt;/span&gt; (Singleton.&lt;span style=&#34;color:#a6e22e&#34;&gt;class&lt;/span&gt;) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                &lt;span style=&#34;color:#66d9ef&#34;&gt;if&lt;/span&gt; (instance &lt;span style=&#34;color:#f92672&#34;&gt;==&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;null&lt;/span&gt;) { &lt;span style=&#34;color:#75715e&#34;&gt;// Second check (with locking)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                    instance &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;new&lt;/span&gt; Singleton();
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;                }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;            }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;        &lt;span style=&#34;color:#66d9ef&#34;&gt;return&lt;/span&gt; instance;
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    }
+&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&#34;hextra-code-copy-btn-container hx-opacity-0 hx-transition group-hover/code:hx-opacity-100 hx-flex hx-gap-1 hx-absolute hx-m-[11px] hx-right-0 hx-top-0&#34;&gt;
+  &lt;button
+    class=&#34;hextra-code-copy-btn hx-group/copybtn hx-transition-all active:hx-opacity-50 hx-bg-primary-700/5 hx-border hx-border-black/5 hx-text-gray-600 hover:hx-text-gray-900 hx-rounded-md hx-p-1.5 dark:hx-bg-primary-300/10 dark:hx-border-white/10 dark:hx-text-gray-400 dark:hover:hx-text-gray-50&#34;
+    title=&#34;Copy code&#34;
+  &gt;
+    &lt;div class=&#34;copy-icon group-[.copied]/copybtn:hx-hidden hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+    &lt;div class=&#34;success-icon hx-hidden group-[.copied]/copybtn:hx-block hx-pointer-events-none hx-h-4 hx-w-4&#34;&gt;&lt;/div&gt;
+  &lt;/button&gt;
+&lt;/div&gt;
+
+  
+&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;volatile&lt;/code&gt; is critical because it ensures that changes to the &lt;code&gt;instance&lt;/code&gt; variable are published sequentially to other threads without instruction reordering.&lt;/p&gt;
+&lt;h4&gt;2. What is the difference between a Factory Method and an Abstract Factory?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;2-what-is-the-difference-between-a-factory-method-and-an-abstract-factory&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#2-what-is-the-difference-between-a-factory-method-and-an-abstract-factory&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Factory Method:&lt;/strong&gt; Relies on inheritance. A superclass defines an interface for creating an object, but delegates the actual creation to its subclasses. It creates exactly &lt;strong&gt;one&lt;/strong&gt; product.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Abstract Factory:&lt;/strong&gt; Relies on object composition. It provides an interface for creating &lt;strong&gt;families&lt;/strong&gt; of related or dependent objects. It creates &lt;strong&gt;multiple&lt;/strong&gt; products that belong together (e.g., MacButton and MacCheckbox vs. WinButton and WinCheckbox).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;3. When should you use the Builder pattern instead of a Constructor with many parameters (Telescoping Constructor Anti-pattern)?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;3-when-should-you-use-the-builder-pattern-instead-of-a-constructor-with-many-parameters-telescoping-constructor-anti-pattern&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#3-when-should-you-use-the-builder-pattern-instead-of-a-constructor-with-many-parameters-telescoping-constructor-anti-pattern&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;
+When an object requires multiple configurations, using a constructor with many parameters leads to unreadable code where it&amp;rsquo;s easy to mix up parameters of the same type. The Builder pattern extracts object construction code to a separate class, enabling fluent, step-by-step initialization (often seen with Lombok&amp;rsquo;s &lt;code&gt;@Builder&lt;/code&gt;).&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Structural Patterns&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;structural-patterns&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#structural-patterns&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;h4&gt;4. Can you explain the Decorator Pattern? How does it differ from Inheritance?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;4-can-you-explain-the-decorator-pattern-how-does-it-differ-from-inheritance&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#4-can-you-explain-the-decorator-pattern-how-does-it-differ-from-inheritance&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;
+The Decorator pattern allows you to attach new behaviors to objects dynamically by placing them inside special wrapper objects that contain the behaviors.
+&lt;strong&gt;Difference from Inheritance:&lt;/strong&gt; Inheritance is static and applies to an entire class. A Decorator is applied at runtime to specific instances without altering the underlying class. (Classic example: Java&amp;rsquo;s I/O framework like &lt;code&gt;new BufferedReader(new FileReader(file))&lt;/code&gt;).&lt;/p&gt;
+&lt;h4&gt;5. How are the Proxy pattern and Facade pattern different?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;5-how-are-the-proxy-pattern-and-facade-pattern-different&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#5-how-are-the-proxy-pattern-and-facade-pattern-different&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Proxy:&lt;/strong&gt; Intercepts method calls to another object to add functionality like lazy loading, access control, or caching. It perfectly implements the &lt;em&gt;exact same interface&lt;/em&gt; as the target object.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Facade:&lt;/strong&gt; Provides a simplified, higher-level interface over a complex subsystem. It does not implement the subsystem&amp;rsquo;s interface; it &lt;em&gt;wraps&lt;/em&gt; it to make it easier to use (e.g., an API Gateway in microservices).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;6. Provide a real-world example of the Adapter pattern.&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;6-provide-a-real-world-example-of-the-adapter-pattern&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#6-provide-a-real-world-example-of-the-adapter-pattern&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;
+The Adapter pattern works like a power adapter; it lets objects with incompatible interfaces collaborate.
+&lt;strong&gt;Real-World Example:&lt;/strong&gt; Transitioning a legacy system to a newer analytics API. The legacy system passes data as XML, but the new API requires JSON. You create an &lt;code&gt;AnalyticsAdapter&lt;/code&gt; that takes XML from the legacy system, converts it to JSON, and passes it to the new analytics service engine.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Behavioral Patterns&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;behavioral-patterns&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#behavioral-patterns&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;h4&gt;7. Compare the Strategy Pattern and the State Pattern. They appear very similar.&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;7-compare-the-strategy-pattern-and-the-state-pattern-they-appear-very-similar&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#7-compare-the-strategy-pattern-and-the-state-pattern-they-appear-very-similar&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;
+Structurally, they are nearly identical (both rely on composition and delegate work to interchangeable objects).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Strategy:&lt;/strong&gt; The client entirely dictates the strategy to use. Strategies are independent and usually unaware of each other (e.g., executing payment via PayPal vs. CreditCard).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;State:&lt;/strong&gt; The context object transitions between states automatically. The states are fully aware of each other and dictate the transition rules based on their internal logic (e.g., Vending Machine transitioning from &lt;code&gt;NoCoinState&lt;/code&gt; to &lt;code&gt;HasCoinState&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;8. How does the Observer Pattern apply to modern Pub/Sub systems like Kafka?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;8-how-does-the-observer-pattern-apply-to-modern-pubsub-systems-like-kafka&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#8-how-does-the-observer-pattern-apply-to-modern-pubsub-systems-like-kafka&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;
+The standard GOF Observer pattern attaches Observers directly to a Subject, meaning the Subject manages the list of Observers (coupling). In modern Pub-Sub models (like Kafka or RabbitMQ), an intermediary Message Broker completely decouples the Publishers from the Subscribers. Publishers just push events, and Subscribers pull/receive them independently, making it a scalable, distributed evolution of the classic Observer.&lt;/p&gt;
+&lt;h4&gt;9. What is the Command Pattern? How is it useful for Undo/Redo operations?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;9-what-is-the-command-pattern-how-is-it-useful-for-undoredo-operations&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#9-what-is-the-command-pattern-how-is-it-useful-for-undoredo-operations&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;
+The Command pattern encapsulates a request into a standalone context object containing all information about the request.
+For Undo/Redo functionality, you implement an &lt;code&gt;undo()&lt;/code&gt; method inside every Command object. As commands are executed, they are stored in a Stack. To undo, you simply pop the last command off the stack and invoke its &lt;code&gt;undo()&lt;/code&gt; method.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3&gt;Advanced / Hybrid Topics&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;advanced--hybrid-topics&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#advanced--hybrid-topics&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;h4&gt;10. How do modern Dependency Injection frameworks (like Spring) implement patterns?&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;10-how-do-modern-dependency-injection-frameworks-like-spring-implement-patterns&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#10-how-do-modern-dependency-injection-frameworks-like-spring-implement-patterns&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h4&gt;&lt;p&gt;&lt;strong&gt;Answer:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Singleton Pattern:&lt;/strong&gt; By default, Spring beans are strictly managed as Singletons in the ApplicationContext.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Factory Pattern:&lt;/strong&gt; &lt;code&gt;BeanFactory&lt;/code&gt; and &lt;code&gt;ApplicationContext&lt;/code&gt; apply standard Factory configurations.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Proxy Pattern:&lt;/strong&gt; Any &lt;code&gt;@Transactional&lt;/code&gt;, &lt;code&gt;@Async&lt;/code&gt;, or AOP annotations result in Spring dynamically generating a Proxy class around your object to inject the database transaction/aspect logic at runtime.&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>

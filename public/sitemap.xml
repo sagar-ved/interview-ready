@@ -839,6 +839,9 @@
     <loc>http://localhost:1313/os/disk-scheduling-detailed/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/design-patterns/</loc>
+    <lastmod>2024-04-08T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/java/weak-hashmap/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
   </url><url>
@@ -976,6 +979,12 @@
   </url><url>
     <loc>http://localhost:1313/leetcode/arrays/four-sum/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/design-patterns/solid-principles/</loc>
+    <lastmod>2024-04-12T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/design-patterns/interview-questions/</loc>
+    <lastmod>2024-04-08T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/networks/</loc>
     <lastmod>2024-04-04T00:00:00+00:00</lastmod>
